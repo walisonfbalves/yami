@@ -1,0 +1,144 @@
+<div class="dashboard-layout flex">
+    <aside class="sidebar glass-panel">
+        <div class="logo p-4">
+            <h2 class="text-gradient" style="font-size: 1.5rem;">Yami Admin</h2>
+        </div>
+        <nav class="dash-nav flex-col gap-2 p-4">
+            <a class="nav-item active">
+                <span class="icon">📊</span> Visão Geral
+            </a>
+            <a class="nav-item">
+                <span class="icon">🛍️</span> Pedidos
+                <span class="badge-count">3</span>
+            </a>
+            <a class="nav-item">
+                <span class="icon">🍔</span> Cardápio
+            </a>
+            <a class="nav-item">
+                <span class="icon">💰</span> Financeiro
+            </a>
+            <a class="nav-item mt-4">
+                <span class="icon">⚙️</span> Configurações
+            </a>
+        </nav>
+    </aside>
+
+    <main class="dash-content w-full p-8">
+        <header class="dash-header flex justify-between items-center mb-8">
+            <div>
+                <h2>Visão Geral</h2>
+                <p class="text-muted">Acompanhe o desempenho do seu negócio</p>
+            </div>
+            <div class="user-profile flex items-center gap-4">
+                <button class="btn btn-outline" routerLink="/">Sair</button>
+                <div class="avatar">AD</div>
+            </div>
+        </header>
+
+        <div class="stats-grid grid-cards mb-8">
+            <div class="stat-card glass-panel p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-muted mb-2">Vendas do Dia</p>
+                        <h3>R$ 1.850,00</h3>
+                    </div>
+                    <div class="stat-icon bg-green-soft">💰</div>
+                </div>
+                <div class="mt-4 text-sm text-green">
+                    <span>+12%</span> vs ontem
+                </div>
+            </div>
+
+            <div class="stat-card glass-panel p-6 border-orange">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-muted mb-2">Pedidos Pendentes</p>
+                        <h3>3</h3>
+                    </div>
+                    <div class="stat-icon bg-orange-soft">🛎️</div>
+                </div>
+                <div class="mt-4 text-sm text-orange">
+                    <span>Atenção necessária</span>
+                </div>
+            </div>
+
+            <div class="stat-card glass-panel p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-muted mb-2">Ticket Médio</p>
+                        <h3>R$ 45,90</h3>
+                    </div>
+                    <div class="stat-icon bg-blue-soft">🧾</div>
+                </div>
+                <div class="mt-4 text-sm text-muted">
+                    <span>Estável</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2-col gap-8" style="grid-template-columns: 2fr 1fr;">
+            <div class="charts-section glass-panel p-6">
+                <h3 class="mb-4">Vendas por Período</h3>
+                <div class="chart-container"
+                    style="height: 200px; display: flex; align-items: flex-end; gap: 1rem; padding-top: 1rem;">
+                    <!-- CSS Bar Chart Simulation -->
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 40%;"></div>
+                        <span class="text-xs mt-2">Seg</span>
+                    </div>
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 60%;"></div>
+                        <span class="text-xs mt-2">Ter</span>
+                    </div>
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 35%;"></div>
+                        <span class="text-xs mt-2">Qua</span>
+                    </div>
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 80%;"></div>
+                        <span class="text-xs mt-2">Qui</span>
+                    </div>
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 55%;"></div>
+                        <span class="text-xs mt-2">Sex</span>
+                    </div>
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 95%;"></div>
+                        <span class="text-xs mt-2">Sáb</span>
+                    </div>
+                    <div class="bar-group flex-col items-center w-full h-full justify-end">
+                        <div class="bar" style="height: 75%;"></div>
+                        <span class="text-xs mt-2">Dom</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-section glass-panel p-6">
+                <h3 class="mb-4">Últimos Pedidos</h3>
+                <div class="order-list flex-col gap-4">
+                    <div class="order-item flex justify-between items-center p-2 border-bottom">
+                        <div>
+                            <strong>#1234</strong> - Mesa 05
+                            <p class="text-sm text-muted">2x Hamburguer...</p>
+                        </div>
+                        <span class="badge status-pending">Pendente</span>
+                    </div>
+                    <div class="order-item flex justify-between items-center p-2 border-bottom">
+                        <div>
+                            <strong>#1233</strong> - Delivery
+                            <p class="text-sm text-muted">1x Pizza G...</p>
+                        </div>
+                        <span class="badge status-done">Pronto</span>
+                    </div>
+                    <div class="order-item flex justify-between items-center p-2">
+                        <div>
+                            <strong>#1232</strong> - Mesa 02
+                            <p class="text-sm text-muted">1x Coca-cola...</p>
+                        </div>
+                        <span class="badge status-paid">Pago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,208 @@
+.landing-main {
+    overflow-x: hidden;
+}
+
+section {
+    padding: 5rem 0;
+}
+
+.hero-section {
+    padding-top: 8rem;
+    padding-bottom: 6rem;
+    background: radial-gradient(circle at top right, rgba(255, 127, 80, 0.1), transparent 40%);
+}
+
+.grid-2-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+.hero-text p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 500px;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(255, 127, 80, 0.1);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.trust-indicators {
+    margin-top: 3rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.image-wrapper {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.4);
+    transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+    transition: transform 0.5s ease;
+}
+
+.image-wrapper:hover {
+    transform: perspective(1000px) rotateY(0) rotateX(0);
+}
+
+.responsive-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: calc(var(--radius-lg) - 4px);
+}
+
+.icon-box {
+    width: 60px;
+    height: 60px;
+    background: var(--bg-body);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.card h3 {
+    margin-bottom: 1rem;
+}
+
+.card p {
+    color: var(--text-muted);
+}
+
+.mobile-section {
+    background: linear-gradient(to right, white, var(--bg-body));
+}
+
+.feature-list {
+    list-style: none;
+}
+
+.feature-list li {
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+/* CTA Section - Dark Navy Glassmorphism */
+.cta-section {
+    background-color: hsl(220, 30%, 12%);
+    padding: 6rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background blob effect for CTA */
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(var(--primary), 0.15) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.highlight-card {
+    /* Glassmorphism Dark */
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+    /* Layout & Spacing */
+    padding: 4rem 2rem;
+    border-radius: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+
+    /* Centering content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.highlight-card h2 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.highlight-card p {
+    color: rgba(255, 255, 255, 0.7);
+    /* Light gray for contrast on dark */
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem !important;
+    /* Force override */
+    max-width: 600px;
+}
+
+.btn-lg {
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 25px -5px rgba(var(--primary), 0.5);
+    /* Glowing shadow matching brand */
+}
+
+/* Adjustments for mobile */
+@media (max-width: 900px) {
+    .grid-2-col {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-text p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .image-wrapper {
+        transform: none;
+    }
+
+    .mobile-image {
+        order: -1;
+    }
+
+    .highlight-card {
+        padding: 3rem 1.5rem;
+    }
+
+    .highlight-card h2 {
+        font-size: 1.8rem;
+    }
+}

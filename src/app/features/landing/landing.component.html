@@ -1,0 +1,91 @@
+<app-header></app-header>
+
+<main class="landing-main">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-container grid-2-col">
+            <div class="hero-text animate-fade-in">
+                <span class="badge">Novo: Cardápio Digital 2.0</span>
+                <h1>O sistema de gestão que o seu <span class="text-gradient">restaurante precisa</span></h1>
+                <p>Aumente suas vendas e organize sua operação com o Yami. Painel intuitivo, cardápio digital e gestão
+                    financeira em um só lugar.</p>
+                <div class="hero-actions flex gap-4">
+                    <button class="btn btn-primary" routerLink="/dashboard">Experimente Grátis</button>
+                    <button class="btn btn-outline">Ver Demonstração</button>
+                </div>
+                <div class="trust-indicators">
+                    <small>Mais de 500 restaurantes confiam no Yami</small>
+                </div>
+            </div>
+            <div class="hero-image animate-fade-in" style="animation-delay: 0.2s">
+                <div class="glass-panel image-wrapper">
+                    <img src="assets/images/dashboard_mockup.png" alt="Dashboard Yami" class="responsive-img shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header text-center mb-4">
+                <h2>Tudo o que você precisa</h2>
+                <p class="text-muted">Funcionalidades pensadas para o seu crescimento</p>
+            </div>
+
+            <div class="grid-cards">
+                <div class="card glass-panel flex-col p-4 tilt-hover">
+                    <div class="icon-box">🚀</div>
+                    <h3>Agilidade no Pedido</h3>
+                    <p>Receba pedidos direto no balcão ou cozinha, sem erros e sem atrasos.</p>
+                </div>
+                <div class="card glass-panel flex-col p-4 tilt-hover">
+                    <div class="icon-box">💰</div>
+                    <h3>Controle Financeiro</h3>
+                    <p>Saiba exatamente quanto você vendeu e qual o seu lucro diário.</p>
+                </div>
+                <div class="card glass-panel flex-col p-4 tilt-hover">
+                    <div class="icon-box">📱</div>
+                    <h3>Cardápio Digital</h3>
+                    <p>Seus clientes pedem pelo celular via QR Code ou link, sem baixar nada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Menu Section -->
+    <section class="mobile-section bg-soft">
+        <div class="container grid-2-col items-center">
+            <div class="mobile-image justify-center flex">
+                <div class="phone-mockup">
+                    <img src="assets/images/menu_mockup.png" alt="Cardápio no Celular"
+                        class="responsive-img rounded-lg shadow-lg" style="max-height: 500px;">
+                </div>
+            </div>
+            <div class="mobile-text">
+                <h2>Seu cardápio no bolso do cliente</h2>
+                <p>Com o cardápio digital Yami, você elimina a necessidade de cardápios físicos e agiliza o atendimento.
+                </p>
+                <ul class="feature-list mt-4 mb-4">
+                    <li>✅ Atualização em tempo real</li>
+                    <li>✅ Fotos atraentes dos pratos</li>
+                    <li>✅ Upsell automático de adicionais</li>
+                </ul>
+                <button class="btn btn-primary" routerLink="/menu">Ver Exemplo Real</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section text-center">
+        <div class="container">
+            <div class="glass-panel p-8 highlight-card">
+                <h2>Pronto para transformar seu negócio?</h2>
+                <p class="mb-4">Junte-se a centenas de estabelecimentos que já usam o Yami.</p>
+                <button class="btn btn-primary btn-lg">Começar Agora</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<app-footer></app-footer>

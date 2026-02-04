@@ -1,0 +1,78 @@
+<div class="menu-page">
+    <div class="menu-header">
+        <div class="container flex justify-between items-center py-4">
+            <div class="logo">
+                <h2 class="text-gradient">Yami Food</h2>
+            </div>
+            <div class="menu-actions">
+                <button class="btn btn-outline" routerLink="/landing">🏠</button>
+                <button class="btn btn-primary ml-2">🛒 (0)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="banner rounded-lg p-6 mb-8 text-white"
+            style="background: linear-gradient(to right, var(--primary-color), #ff8a65);">
+            <h3>Hoje é dia de Burger! 🍔</h3>
+            <p>Aproveite nossa promoção de inauguração.</p>
+        </div>
+
+        <div class="categories flex overflow-x-auto gap-4 py-2 mb-6 scrollbar-hide">
+            <button class="cat-pill active">🔥 Destaques</button>
+            <button class="cat-pill">🍔 Lanches</button>
+            <button class="cat-pill">🍕 Pizzas</button>
+            <button class="cat-pill">🍟 Porções</button>
+            <button class="cat-pill">🥤 Bebidas</button>
+            <button class="cat-pill">🍰 Sobremesas</button>
+        </div>
+
+        <h3 class="mb-4">Destaques</h3>
+        <div class="products-grid grid-cards">
+            <!-- Item 1 -->
+            <div class="product-card glass-panel">
+                <div class="img-container">
+                    <!-- Placeholder for food -->
+                    <div class="food-placeholder flex items-center justify-center text-4xl">🍔</div>
+                </div>
+                <div class="p-4">
+                    <h4>X-Burger Yami</h4>
+                    <p class="text-sm text-muted mb-2">Pão brioche, carne 180g, queijo cheddar especial, molho da casa.
+                    </p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="price font-bold">R$ 28,00</span>
+                        <button class="btn btn-sm btn-primary">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card glass-panel">
+                <div class="img-container">
+                    <div class="food-placeholder flex items-center justify-center text-4xl">🍟</div>
+                </div>
+                <div class="p-4">
+                    <h4>Batata Suprema</h4>
+                    <p class="text-sm text-muted mb-2">Batata frita crocante com cheddar e bacon.</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="price font-bold">R$ 22,00</span>
+                        <button class="btn btn-sm btn-primary">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card glass-panel">
+                <div class="img-container">
+                    <div class="food-placeholder flex items-center justify-center text-4xl">🥤</div>
+                </div>
+                <div class="p-4">
+                    <h4>Coca-Cola Lata</h4>
+                    <p class="text-sm text-muted mb-2">350ml gelada.</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="price font-bold">R$ 6,00</span>
+                        <button class="btn btn-sm btn-primary">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
