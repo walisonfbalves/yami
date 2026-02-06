@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../../../../core/services/cart.service';
+import { CartService } from '@core/services/cart.service';
 import { Observable } from 'rxjs';
-import { CartItem } from '../../../../core/models/yami.types';
+import { CartItem } from '@core/models/yami.types';
 
 @Component({
   selector: 'yami-cart-fab',

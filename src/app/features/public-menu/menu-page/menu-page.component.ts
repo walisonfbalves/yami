@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MenuService } from '../../../core/services/menu.service';
-import { MenuData, Category, Product } from '../../../core/models/yami.types';
+import { MenuService } from '@core/services/menu.service';
+import { MenuData, Category, Product } from '@core/models/yami.types';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from '../product-card/product-card.component';
-import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
+import { BadgeComponent } from '@shared/ui/badge/badge.component';
 import { CartFabComponent } from '../components/cart-fab/cart-fab.component';
 import { CartModalComponent } from '../components/cart-modal/cart-modal.component';
 

@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../../core/models/yami.types';
-import { ButtonComponent } from '../../../shared/ui/button/button.component';
-import { CartService } from '../../../core/services/cart.service';
+import { Product } from '@core/models/yami.types';
+import { ButtonComponent } from '@shared/ui/button/button.component';
+import { CartService } from '@core/services/cart.service';
 
 @Component({
   selector: 'yami-product-card',

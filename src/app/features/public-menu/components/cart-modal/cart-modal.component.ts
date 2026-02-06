@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../../../../core/services/cart.service';
-import { CartItem } from '../../../../core/models/yami.types';
-import { ButtonComponent } from '../../../../shared/ui/button/button.component';
+import { CartService } from '@core/services/cart.service';
+import { CartItem } from '@core/models/yami.types';
+import { ButtonComponent } from '@shared/ui/button/button.component';
 
 @Component({
   selector: 'yami-cart-modal',
