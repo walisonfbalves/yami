@@ -5,11 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'yami-button',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <button [class]="getClasses()">
-      <ng-content></ng-content>
-    </button>
-  `
+  templateUrl: './button.component.html',
+  styleUrls: ['./button.component.css']
 })
 export class ButtonComponent {
   @Input() variant: 'primary' | 'outline' | 'ghost' = 'primary';

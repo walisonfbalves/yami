@@ -4,7 +4,7 @@ import { MenuService } from '../../../core/services/menu.service';
 import { MenuData, Category, Product } from '../../../core/models/yami.types';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from '../product-card/product-card.component';
-import { BadgeComponent } from '../../../shared/ui/badge.component';
+import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { CartFabComponent } from '../components/cart-fab/cart-fab.component';
 import { CartModalComponent } from '../components/cart-modal/cart-modal.component';
 
@@ -12,71 +12,8 @@ import { CartModalComponent } from '../components/cart-modal/cart-modal.componen
   selector: 'yami-menu-page',
   standalone: true,
   imports: [CommonModule, ProductCardComponent, BadgeComponent, CartFabComponent, CartModalComponent],
-  template: `
-    <div *ngIf="menuData$ | async as data" class="min-h-screen pb-20">
-      
-      <!-- Header / Banner -->
-      <header class="relative h-48 md:h-64 bg-muted">
-        <img [src]="data.restaurant.bannerUrl" class="w-full h-full object-cover opacity-60" alt="Banner">
-        <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
-        
-        <div class="absolute bottom-0 left-0 w-full p-4 transform translate-y-1/2 flex justify-center">
-             <div class="bg-surface p-2 rounded-full border-4 border-background shadow-xl">
-               <img [src]="data.restaurant.logoUrl" class="w-24 h-24 rounded-full object-cover bg-muted" alt="Logo">
-             </div>
-        </div>
-      </header>
-
-      <!-- Restaurant Info -->
-      <div class="mt-16 text-center px-4">
-        <h1 class="font-heading text-3xl font-bold text-text-main">{{ data.restaurant.name }}</h1>
-        <div class="flex justify-center gap-2 mt-2">
-            <yami-badge>Aberto</yami-badge>
-            <span class="text-text-muted text-sm flex items-center">⭐ 4.8 (1.2k avaliações)</span>
-        </div>
-      </div>
-
-      <!-- Categories Nav -->
-      <div class="sticky top-0 z-10 bg-background/95 backdrop-blur py-4 mt-6 border-b border-muted">
-        <div class="flex overflow-x-auto gap-2 px-4 no-scrollbar hide-scrollbar">
-          <button *ngFor="let cat of data.categories" 
-                  (click)="scrollToCategory(cat.id)"
-                  class="px-4 py-2 rounded-full border border-muted bg-surface text-text-muted whitespace-nowrap hover:border-primary hover:text-primary transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
-            {{ cat.name }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Menu List -->
-      <div class="container mx-auto max-w-2xl px-4 mt-6 space-y-8">
-        <div *ngFor="let cat of data.categories" [id]="'category-' + cat.id" class="scroll-mt-24">
-            <h2 class="font-heading text-2xl font-semibold mb-4 text-primary">{{ cat.name }}</h2>
-            
-            <div class="grid gap-4">
-               <ng-container *ngFor="let product of getProductsByCategory(data.products, cat.id)">
-                  <yami-product-card [product]="product"></yami-product-card>
-               </ng-container>
-            </div>
-        </div>
-      </div>
-
-      <!-- Cart FAB -->
-      <yami-cart-fab (openCart)="isCartOpen = true"></yami-cart-fab>
-      
-      <!-- Cart Modal -->
-      <yami-cart-modal *ngIf="isCartOpen" (close)="isCartOpen = false"></yami-cart-modal>
-
-    </div>
-  `,
-  styles: [`
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  `]
+  templateUrl: './menu-page.component.html',
+  styleUrls: ['./menu-page.component.css']
 })
 export class MenuPageComponent implements OnInit {
   menuData$!: Observable<MenuData>;

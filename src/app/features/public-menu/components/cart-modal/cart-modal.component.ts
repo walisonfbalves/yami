@@ -3,86 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '../../../../core/services/cart.service';
 import { CartItem } from '../../../../core/models/yami.types';
-import { ButtonComponent } from '../../../../shared/ui/button.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'yami-cart-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
-  template: `
-    <div class="fixed inset-0 z-[60] flex items-end md:items-center justify-center pointer-events-none">
-      
-      <!-- Backdrop -->
-      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto transition-opacity" 
-           (click)="close.emit()">
-      </div>
-
-      <!-- Modal Content -->
-      <div class="relative w-full md:w-[480px] bg-surface rounded-t-2xl md:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] pointer-events-auto transform transition-transform animate-slide-up">
-        
-        <!-- Header -->
-        <div class="p-4 border-b border-muted flex items-center justify-between bg-muted/20">
-          <h2 class="font-heading text-xl font-bold text-text-main">Sua Sacola</h2>
-          <button (click)="close.emit()" class="text-text-muted hover:text-text-main p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Items List -->
-        <div class="flex-1 overflow-y-auto p-4 space-y-4" *ngIf="items$ | async as items">
-          <div *ngIf="items.length === 0" class="text-center py-8 text-text-muted">
-            Sua sacola está vazia.
-          </div>
-
-          <div *ngFor="let item of items" class="flex gap-4">
-            <div class="flex-1">
-              <h3 class="font-medium text-text-main">{{ item.name }}</h3>
-              <p class="text-sm text-primary font-bold">
-                {{ item.price | currency:'BRL':'symbol':'1.2-2' }}
-              </p>
-            </div>
-            
-            <div class="flex items-center gap-3 bg-muted/50 rounded-lg px-2 h-8">
-               <button (click)="removeItem(item.id)" class="text-text-muted hover:text-primary w-6" type="button">-</button>
-               <span class="text-sm font-bold w-4 text-center">{{ item.quantity }}</span>
-               <button (click)="addItem(item)" class="text-text-muted hover:text-primary w-6" type="button">+</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer / Checkout -->
-        <div class="p-4 bg-muted/10 border-t border-muted space-y-4" *ngIf="(total$ | async) as total">
-          <div class="flex justify-between items-center text-lg font-bold font-heading">
-            <span>Total</span>
-            <span class="text-primary">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
-          </div>
-
-          <div class="space-y-3">
-             <input type="text" [(ngModel)]="customerName" placeholder="Seu Nome" 
-                    class="w-full bg-background border border-muted rounded-lg px-4 py-2 text-text-main focus:border-primary focus:outline-none placeholder-text-muted transition-colors">
-             <input type="text" [(ngModel)]="customerAddress" placeholder="Endereço de Entrega (ou 'Mesa 3')" 
-                    class="w-full bg-background border border-muted rounded-lg px-4 py-2 text-text-main focus:border-primary focus:outline-none placeholder-text-muted transition-colors">
-          </div>
-
-          <yami-button variant="primary" size="lg" class="w-full" (click)="checkout()" [disabled]="!customerName || !customerAddress">
-            Enviar Pedido via WhatsApp
-          </yami-button>
-        </div>
-
-      </div>
-    </div>
-  `,
-  styles: [`
-    @keyframes slide-up {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .animate-slide-up {
-      animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-  `]
+  templateUrl: './cart-modal.component.html',
+  styleUrls: ['./cart-modal.component.css']
 })
 export class CartModalComponent {
   @Output() close = new EventEmitter<void>();
