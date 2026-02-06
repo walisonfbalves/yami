@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
-import { MenuPageComponent } from './features/public-menu/menu-page/menu-page.component';
+
 
 export const routes: Routes = [
-  { path: '', component: MenuPageComponent }
+  {
+    path: '',
+    loadChildren: () => import('@features/public-menu/public-menu.routes').then(m => m.publicMenuRoutes)
+  }
 ];
