@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../core/models/yami.types';
 import { ButtonComponent } from '../../../shared/ui/button.component';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'yami-product-card',
@@ -27,7 +28,7 @@ import { ButtonComponent } from '../../../shared/ui/button.component';
             {{ product.price | currency:'BRL':'symbol':'1.2-2' }}
           </span>
           
-          <yami-button variant="primary" size="sm" class="!px-2 !py-1 rounded-full aspect-square flex items-center justify-center">
+          <yami-button variant="primary" size="sm" class="!px-2 !py-1 rounded-full aspect-square flex items-center justify-center" (click)="addToCart()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -39,4 +40,10 @@ import { ButtonComponent } from '../../../shared/ui/button.component';
 })
 export class ProductCardComponent {
   @Input() product!: Product;
+
+  constructor(private cartService: CartService) {}
+
+  addToCart() {
+    this.cartService.addToCart(this.product);
+  }
 }

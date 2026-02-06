@@ -23,3 +23,7 @@ export interface MenuData {
   categories: Category[];
   products: Product[];
 }
+
+export interface CartItem extends Product {
+  quantity: number;
+}

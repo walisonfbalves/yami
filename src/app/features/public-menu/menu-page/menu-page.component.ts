@@ -5,11 +5,13 @@ import { MenuData, Category, Product } from '../../../core/models/yami.types';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { BadgeComponent } from '../../../shared/ui/badge.component';
+import { CartFabComponent } from '../components/cart-fab/cart-fab.component';
+import { CartModalComponent } from '../components/cart-modal/cart-modal.component';
 
 @Component({
   selector: 'yami-menu-page',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, BadgeComponent],
+  imports: [CommonModule, ProductCardComponent, BadgeComponent, CartFabComponent, CartModalComponent],
   template: `
     <div *ngIf="menuData$ | async as data" class="min-h-screen pb-20">
       
@@ -58,6 +60,12 @@ import { BadgeComponent } from '../../../shared/ui/badge.component';
         </div>
       </div>
 
+      <!-- Cart FAB -->
+      <yami-cart-fab (openCart)="isCartOpen = true"></yami-cart-fab>
+      
+      <!-- Cart Modal -->
+      <yami-cart-modal *ngIf="isCartOpen" (close)="isCartOpen = false"></yami-cart-modal>
+
     </div>
   `,
   styles: [`
@@ -72,6 +80,7 @@ import { BadgeComponent } from '../../../shared/ui/badge.component';
 })
 export class MenuPageComponent implements OnInit {
   menuData$!: Observable<MenuData>;
+  isCartOpen = false;
 
   constructor(private menuService: MenuService) {}
 

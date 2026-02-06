@@ -14,9 +14,10 @@ import { CommonModule } from '@angular/common';
 export class ButtonComponent {
   @Input() variant: 'primary' | 'outline' | 'ghost' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() disabled: boolean = false;
 
   getClasses(): string {
-    const base = 'inline-flex items-center justify-center rounded-lg font-heading font-medium transition-all active:scale-95';
+    const base = 'inline-flex items-center justify-center rounded-lg font-heading font-medium transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none';
     
     const variants = {
       primary: 'bg-primary text-primary-fg hover:bg-amber-400 shadow-lg shadow-amber-900/20',
