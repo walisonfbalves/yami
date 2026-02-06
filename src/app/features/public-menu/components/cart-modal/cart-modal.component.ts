@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '@core/services/cart.service';
@@ -10,7 +10,8 @@ import { ButtonComponent } from '@shared/ui/button/button.component';
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './cart-modal.component.html',
-  styleUrls: ['./cart-modal.component.css']
+  styleUrls: ['./cart-modal.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartModalComponent {
   @Output() close = new EventEmitter<void>();

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '@core/services/cart.service';
 import { Observable } from 'rxjs';
@@ -9,7 +9,8 @@ import { CartItem } from '@core/models/yami.types';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './cart-fab.component.html',
-  styleUrls: ['./cart-fab.component.css']
+  styleUrls: ['./cart-fab.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartFabComponent {
   @Output() openCart = new EventEmitter<void>();

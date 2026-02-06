@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '@core/models/yami.types';
 import { ButtonComponent } from '@shared/ui/button/button.component';
@@ -9,7 +9,8 @@ import { CartService } from '@core/services/cart.service';
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   templateUrl: './product-card.component.html',
-  styleUrls: ['./product-card.component.css']
+  styleUrls: ['./product-card.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductCardComponent {
   @Input() product!: Product;

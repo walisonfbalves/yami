@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuService } from '@core/services/menu.service';
 import { MenuData, Category, Product } from '@core/models/yami.types';
@@ -13,7 +13,8 @@ import { CartModalComponent } from '../components/cart-modal/cart-modal.componen
   standalone: true,
   imports: [CommonModule, ProductCardComponent, BadgeComponent, CartFabComponent, CartModalComponent],
   templateUrl: './menu-page.component.html',
-  styleUrls: ['./menu-page.component.css']
+  styleUrls: ['./menu-page.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuPageComponent implements OnInit {
   menuData$!: Observable<MenuData>;
