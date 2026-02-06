@@ -5,7 +5,17 @@
   "projects": {
     "yami": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": true
+        },
+        "@schematics/angular:directive": {
+          "standalone": true
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -94,8 +104,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "13ec26ef-a1c5-4dd3-bbfc-e8974c767f9b"
   }
 }
