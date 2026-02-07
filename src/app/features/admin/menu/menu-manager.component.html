@@ -40,7 +40,7 @@
         <!-- Food Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <!-- Product Cards -->
-            <div *ngFor="let product of products" class="group bg-white dark:bg-card-dark rounded-xl border border-stone-200 dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all duration-300" [class.opacity-80]="!product.available">
+            <div *ngFor="let product of filteredProducts" class="group bg-white dark:bg-card-dark rounded-xl border border-stone-200 dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all duration-300" [class.opacity-80]="!product.available">
                 <div class="relative aspect-[4/3] overflow-hidden" [class.grayscale]="!product.available">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                     
@@ -109,54 +109,9 @@
     </div>
 
     <!-- Product Form Modal (Overlay) -->
-    <div *ngIf="showForm" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white dark:bg-surface-dark rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-stone-200 dark:border-border-dark flex flex-col max-h-[90vh]">
-            <div class="flex items-center justify-between p-6 border-b border-stone-200 dark:border-border-dark">
-                <h3 class="text-xl font-heading font-bold text-stone-900 dark:text-white">{{ editingProduct ? 'Editar Produto' : 'Novo Produto' }}</h3>
-                <button (click)="closeForm()" class="text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
-                <form [formGroup]="productForm" class="space-y-6">
-                    <div class="space-y-2">
-                        <label class="text-sm font-bold text-stone-700 dark:text-stone-300">Nome do Produto</label>
-                        <input formControlName="name" type="text" class="w-full bg-stone-50 dark:bg-background-dark border border-stone-200 dark:border-border-dark rounded-lg px-4 py-3 text-stone-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder-stone-400" placeholder="Ex: Truffle Wagyu Burger">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-6">
-                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-stone-700 dark:text-stone-300">Preço</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 font-bold">$</span>
-                                <input formControlName="price" type="number" step="0.01" class="w-full bg-stone-50 dark:bg-background-dark border border-stone-200 dark:border-border-dark rounded-lg pl-8 pr-4 py-3 text-stone-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder-stone-400">
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-stone-700 dark:text-stone-300">Categoria</label>
-                            <select formControlName="category" class="w-full bg-stone-50 dark:bg-background-dark border border-stone-200 dark:border-border-dark rounded-lg px-4 py-3 text-stone-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer">
-                                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="text-sm font-bold text-stone-700 dark:text-stone-300">Descrição</label>
-                        <textarea formControlName="description" rows="3" class="w-full bg-stone-50 dark:bg-background-dark border border-stone-200 dark:border-border-dark rounded-lg px-4 py-3 text-stone-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder-stone-400 resize-none" placeholder="Descrição detalhada do prato..."></textarea>
-                    </div>
-
-                     <div class="space-y-2">
-                        <label class="text-sm font-bold text-stone-700 dark:text-stone-300">URL da Imagem</label>
-                        <input formControlName="image" type="text" class="w-full bg-stone-50 dark:bg-background-dark border border-stone-200 dark:border-border-dark rounded-lg px-4 py-3 text-stone-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder-stone-400" placeholder="https://...">
-                    </div>
-                </form>
-            </div>
-
-            <div class="p-6 border-t border-stone-200 dark:border-border-dark bg-stone-50 dark:bg-background-dark/50 flex justify-end gap-3">
-                <button (click)="closeForm()" class="px-6 py-2.5 rounded-lg border border-stone-200 dark:border-border-dark font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-white/5 transition-all">Cancelar</button>
-                <button (click)="saveProduct()" class="px-6 py-2.5 rounded-lg bg-primary text-background-dark font-bold hover:bg-amber-600 transition-all shadow-lg shadow-primary/20">Salvar Produto</button>
-            </div>
-        </div>
-    </div>
+    <app-product-form *ngIf="showForm" 
+                      [product]="editingProduct"
+                      (save)="handleSaveProduct($event)"
+                      (cancel)="closeForm()">
+    </app-product-form>
 </div>

@@ -18,6 +18,7 @@ module.exports = {
         'background-dark': '#0c0a09',
         surface: '#1c1917',        // Stone 900
         'surface-dark': '#1c1917',
+        'card-dark': '#1c1917', // Alias for surface-dark
         primary: '#f59e0b',        // Amber 500 (Brand)
         'primary-fg': '#0c0a09',
         muted: '#292524',          // Stone 800
