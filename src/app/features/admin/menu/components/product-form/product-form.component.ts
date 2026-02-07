@@ -10,7 +10,6 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
         <div class="bg-stone-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-stone-800 flex flex-col max-h-[90vh] animate-scale-in">
-            <!-- Header -->
             <div class="flex items-center justify-between p-6 border-b border-stone-800 bg-stone-900/50">
                 <h3 class="text-xl font-heading font-bold text-white uppercase tracking-wide">
                     {{ isEditing ? 'Editar Produto' : 'Novo Produto' }}
@@ -20,14 +19,11 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                 </button>
             </div>
             
-            <!-- Body -->
             <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
                 <form [formGroup]="productForm" class="space-y-6">
-                    <!-- Image Upload -->
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Imagem do Produto</label>
                         <div class="flex items-center gap-6">
-                             <!-- Preview Box -->
                             <div class="w-24 h-24 rounded-lg bg-stone-950 border border-stone-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative group">
                                 <img *ngIf="imageUrl?.value && !imageError" 
                                      [src]="imageUrl?.value" 
@@ -35,13 +31,11 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                                      alt="Preview">
                                 <span *ngIf="!imageUrl?.value" class="material-symbols-outlined text-stone-700 text-3xl">image</span>
                                 
-                                <!-- Remove Image Button -->
                                 <button *ngIf="imageUrl?.value" (click)="productForm.patchValue({image: ''})" class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span class="material-symbols-outlined text-white">delete</span>
                                 </button>
                             </div>
 
-                            <!-- Dropzone / Input -->
                             <div class="flex-1">
                                 <label 
                                     (dragover)="onDragOver($event)"
@@ -62,7 +56,6 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                         </div>
                     </div>
 
-                    <!-- Nome -->
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Nome do Produto <span class="text-red-500">*</span></label>
                         <input formControlName="name" 
@@ -73,7 +66,6 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                         <p *ngIf="productForm.get('name')?.touched && productForm.get('name')?.errors?.['minlength']" class="text-red-500 text-xs">Mínimo de 3 caracteres.</p>
                     </div>
 
-                    <!-- Preço e Categoria -->
                     <div class="grid grid-cols-2 gap-6">
                          <div class="space-y-2">
                             <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Preço <span class="text-red-500">*</span></label>
@@ -96,7 +88,6 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                         </div>
                     </div>
 
-                    <!-- Descrição -->
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Descrição</label>
                         <textarea formControlName="description" 
@@ -108,7 +99,6 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                 </form>
             </div>
 
-            <!-- Footer -->
             <div class="p-6 border-t border-stone-800 bg-stone-900/50 flex justify-end gap-3">
                 <button (click)="onCancel()" class="px-6 py-2.5 rounded-lg border border-stone-700 font-bold text-stone-400 hover:bg-stone-800 hover:text-white transition-all">Cancelar</button>
                 <button (click)="onSave()" 
@@ -154,7 +144,6 @@ export class ProductFormComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
       if (changes['product'] && this.product) {
           this.productForm.patchValue(this.product);
-          // Check image validity again when loading product
           this.imageError = false;
       }
   }
@@ -208,10 +197,7 @@ export class ProductFormComponent implements OnChanges {
           const previewUrl = URL.createObjectURL(compressedBlob);
           
           this.productForm.patchValue({ image: previewUrl });
-          this.productImage = previewUrl; // For local display if needed, though form control has it
-          
-          // In a real app, you would upload compressedBlob to server here 
-          // and get back the real URL. For now, we use the blob URL.
+          this.productImage = previewUrl; 
           
       } catch (error) {
           console.error('Image compression failed', error);

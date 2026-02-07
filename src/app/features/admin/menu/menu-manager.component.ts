@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from './components/product-form/product-form.component';
 
 @Component({
   selector: 'app-menu-manager',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProductFormComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ProductFormComponent],
   templateUrl: './menu-manager.component.html'
 })
 export class MenuManagerComponent {
-  // Mock data based on Stitch design
   products: any[] = [
       {
           id: 1,
@@ -76,6 +76,7 @@ export class MenuManagerComponent {
 
   selectedCategory = 'Todos';
   categories = ['Todos', 'Burgers', 'Pratos Principais', 'Bebidas', 'Sobremesas'];
+  searchTerm = '';
 
   showForm = false;
   editingProduct: any = null;
@@ -85,10 +86,17 @@ export class MenuManagerComponent {
   }
 
   get filteredProducts() {
-      if (this.selectedCategory === 'Todos') {
-          return this.products;
-      }
-      return this.products.filter(p => p.category === this.selectedCategory);
+      const term = this.searchTerm.toLowerCase().trim();
+
+      return this.products.filter(product => {
+        const matchesCategory = this.selectedCategory === 'Todos' || product.category === this.selectedCategory;
+
+        const matchesSearch = term === '' || 
+                              product.name.toLowerCase().includes(term) || 
+                              product.description.toLowerCase().includes(term);
+
+        return matchesCategory && matchesSearch;
+      });
   }
 
   toggleAvailability(product: any) {
@@ -108,7 +116,6 @@ export class MenuManagerComponent {
   handleSaveProduct(productData: any) {
       if (this.editingProduct) {
         console.log('Updating Product:', { ...this.editingProduct, ...productData });
-        // Update local mock data
         const index = this.products.findIndex(p => p.id === this.editingProduct.id);
         if (index !== -1) {
             this.products[index] = { ...this.products[index], ...productData };
@@ -116,7 +123,6 @@ export class MenuManagerComponent {
 
       } else {
         console.log('Creating Product:', productData);
-        // Add to local mock data
         this.products.push({
             id: this.products.length + 1,
             ...productData,

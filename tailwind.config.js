@@ -3,30 +3,28 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
-  darkMode: 'class', // Enabled manual dark mode as per design
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        display: ['Work Sans', 'sans-serif'], // Added for Stitch design
-        heading: ['Oswald', 'sans-serif'],    // Added for Stitch design
+        display: ['Work Sans', 'sans-serif'],
+        heading: ['Oswald', 'sans-serif'],
       },
       colors: {
-        // Yami / Stitch Design Palette
-        background: '#0c0a09',     // Stone 950 (Base Dark)
+        background: '#0c0a09',
         'background-light': '#f8f7f5', 
         'background-dark': '#0c0a09',
-        surface: '#1c1917',        // Stone 900
+        surface: '#1c1917',
         'surface-dark': '#1c1917',
-        'card-dark': '#1c1917', // Alias for surface-dark
-        primary: '#f59e0b',        // Amber 500 (Brand)
+        'card-dark': '#1c1917',
+        primary: '#f59e0b',
         'primary-fg': '#0c0a09',
-        muted: '#292524',          // Stone 800
-        'text-main': '#fafaf9',    // Stone 50
-        'text-muted': '#a8a29e',   // Stone 400
-        'border-dark': '#2d2a27',  // Custom Border
+        muted: '#292524',
+        'text-main': '#fafaf9',
+        'text-muted': '#a8a29e',
+        'border-dark': '#2d2a27',
         
-        // Tailwind default overrides/extends if needed
         'stone-950': '#0c0a09',
         'stone-900': '#1c1917',
         'stone-800': '#292524',
