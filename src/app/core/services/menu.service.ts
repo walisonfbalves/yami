@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { MenuData } from '../models/yami.types';
 
 @Injectable({
@@ -75,6 +76,6 @@ export class MenuService {
       ]
     };
 
-    return of(data);
+    return of(data).pipe(delay(2000));
   }
 }
