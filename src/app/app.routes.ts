@@ -23,13 +23,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
         {
+            path: 'dashboard',
+            loadComponent: () => import('./features/admin/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        },
+        {
+            path: 'menu',
+            loadComponent: () => import('./features/admin/menu/menu-manager.component').then(m => m.MenuManagerComponent)
+        },
+        {
             path: '',
             redirectTo: 'dashboard',
             pathMatch: 'full'
-        },
-        {
-            path: 'dashboard',
-            loadComponent: () => import('./features/admin/dashboard/dashboard.component').then(m => m.DashboardComponent)
         }
     ]
   },
