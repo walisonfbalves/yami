@@ -43,7 +43,14 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
 
                             <!-- Dropzone / Input -->
                             <div class="flex-1">
-                                <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-stone-800 border-dashed rounded-lg cursor-pointer bg-stone-900/50 hover:bg-stone-800/50 transition-colors group">
+                                <label 
+                                    (dragover)="onDragOver($event)"
+                                    (dragleave)="onDragLeave($event)"
+                                    (drop)="onDrop($event)"
+                                    [class.border-primary]="isDragging"
+                                    [class.bg-stone-800]="isDragging"
+                                    class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer transition-colors group"
+                                    [ngClass]="isDragging ? 'border-primary bg-stone-800' : 'border-stone-800 bg-stone-900/50 hover:bg-stone-800/50'">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                         <span class="material-symbols-outlined text-stone-500 mb-1 group-hover:text-primary transition-colors">cloud_upload</span>
                                         <p class="mb-1 text-xs text-stone-500"><span class="font-bold text-stone-400 group-hover:text-white transition-colors">Clique para upload</span> ou arraste</p>
@@ -152,6 +159,8 @@ export class ProductFormComponent implements OnChanges {
       }
   }
 
+  isDragging = false;
+
   get isEditing(): boolean {
       return !!this.product;
   }
@@ -160,26 +169,53 @@ export class ProductFormComponent implements OnChanges {
       return this.productForm.get('image');
   }
 
-  async onFileSelected(event: any) {
+  onDragOver(event: DragEvent) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.isDragging = false;
+      
+      const file = event.dataTransfer?.files[0];
+      if (file) {
+          this.processFile(file);
+      }
+  }
+
+  onFileSelected(event: any) {
       const file = event.target.files[0];
       if (file) {
-          this.imageError = false;
-          // Show optimizing state (optional UI feedback logic could be added here)
-          try {
-              console.log('Optimizing image...');
-              const compressedBlob = await compressImage(file);
-              const previewUrl = URL.createObjectURL(compressedBlob);
-              
-              this.productForm.patchValue({ image: previewUrl });
-              this.productImage = previewUrl; // For local display if needed, though form control has it
-              
-              // In a real app, you would upload compressedBlob to server here 
-              // and get back the real URL. For now, we use the blob URL.
-              
-          } catch (error) {
-              console.error('Image compression failed', error);
-              this.imageError = true;
-          }
+          this.processFile(file);
+      }
+  }
+
+  async processFile(file: File) {
+      this.imageError = false;
+      // Show optimizing state (optional UI feedback logic could be added here)
+      try {
+          console.log('Optimizing image...');
+          const compressedBlob = await compressImage(file);
+          const previewUrl = URL.createObjectURL(compressedBlob);
+          
+          this.productForm.patchValue({ image: previewUrl });
+          this.productImage = previewUrl; // For local display if needed, though form control has it
+          
+          // In a real app, you would upload compressedBlob to server here 
+          // and get back the real URL. For now, we use the blob URL.
+          
+      } catch (error) {
+          console.error('Image compression failed', error);
+          this.imageError = true;
       }
   }
 

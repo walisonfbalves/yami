@@ -37,18 +37,18 @@
             </div>
         </div>
 
-        <!-- Food Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Food Grid (Masonry Layout) -->
+        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
             <!-- Product Cards -->
-            <div *ngFor="let product of filteredProducts" class="group bg-white dark:bg-card-dark rounded-xl border border-stone-200 dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all duration-300" [class.opacity-80]="!product.available">
-                <div class="relative aspect-[4/3] overflow-hidden" [class.grayscale]="!product.available">
+            <div *ngFor="let product of filteredProducts" class="break-inside-avoid mb-6 group bg-white dark:bg-card-dark rounded-xl border border-stone-200 dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all duration-300" [class.opacity-80]="!product.available">
+                <div class="relative overflow-hidden" [class.grayscale]="!product.available">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
                     
                     <div *ngIf="!product.available" class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center">
                         <span class="bg-white/10 backdrop-blur-md text-white text-[10px] font-black px-3 py-1.5 rounded-full border border-white/20">ESGOTADO</span>
                     </div>
 
-                    <img [src]="product.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" [alt]="product.name"/>
+                    <img [src]="product.image" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500" [alt]="product.name"/>
                     
                     <div *ngIf="product.popular" class="absolute bottom-3 left-4 z-20">
                         <span class="bg-primary text-background-dark text-xs font-black px-2 py-1 rounded">POPULAR</span>
@@ -57,10 +57,10 @@
                 
                 <div class="p-5">
                     <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-bold text-lg text-stone-900 dark:text-white group-hover:text-primary transition-colors">{{ product.name }}</h3>
-                        <span class="text-primary font-bold">{{ product.price | currency }}</span>
+                        <h3 class="font-bold text-lg text-stone-900 dark:text-white group-hover:text-primary transition-colors leading-tight">{{ product.name }}</h3>
+                        <span class="text-primary font-bold whitespace-nowrap ml-2">{{ product.price | currency }}</span>
                     </div>
-                    <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 line-clamp-2 min-h-[2.5em]">{{ product.description }}</p>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 line-clamp-3">{{ product.description }}</p>
                     
                     <div class="flex items-center justify-between pt-4 border-t border-stone-100 dark:border-border-dark">
                         <div class="flex items-center gap-2">
@@ -83,7 +83,7 @@
             </div>
 
             <!-- Add New Item Empty Slot -->
-            <button (click)="openForm()" class="flex flex-col items-center justify-center border-2 border-dashed border-stone-200 dark:border-border-dark rounded-xl bg-stone-50/50 dark:bg-card-dark/50 hover:bg-primary/5 hover:border-primary/50 transition-all group py-12 min-h-[380px]">
+            <button (click)="openForm()" class="break-inside-avoid w-full flex flex-col items-center justify-center border-2 border-dashed border-stone-200 dark:border-border-dark rounded-xl bg-stone-50/50 dark:bg-card-dark/50 hover:bg-primary/5 hover:border-primary/50 transition-all group py-12 min-h-[200px]">
                 <div class="w-12 h-12 rounded-full bg-stone-100 dark:bg-background-dark flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                     <span class="material-symbols-outlined text-stone-400 group-hover:text-primary">add</span>
                 </div>
