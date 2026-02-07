@@ -78,7 +78,7 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                          <div class="space-y-2">
                             <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Preço <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 font-bold">$</span>
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 font-bold">R$</span>
                                 <input formControlName="price" 
                                        type="number" 
                                        step="0.01" 
