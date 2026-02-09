@@ -31,6 +31,10 @@ export const routes: Routes = [
             loadComponent: () => import('./features/admin/menu/menu-manager.component').then(m => m.MenuManagerComponent)
         },
         {
+            path: 'orders',
+            loadComponent: () => import('./features/admin/orders/order-kanban.component').then(m => m.OrderKanbanComponent)
+        },
+        {
             path: '',
             redirectTo: 'dashboard',
             pathMatch: 'full'
