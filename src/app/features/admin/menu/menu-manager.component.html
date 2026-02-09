@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <button class="flex items-center gap-2 px-4 py-2 bg-transparent border border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-all text-sm">
+            <button (click)="showCategoryManager = true" class="flex items-center gap-2 px-4 py-2 bg-transparent border border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-all text-sm">
                 <span class="material-symbols-outlined text-lg">category</span>
                 Gerenciar Categorias
             </button>
@@ -106,4 +106,10 @@
                       (save)="handleSaveProduct($event)"
                       (cancel)="closeForm()">
     </app-product-form>
+
+    <app-category-manager *ngIf="showCategoryManager"
+                          [categories]="categories"
+                          (update)="updateCategories($event)"
+                          (close)="showCategoryManager = false">
+    </app-category-manager>
 </div>

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from './components/product-form/product-form.component';
+import { CategoryManagerComponent } from './components/category-manager/category-manager.component';
 
 @Component({
   selector: 'app-menu-manager',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ProductFormComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ProductFormComponent, CategoryManagerComponent],
   templateUrl: './menu-manager.component.html'
 })
 export class MenuManagerComponent {
@@ -79,6 +80,7 @@ export class MenuManagerComponent {
   searchTerm = '';
 
   showForm = false;
+  showCategoryManager = false;
   editingProduct: any = null;
 
   setCategory(category: string) {
@@ -137,5 +139,10 @@ export class MenuManagerComponent {
           this.products = this.products.filter(p => p.id !== id);
           console.log('Deleted product', id);
       }
+  }
+
+  updateCategories(newCategories: string[]) {
+    this.categories = newCategories;
+    this.showCategoryManager = false;
   }
 }
