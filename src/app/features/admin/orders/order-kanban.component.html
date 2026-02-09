@@ -1,0 +1,227 @@
+    <div class="h-full flex flex-col font-display bg-background-dark overflow-hidden">
+        <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-surface-dark/50 backdrop-blur-md z-10 shrink-0">
+            <h1 class="text-2xl font-heading font-bold text-white tracking-tight flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">shopping_cart</span>
+                Pedidos em tempo real
+            </h1>
+            <div class="flex items-center gap-4">
+                 <div class="px-4 py-2 rounded-xl bg-surface-dark border border-white/5 text-sm text-gray-400">
+                    <span class="text-white font-bold">{{ getTotalActiveOrders() }}</span> Pedidos Ativos
+                 </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-x-auto overflow-y-hidden p-8 custom-scrollbar" cdkDropListGroup>
+            <div class="flex gap-6 h-full min-w-max">
+                
+                <div class="w-80 flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
+                    <div class="p-4 border-b border-white/5 bg-yellow-500/10 flex items-center justify-between">
+                        <h2 class="font-bold text-yellow-500 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">notifications_active</span>
+                            Novos
+                        </h2>
+                        <span class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ pendingOrders.length }}</span>
+                    </div>
+                    <div 
+                        cdkDropList
+                        [cdkDropListData]="pendingOrders"
+                        (cdkDropListDropped)="drop($event, 'PENDING')"
+                        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
+                        
+                        <div *ngFor="let order of pendingOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-yellow-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                            <div *cdkDragPlaceholder class="opacity-0"></div>
+                            
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+                                <span [class]="getTimeBadgeClass(order.createdAt)" class="text-[10px] font-bold px-2 py-1 rounded-full border">
+                                    {{ getElapsedTime(order.createdAt) }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-4">
+                                <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
+                                <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
+                            </div>
+
+                            <ul class="space-y-1 mb-4 select-none pointer-events-none">
+                                <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
+                                    <span class="w-1 h-1 rounded-full bg-yellow-500 mt-1.5 shrink-0"></span>
+                                    {{ item }}
+                                </li>
+                            </ul>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                                <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-80 flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
+                    <div class="p-4 border-b border-white/5 bg-orange-500/10 flex items-center justify-between">
+                         <h2 class="font-bold text-orange-500 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">local_fire_department</span>
+                            Em Preparo
+                        </h2>
+                        <span class="bg-orange-500/20 text-orange-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ preparingOrders.length }}</span>
+                    </div>
+                    <div 
+                        cdkDropList
+                        [cdkDropListData]="preparingOrders"
+                        (cdkDropListDropped)="drop($event, 'PREPARING')"
+                        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
+                        
+                         <div *ngFor="let order of preparingOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-orange-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                            <div *cdkDragPlaceholder class="opacity-0"></div>
+
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+                                <span [class]="getTimeBadgeClass(order.createdAt)" class="text-[10px] font-bold px-2 py-1 rounded-full border">
+                                    {{ getElapsedTime(order.createdAt) }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-4">
+                                <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
+                                <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
+                            </div>
+
+                            <ul class="space-y-1 mb-4 select-none pointer-events-none">
+                                <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
+                                    <span class="w-1 h-1 rounded-full bg-orange-500 mt-1.5 shrink-0"></span>
+                                    {{ item }}
+                                </li>
+                            </ul>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                                <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-80 flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
+                    <div class="p-4 border-b border-white/5 bg-blue-500/10 flex items-center justify-between">
+                         <h2 class="font-bold text-blue-500 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">two_wheeler</span>
+                            Pronto / Aguardando
+                        </h2>
+                        <span class="bg-blue-500/20 text-blue-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ readyOrders.length }}</span>
+                    </div>
+                    <div 
+                        cdkDropList
+                        [cdkDropListData]="readyOrders"
+                        (cdkDropListDropped)="drop($event, 'READY')"
+                        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
+                        
+                        <div *ngFor="let order of readyOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                            <div *cdkDragPlaceholder class="opacity-0"></div>
+
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+                                <span [class]="getTimeBadgeClass(order.createdAt)" class="text-[10px] font-bold px-2 py-1 rounded-full border">
+                                    {{ getElapsedTime(order.createdAt) }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-4">
+                                <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
+                                <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
+                            </div>
+
+                            <ul class="space-y-1 mb-4 select-none pointer-events-none">
+                                <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
+                                    <span class="w-1 h-1 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
+                                    {{ item }}
+                                </li>
+                            </ul>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                                <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-80 flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
+                    <div class="p-4 border-b border-white/5 bg-green-500/10 flex items-center justify-between">
+                         <h2 class="font-bold text-green-500 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">rocket_launch</span>
+                            Saiu para Entrega
+                        </h2>
+                        <span class="bg-green-500/20 text-green-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ outForDeliveryOrders.length }}</span>
+                    </div>
+                    <div 
+                        cdkDropList
+                        [cdkDropListData]="outForDeliveryOrders"
+                        (cdkDropListDropped)="drop($event, 'OUT_FOR_DELIVERY')"
+                        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
+                        
+                        <div *ngFor="let order of outForDeliveryOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-green-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                            <div *cdkDragPlaceholder class="opacity-0"></div>
+
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+                                <span [class]="getTimeBadgeClass(order.createdAt)" class="text-[10px] font-bold px-2 py-1 rounded-full border">
+                                    {{ getElapsedTime(order.createdAt) }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-4">
+                                <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
+                                <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
+                            </div>
+
+                            <ul class="space-y-1 mb-4 select-none pointer-events-none">
+                                <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
+                                    <span class="w-1 h-1 rounded-full bg-green-500 mt-1.5 shrink-0"></span>
+                                    {{ item }}
+                                </li>
+                            </ul>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                                <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-80 flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden opacity-75">
+                    <div class="p-4 border-b border-white/5 bg-stone-500/10 flex items-center justify-between">
+                         <h2 class="font-bold text-stone-400 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">history</span>
+                            Entregues
+                        </h2>
+                        <span class="bg-stone-500/20 text-stone-400 text-xs font-bold px-2 py-0.5 rounded-full">{{ historyOrders.length }}</span>
+                    </div>
+                    <div 
+                        cdkDropList
+                        [cdkDropListData]="historyOrders"
+                        (cdkDropListDropped)="drop($event, 'DELIVERED')"
+                        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
+                        
+                         <div *ngFor="let order of historyOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 transition-all group animate-fade-in grayscale hover:grayscale-0 cursor-grab active:cursor-grabbing">
+                            <div *cdkDragPlaceholder class="opacity-0"></div>
+                            
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+                                <span class="text-[10px] font-bold px-2 py-1 rounded-full border border-stone-800 bg-stone-900 text-stone-500">
+                                    Concluído
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 mb-4">
+                                <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
+                                <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
+                            </div>
+                             <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                                <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
+                                <span class="text-xs text-stone-500">Há {{ getElapsedTime(order.createdAt) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
