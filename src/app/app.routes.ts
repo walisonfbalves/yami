@@ -39,6 +39,10 @@ export const routes: Routes = [
             loadComponent: () => import('./features/admin/settings/settings.component').then(m => m.SettingsComponent)
         },
         {
+            path: 'analytics',
+            loadComponent: () => import('./features/admin/analytics/analytics.component').then(m => m.AnalyticsComponent)
+        },
+        {
             path: '',
             redirectTo: 'dashboard',
             pathMatch: 'full'

@@ -1,0 +1,136 @@
+<div class="h-full flex flex-col font-display bg-background-dark overflow-y-auto custom-scrollbar">
+    
+    <!-- Top Bar -->
+    <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-surface-dark/50 backdrop-blur-md sticky top-0 z-10">
+        <h1 class="text-2xl font-heading font-bold text-white tracking-tight flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary">analytics</span>
+            Relatórios de Desempenho
+        </h1>
+        
+        <!-- Period Filter -->
+        <div class="flex items-center bg-surface-dark border border-white/10 rounded-xl p-1">
+            <button (click)="loadData('7d')" 
+                [class.bg-white_10]="selectedPeriod === '7d'" 
+                [class.text-white]="selectedPeriod === '7d'"
+                class="px-4 py-1.5 rounded-lg text-sm font-bold text-gray-400 hover:text-white transition-colors">
+                7 Dias
+            </button>
+            <button (click)="loadData('30d')" 
+                [class.bg-white_10]="selectedPeriod === '30d'" 
+                [class.text-white]="selectedPeriod === '30d'"
+                class="px-4 py-1.5 rounded-lg text-sm font-bold text-gray-400 hover:text-white transition-colors bg-white/10 text-white">
+                30 Dias
+            </button>
+             <button (click)="loadData('month')" 
+                class="px-4 py-1.5 rounded-lg text-sm font-bold text-gray-400 hover:text-white transition-colors">
+                Este Mês
+            </button>
+        </div>
+    </header>
+
+    <div class="p-8 max-w-7xl mx-auto w-full space-y-8 pb-24">
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="h-96 flex items-center justify-center">
+            <div class="flex flex-col items-center gap-4">
+                <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-gray-400 font-bold animate-pulse">Carregando dados...</p>
+            </div>
+        </div>
+
+        <ng-container *ngIf="!isLoading && analyticsData">
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Revenue -->
+                <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl hover:border-primary/30 transition-all group">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Faturamento Total</span>
+                        <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg group-hover:bg-primary group-hover:text-black transition-all">payments</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-1">{{ analyticsData.totalRevenue | currency:'BRL' }}</div>
+                    <div class="text-xs text-green-500 font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        +12.5% vs. anterior
+                    </div>
+                </div>
+
+                <!-- Total Orders -->
+                <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl hover:border-blue-500/30 transition-all group">
+                    <div class="flex items-center justify-between mb-4">
+                         <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Total Pedidos</span>
+                        <span class="material-symbols-outlined text-blue-500 bg-blue-500/10 p-2 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-all">shopping_bag</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-1">{{ analyticsData.totalOrders }}</div>
+                    <div class="text-xs text-green-500 font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        +5.2% vs. anterior
+                    </div>
+                </div>
+
+                <!-- Avg Ticket -->
+                 <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl hover:border-purple-500/30 transition-all group">
+                    <div class="flex items-center justify-between mb-4">
+                         <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Ticket Médio</span>
+                        <span class="material-symbols-outlined text-purple-500 bg-purple-500/10 p-2 rounded-lg group-hover:bg-purple-500 group-hover:text-white transition-all">receipt_long</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-1">{{ analyticsData.avgTicket | currency:'BRL' }}</div>
+                     <div class="text-xs text-gray-500 font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">remove</span>
+                        Estável
+                    </div>
+                </div>
+
+                <!-- Cancel Rate -->
+                <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl hover:border-red-500/30 transition-all group">
+                    <div class="flex items-center justify-between mb-4">
+                         <span class="text-gray-400 text-xs font-bold uppercase tracking-wider">Taxa de Cancelamento</span>
+                        <span class="material-symbols-outlined text-red-500 bg-red-500/10 p-2 rounded-lg group-hover:bg-red-500 group-hover:text-white transition-all">block</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-1">{{ analyticsData.cancelRate }}%</div>
+                     <div class="text-xs text-red-400 font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        +0.4% (Atenção)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 h-96">
+                <!-- Main Chart -->
+                <div class="lg:col-span-2 bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl flex flex-col">
+                    <h3 class="text-lg font-bold text-white mb-6">Receita por Dia</h3>
+                    <div class="flex-1 relative w-full h-full">
+                         <canvas baseChart
+                            [data]="barChartData"
+                            [options]="barChartOptions"
+                            [type]="'bar'">
+                        </canvas>
+                    </div>
+                </div>
+
+                <!-- Best Sellers -->
+                <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl flex flex-col">
+                    <h3 class="text-lg font-bold text-white mb-6">Top Produtos</h3>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4">
+                        <div *ngFor="let product of analyticsData.topProducts" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 cursor-default">
+                             <div class="w-8 h-8 rounded-lg bg-primary/20 text-primary font-bold flex items-center justify-center text-sm shadow-inner">
+                                #{{ product.rank }}
+                             </div>
+                             <div class="flex-1 min-w-0">
+                                 <h4 class="font-bold text-white truncate">{{ product.name }}</h4>
+                                 <p class="text-xs text-gray-400">{{ product.quantity }} vendas</p>
+                             </div>
+                             <div class="text-right">
+                                 <span class="block font-bold text-white text-sm">{{ product.revenue | currency:'BRL' }}</span>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5 text-center">
+                        <button class="text-sm font-bold text-primary hover:text-white transition-colors">Ver Relatório Completo</button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
+</div>
