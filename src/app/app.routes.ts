@@ -35,6 +35,10 @@ export const routes: Routes = [
             loadComponent: () => import('./features/admin/orders/order-kanban.component').then(m => m.OrderKanbanComponent)
         },
         {
+            path: 'settings',
+            loadComponent: () => import('./features/admin/settings/settings.component').then(m => m.SettingsComponent)
+        },
+        {
             path: '',
             redirectTo: 'dashboard',
             pathMatch: 'full'
