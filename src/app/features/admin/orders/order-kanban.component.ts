@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { OrderDetailsModalComponent } from './components/order-details-modal/order-details-modal.component';
 
 export type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'OUT_FOR_DELIVERY' | 'DELIVERED';
 
@@ -17,7 +18,7 @@ export interface Order {
 @Component({
   selector: 'app-order-kanban',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [CommonModule, DragDropModule, OrderDetailsModalComponent],
   templateUrl: './order-kanban.component.html',
   styleUrls: ['./order-kanban.component.css']
 })
@@ -28,6 +29,8 @@ export class OrderKanbanComponent {
   readyOrders: Order[] = [];
   outForDeliveryOrders: Order[] = [];
   historyOrders: Order[] = [];
+
+  selectedOrder: Order | null = null; // For the modal
 
   constructor() {
     this.initializeMockData();
@@ -49,6 +52,27 @@ export class OrderKanbanComponent {
       
       console.log(`Order ${movedOrder.id} moved to ${newStatus}`);
     }
+  }
+
+  // --- Modal Handlers ---
+  openOrderDetails(order: Order) {
+      this.selectedOrder = order;
+  }
+
+  closeOrderDetails() {
+      this.selectedOrder = null;
+  }
+
+  onCancelOrder(order: Order) {
+      // Remove from all lists
+      this.pendingOrders = this.pendingOrders.filter(o => o.id !== order.id);
+      this.preparingOrders = this.preparingOrders.filter(o => o.id !== order.id);
+      this.readyOrders = this.readyOrders.filter(o => o.id !== order.id);
+      this.outForDeliveryOrders = this.outForDeliveryOrders.filter(o => o.id !== order.id);
+      this.historyOrders = this.historyOrders.filter(o => o.id !== order.id);
+      
+      this.closeOrderDetails();
+      console.log(`Order ${order.id} cancelled`);
   }
 
   getTotalActiveOrders() {

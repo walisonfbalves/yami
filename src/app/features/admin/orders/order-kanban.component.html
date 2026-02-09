@@ -28,7 +28,7 @@
                         (cdkDropListDropped)="drop($event, 'PENDING')"
                         class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
                         
-                        <div *ngFor="let order of pendingOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-yellow-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                        <div *ngFor="let order of pendingOrders" cdkDrag (click)="openOrderDetails(order)" class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-yellow-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
                             <div *cdkDragPlaceholder class="opacity-0"></div>
                             
                             <div class="flex justify-between items-start mb-3">
@@ -71,7 +71,7 @@
                         (cdkDropListDropped)="drop($event, 'PREPARING')"
                         class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
                         
-                         <div *ngFor="let order of preparingOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-orange-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                         <div *ngFor="let order of preparingOrders" cdkDrag (click)="openOrderDetails(order)" class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-orange-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
                             <div *cdkDragPlaceholder class="opacity-0"></div>
 
                             <div class="flex justify-between items-start mb-3">
@@ -114,7 +114,7 @@
                         (cdkDropListDropped)="drop($event, 'READY')"
                         class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
                         
-                        <div *ngFor="let order of readyOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                        <div *ngFor="let order of readyOrders" cdkDrag (click)="openOrderDetails(order)" class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
                             <div *cdkDragPlaceholder class="opacity-0"></div>
 
                             <div class="flex justify-between items-start mb-3">
@@ -157,7 +157,7 @@
                         (cdkDropListDropped)="drop($event, 'OUT_FOR_DELIVERY')"
                         class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
                         
-                        <div *ngFor="let order of outForDeliveryOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-green-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
+                        <div *ngFor="let order of outForDeliveryOrders" cdkDrag (click)="openOrderDetails(order)" class="bg-surface-dark border border-white/5 rounded-xl p-4 hover:border-green-500/30 transition-all group animate-fade-in shadow-lg cursor-grab active:cursor-grabbing">
                             <div *cdkDragPlaceholder class="opacity-0"></div>
 
                             <div class="flex justify-between items-start mb-3">
@@ -200,7 +200,7 @@
                         (cdkDropListDropped)="drop($event, 'DELIVERED')"
                         class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
                         
-                         <div *ngFor="let order of historyOrders" cdkDrag class="bg-surface-dark border border-white/5 rounded-xl p-4 transition-all group animate-fade-in grayscale hover:grayscale-0 cursor-grab active:cursor-grabbing">
+                         <div *ngFor="let order of historyOrders" cdkDrag (click)="openOrderDetails(order)" class="bg-surface-dark border border-white/5 rounded-xl p-4 transition-all group animate-fade-in grayscale hover:grayscale-0 cursor-grab active:cursor-grabbing">
                             <div *cdkDragPlaceholder class="opacity-0"></div>
                             
                             <div class="flex justify-between items-start mb-3">
@@ -222,6 +222,13 @@
                     </div>
                 </div>
 
-            </div>
         </div>
     </div>
+
+    <!-- Order Details Modal -->
+    <app-order-details-modal 
+        *ngIf="selectedOrder" 
+        [order]="selectedOrder" 
+        (close)="closeOrderDetails()"
+        (cancelOrder)="onCancelOrder($event)">
+    </app-order-details-modal>
