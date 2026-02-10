@@ -1,11 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule,
+    CardComponent,
+    ButtonComponent
+  ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })

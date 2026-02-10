@@ -3,14 +3,20 @@ import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, Chart, registerables } from 'chart.js';
 import { AnalyticsService, AnalyticsData } from './analytics.service';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 Chart.register(...registerables);
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [
+    CommonModule, 
+    NgChartsModule,
+    CardComponent,
+    ButtonComponent
+  ],
   templateUrl: './analytics.component.html',
   styleUrls: ['./analytics.component.css']
 })
@@ -18,9 +24,10 @@ export class AnalyticsComponent implements OnInit {
   
   analyticsData: AnalyticsData | null = null;
   isLoading = true;
+  error: string | null = null;
   selectedPeriod: '7d' | '30d' | 'month' | 'all' = '30d';
 
-  // Bar Chart Config
+  // Bar Chart Config (Revenue)
   public barChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
     datasets: [{ data: [], label: 'Receita (R$)' }]
@@ -34,7 +41,55 @@ export class AnalyticsComponent implements OnInit {
       tooltip: {
         backgroundColor: '#1c1917',
         titleColor: '#fff',
-        bodyColor: '#fbbf24',
+        bodyColor: '#9ca3af',
+        padding: 12,
+        cornerRadius: 8,
+        displayColors: false,
+        callbacks: {
+          label: (context) => `Receita: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.raw as number)}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#292524', display: false },
+        ticks: { color: '#9ca3af', font: { size: 10, weight: 'bold' } },
+        border: { display: false }
+      },
+      y: {
+        grid: { color: '#292524' },
+        ticks: { 
+          color: '#6b7280', 
+          font: { size: 10, weight: 'bold' },
+          callback: (value) => `R$ ${value}` 
+        },
+        border: { display: false }
+      }
+    },
+    elements: {
+      bar: {
+        backgroundColor: '#f59f0a',
+        borderRadius: 4,
+        hoverBackgroundColor: '#fbbf24'
+      }
+    }
+  };
+
+  // Hourly Volume Chart (Histogram)
+  public hourlyChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: [],
+    datasets: []
+  };
+
+  public hourlyChartOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1c1917',
+        titleColor: '#fff',
+        bodyColor: '#d97706',
         padding: 12,
         cornerRadius: 8,
         displayColors: false
@@ -42,22 +97,46 @@ export class AnalyticsComponent implements OnInit {
     },
     scales: {
       x: {
-        grid: { color: '#292524', display: false },
-        title: { display: false },
-        ticks: { color: '#a8a29e' },
+        grid: { display: false },
+        ticks: { color: '#78716c', font: { size: 10 } },
         border: { display: false }
       },
       y: {
-        grid: { color: '#292524' },
-        ticks: { color: '#a8a29e', callback: (value) => `R$ ${value}` },
-        border: { display: false }
+        display: false,
+        grid: { display: false }
       }
     },
     elements: {
       bar: {
-        backgroundColor: '#f59e0b',
+        backgroundColor: '#d97706', // Amber-600
         borderRadius: 4,
-        hoverBackgroundColor: '#fbbf24'
+        hoverBackgroundColor: '#f59e0b' // Amber-500
+      }
+    }
+  };
+
+  // Categories Doughnut Chart
+  public categoryChartData: ChartConfiguration<'doughnut'>['data'] = {
+    labels: [],
+    datasets: []
+  };
+
+  public categoryChartOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '70%', 
+    plugins: {
+      legend: { 
+        display: true, 
+        position: 'right',
+        labels: { color: '#a8a29e', usePointStyle: true, pointStyle: 'circle', font: { size: 11 } }
+      },
+      tooltip: {
+        backgroundColor: '#1c1917',
+        bodyColor: '#fff',
+        callbacks: {
+           label: (context) => ` ${context.label}: ${context.raw}%`
+        }
       }
     }
   };
@@ -80,6 +159,7 @@ export class AnalyticsComponent implements OnInit {
   }
 
   updateChart(data: AnalyticsData) {
+    // Update Revenue Chart
     this.barChartData = {
       labels: data.revenueChart.labels,
       datasets: [
@@ -91,5 +171,36 @@ export class AnalyticsComponent implements OnInit {
         }
       ]
     };
+
+    // Update Hourly Volume Chart
+    this.hourlyChartData = {
+      labels: data.hourlyVolume.hours,
+      datasets: [
+        {
+          data: data.hourlyVolume.values,
+          label: 'Pedidos',
+          backgroundColor: '#d97706',
+          hoverBackgroundColor: '#f59e0b',
+          barThickness: 12
+        }
+      ]
+    };
+
+    // Update Category Chart
+    this.categoryChartData = {
+      labels: data.popularCategories.labels,
+      datasets: [
+        {
+          data: data.popularCategories.values,
+          backgroundColor: ['#f59e0b', '#d97706', '#92400e'], 
+          hoverBackgroundColor: ['#fbbf24', '#f59e0b', '#b45309'],
+          borderWidth: 0
+        }
+      ]
+    };
+  }
+
+  exportToPdf() {
+    window.print();
   }
 }

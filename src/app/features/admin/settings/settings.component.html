@@ -6,18 +6,18 @@
             <span class="material-symbols-outlined text-primary">settings</span>
             Configurações da Loja
         </h1>
-        <button (click)="onSubmit()" class="px-6 py-2 rounded-xl bg-primary text-black font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+        <yami-button (click)="onSubmit()" variant="primary" class="flex items-center gap-2">
             <span class="material-symbols-outlined">save</span>
             Salvar Alterações
-        </button>
+        </yami-button>
     </header>
 
     <div class="p-8 max-w-4xl mx-auto w-full space-y-8 pb-24" [formGroup]="settingsForm">
 
         <!-- Section A: Store Identity -->
-        <section class="bg-surface-dark border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <yami-card class="overflow-hidden block">
             <!-- Banner Area -->
-            <div class="h-48 bg-gradient-to-r from-stone-800 to-stone-900 relative group cursor-pointer">
+            <div class="h-48 bg-gradient-to-r from-stone-800 to-stone-900 relative group cursor-pointer -m-4 mb-4">
                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 transition-all">
                     <span class="text-white font-bold flex items-center gap-2"><span class="material-symbols-outlined">photo_camera</span> Alterar Capa</span>
                 </div>
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="pt-14 p-8 space-y-6">
+            <div class="pt-14 p-4 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Store Name -->
                     <div class="space-y-2">
@@ -55,12 +55,12 @@
                     <p class="text-xs text-gray-500 text-right">0/150 caracteres</p>
                 </div>
             </div>
-        </section>
+        </yami-card>
 
         <!-- Section B: Status & Operations -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Open/Close Toggle (Critical) -->
-            <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl col-span-2 flex items-center justify-between group hover:border-white/10 transition-all">
+            <yami-card class="col-span-2 flex items-center justify-between group hover:border-white/10 transition-all">
                 <div>
                     <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
                         <span class="material-symbols-outlined" [class.text-green-500]="isOpen" [class.text-red-500]="!isOpen">store</span>
@@ -73,10 +73,11 @@
                     <input type="checkbox" formControlName="isOpen" class="sr-only peer">
                     <div class="w-14 h-7 bg-stone-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
                 </label>
-            </div>
+            </yami-card>
 
             <!-- Wait Time -->
-             <div class="bg-surface-dark border border-white/5 rounded-2xl p-6 shadow-xl">
+            <!-- Wait Time -->
+             <yami-card>
                 <div class="space-y-3">
                      <label class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-2">
                         <span class="material-symbols-outlined text-base">schedule</span>
@@ -87,11 +88,11 @@
                         <span class="text-sm text-gray-400 font-bold">minutos</span>
                      </div>
                 </div>
-             </div>
+             </yami-card>
         </section>
 
         <!-- Section C: Finance & Delivery -->
-        <section class="bg-surface-dark border border-white/5 rounded-2xl p-8 shadow-xl">
+        <yami-card>
              <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2 border-b border-white/5 pb-4">
                 <span class="material-symbols-outlined text-amber-500">payments</span>
                 Financeiro & Entrega
@@ -119,7 +120,7 @@
                     <input formControlName="pixKey" type="text" class="w-full bg-background-dark border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none transition-all">
                 </div>
             </div>
-        </section>
+        </yami-card>
 
     </div>
 

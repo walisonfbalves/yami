@@ -1,19 +1,87 @@
-/* Custom Scrollbar for top products list */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 99px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
+@media print {
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
 
-.bg-white_10 {
-    background-color: rgba(255, 255, 255, 0.1);
+  body * {
+    visibility: hidden;
+  }
+
+  #analytics-report, #analytics-report * {
+    visibility: visible;
+  }
+
+  #analytics-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm; /* A4 width */
+    height: auto;
+    background-color: #0c0a09 !important; /* stone-950 */
+    color: white !important;
+    padding: 2rem !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Hide interactables */
+  button, 
+  .no-print,
+  yami-button {
+    display: none !important;
+  }
+
+  /* Ensure Cards have dark background */
+  yami-card {
+    background-color: #1c1917 !important; /* stone-900 */
+    border: 1px solid #292524 !important; /* stone-800 */
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Ensure text is visible depending on contrast */
+  h1, h2, h3, h4, span, p {
+    color: inherit !important;
+    text-shadow: none !important;
+  }
+
+  /* Adjust Grid for A4 Print width */
+  .grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 1.5rem !important;
+  }
+
+  .grid-cols-1, .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+  
+  /* KPI Row - 4 columns approx 25% each */
+  .lg\:grid-cols-4 > * {
+    flex: 1 1 20% !important;
+    min-width: 0;
+  }
+  
+  /* Charts Row - 2 columns */
+  .lg\:grid-cols-3 {
+    display: flex !important;
+    width: 100% !important;
+  }
+  
+  .lg\:col-span-2 {
+    flex: 2 !important;
+  }
+  
+  .lg\:col-span-1 {
+    flex: 1 !important;
+  }
+  
+  /* Graph fix for print */
+  canvas {
+    max-width: 100% !important;
+    max-height: 300px !important;
+  }
 }
