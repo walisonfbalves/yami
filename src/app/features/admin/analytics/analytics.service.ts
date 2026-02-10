@@ -78,28 +78,31 @@ export class AnalyticsService {
             data: Array.from({length: 30}, () => Math.floor(Math.random() * 2000) + 1000)
           },
           topProducts: [
-            { rank: 1, name: 'X-Bacon', quantity: 450, revenue: 13500 },
-            { rank: 2, name: 'Truffle Burger', quantity: 320, revenue: 12800 },
-            { rank: 3, name: 'Combo Família', quantity: 150, revenue: 18000 }
+            { rank: 1, name: 'X-Bacon Especial', quantity: 450, revenue: 13500 },
+            { rank: 2, name: 'Combo Família', quantity: 320, revenue: 15680 },
+            { rank: 3, name: 'Coca-Cola 2L', quantity: 280, revenue: 2800 },
+            { rank: 4, name: 'Batata Frita G', quantity: 210, revenue: 4200 },
+            { rank: 5, name: 'Pizza Calabresa', quantity: 180, revenue: 9000 }
           ],
-          prepTime: { current: 12, target: 10, unit: 'min' },
-          customerSatisfaction: { score: 4.9, target: 5.0 },
+          prepTime: { current: 28, target: 25, unit: 'min' },
+          customerSatisfaction: { score: 4.8, target: 5.0 },
           hourlyVolume: {
             hours: ['10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h'],
-             values: [15, 32, 75, 68, 42, 35, 28, 45, 85, 120, 145, 100, 55]
+            values: [40, 85, 150, 140, 90, 80, 70, 110, 220, 280, 310, 240, 120]
           },
           popularCategories: {
-            labels: ['Burgers', 'Bebidas', 'Acompanhamen.'],
-             values: [45, 25, 30]
+            labels: ['Burgers', 'Pizzas', 'Bebidas', 'Sobremesas'],
+            values: [45, 30, 20, 5]
           },
-          customerGrowth: { total: 450, percentage: 8.4, trend: 'up' },
-           recentReports: [
+          customerGrowth: { total: 420, percentage: 15.2, trend: 'up' },
+          recentReports: [
             { name: 'Fechamento Mensal', period: 'Jan 2026', generatedAt: '01/02, 08:00', format: 'PDF' },
             { name: 'Vendas por Categoria', period: 'Jan 2026', generatedAt: '01/02, 08:05', format: 'CSV' },
             { name: 'Cancelamentos', period: 'Jan 2026', generatedAt: '02/02, 10:00', format: 'PDF' }
           ]
         };
         break;
+
     }
 
     return of(data).pipe(delay(800)); // Simulate API delay

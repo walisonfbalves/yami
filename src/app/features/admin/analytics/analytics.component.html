@@ -115,7 +115,7 @@
             <yami-card class="bg-stone-900 border-stone-800 lg:col-span-2 flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h4 class="text-xl font-heading font-bold text-white uppercase">Tendências de Receita</h4>
+                        <h4 class="text-xl font-heading font-bold text-white uppercase">Histórico de Receita</h4>
                         <p class="text-sm text-gray-500 font-medium">Evolução diária no período</p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -146,6 +146,59 @@
                         [options]="categoryChartOptions"
                         [type]="'doughnut'">
                     </canvas>
+                </div>
+            </yami-card>
+        </div>
+
+        <!-- Operational Metrics (Row 3 - Standardized) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Avg Prep Time -->
+             <yami-card class="bg-stone-900 border-stone-800 group hover:border-blue-500/30 transition-all cursor-default relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-blue-500/10 rounded-lg text-blue-500">
+                        <span class="material-symbols-outlined">timer</span>
+                    </div>
+                     <span class="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded border"
+                        [ngClass]="analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'">
+                        <span class="material-symbols-outlined text-[14px]">
+                            {{ analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'check_circle' : 'warning' }}
+                        </span>
+                        {{ analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'Dentro da Meta' : 'Atenção' }}
+                    </span>
+                </div>
+                <p class="text-gray-400 text-sm font-medium">Tempo Médio de Preparo</p>
+                <h3 class="text-3xl font-heading font-bold mt-1 text-white">
+                    {{ analyticsData.prepTime.current }} <span class="text-lg text-gray-500 font-medium">{{ analyticsData.prepTime.unit }}</span>
+                </h3>
+                 <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
+                    <span class="text-gray-400">Meta:</span> <strong class="text-white">{{ analyticsData.prepTime.target }} {{ analyticsData.prepTime.unit }}</strong>
+                </div>
+            </yami-card>
+
+            <!-- Customer Satisfaction -->
+             <yami-card class="bg-stone-900 border-stone-800 group hover:border-yellow-500/30 transition-all cursor-default relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-2 bg-yellow-500/10 rounded-lg text-yellow-500">
+                        <span class="material-symbols-outlined">sentiment_satisfied</span>
+                    </div>
+                    <span class="flex items-center gap-1 text-amber-500 text-xs font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                        <span class="material-symbols-outlined text-[14px]">star</span>
+                        Excelente
+                    </span>
+                </div>
+                <p class="text-gray-400 text-sm font-medium">Satisfação do Cliente</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                     <h3 class="text-3xl font-heading font-bold text-white">{{ analyticsData.customerSatisfaction.score }}</h3>
+                     <span class="text-sm text-gray-500">/ 5.0</span>
+                </div>
+                 <div class="mt-4 flex items-center gap-1 text-xs text-amber-500">
+                     <span class="material-symbols-outlined text-[16px]">star</span>
+                     <span class="material-symbols-outlined text-[16px]">star</span>
+                     <span class="material-symbols-outlined text-[16px]">star</span>
+                     <span class="material-symbols-outlined text-[16px]">star</span>
+                     <span class="material-symbols-outlined text-[16px]">star_half</span>
                 </div>
             </yami-card>
         </div>
