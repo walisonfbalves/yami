@@ -30,20 +30,40 @@
                 <p class="text-stone-500 dark:text-stone-400 font-display">Digite seus dados para acessar seus pedidos.</p>
             </div>
 
-            <!-- Toggle Switch (Visual Only) -->
-            <div class="grid grid-cols-2 p-1 bg-stone-100 dark:bg-[#1c1917] rounded-lg">
-                <button class="py-2.5 text-sm font-semibold rounded-md shadow bg-white dark:bg-stone-800 text-stone-900 dark:text-white transition-all">
+            <!-- Tab Selector -->
+            <div class="grid grid-cols-2 gap-4 w-full mb-6">
+                <button 
+                    type="button"
+                    (click)="toggleTab('login')"
+                    [class.bg-primary]="activeTab === 'login'"
+                    [class.text-primary-content]="activeTab === 'login'"
+                    [class.font-bold]="activeTab === 'login'"
+                    [class.border-primary]="activeTab === 'login'"
+                    [class.text-stone-500]="activeTab !== 'login'"
+                    [class.border-transparent]="activeTab !== 'login'"
+                    [class.hover:text-stone-900]="activeTab !== 'login'"
+                    [class.dark:hover:text-stone-200]="activeTab !== 'login'"
+                    class="h-12 w-full flex items-center justify-center border-b-2 transition-all text-sm rounded-t-md">
                     Entrar
                 </button>
-                <button class="py-2.5 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition-all">
+                <button 
+                    type="button"
+                    (click)="toggleTab('register')"
+                    [class.bg-primary]="activeTab === 'register'"
+                    [class.text-primary-content]="activeTab === 'register'"
+                    [class.font-bold]="activeTab === 'register'"
+                    [class.border-primary]="activeTab === 'register'"
+                    [class.text-stone-500]="activeTab !== 'register'"
+                    [class.border-transparent]="activeTab !== 'register'"
+                    [class.hover:text-stone-900]="activeTab !== 'register'"
+                    [class.dark:hover:text-stone-200]="activeTab !== 'register'"
+                    class="h-12 w-full flex items-center justify-center border-b-2 transition-all text-sm rounded-t-md">
                     Cadastrar
                 </button>
             </div>
 
-            <!-- Form -->
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-                <!-- Check if getControl helper exists or use get('name') -->
-                
+            <!-- Login Form -->
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" *ngIf="activeTab === 'login'" class="flex flex-col gap-6">
                 <ui-input
                     label="Endereço de Email"
                     [control]="$any(loginForm.get('email'))"
@@ -65,8 +85,6 @@
                     </ui-input>
                 </div>
 
-                <!-- Remember Me (Mock Control for now as it wasn't in the form group initially, adding it implicitly or assuming it exists) -->
-                <!-- Ideally update TS to include it, but for UI refactor checking: -->
                 <div class="flex items-center">
                     <ui-checkbox 
                         label="Lembrar de mim por 30 dias" 
@@ -74,13 +92,121 @@
                     </ui-checkbox>
                 </div>
 
-                <!-- Submit Button -->
                  <ui-button 
                     type="submit" 
                     variant="primary" 
                     class="w-full"
                     [loading]="false">
                     ENTRAR
+                </ui-button>
+            </form>
+
+            <!-- Register Form -->
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" *ngIf="activeTab === 'register'" class="flex flex-col gap-6">
+                <!-- Nome Completo -->
+                <div>
+                     <ui-input
+                        label="Nome Completo"
+                        [control]="$any(registerForm.get('name'))"
+                        type="text"
+                        placeholder="Seu nome completo"
+                        icon="badge">
+                    </ui-input>
+                    <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger text-xs mt-1">
+                        <span *ngIf="registerForm.get('name')?.errors?.['minlength']">Mínimo 6 caracteres.</span>
+                        <span *ngIf="registerForm.get('name')?.errors?.['required']">Digite seu nome completo.</span>
+                    </div>
+                </div>
+
+                 <!-- Login / User -->
+                 <div>
+                    <ui-input
+                        label="Login (Usuário)"
+                        [control]="$any(registerForm.get('login'))"
+                        type="text"
+                        placeholder="seu-usuario"
+                        icon="alternate_email">
+                    </ui-input>
+                    <p class="text-xs text-stone-500 mt-1 dark:text-stone-400">Este será seu usuário único.</p>
+                     <div *ngIf="registerForm.get('login')?.invalid && registerForm.get('login')?.touched" class="text-danger text-xs mt-1">
+                        <span *ngIf="registerForm.get('login')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+                        <span *ngIf="registerForm.get('login')?.errors?.['pattern']">Apenas letras minúsculas, números e hifens.</span>
+                        <span *ngIf="registerForm.get('login')?.errors?.['required']">Digite um usuário.</span>
+                    </div>
+                 </div>
+
+                <!-- Email -->
+                <div>
+                    <ui-input
+                        label="E-mail Profissional"
+                        [control]="$any(registerForm.get('email'))"
+                        type="email"
+                        placeholder="chef@yami.com"
+                        icon="mail">
+                    </ui-input>
+                     <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger text-xs mt-1">
+                        <span *ngIf="registerForm.get('email')?.errors?.['email']">E-mail inválido.</span>
+                        <span *ngIf="registerForm.get('email')?.errors?.['required']">Digite seu e-mail.</span>
+                    </div>
+                </div>
+
+                <!-- Icons for password match check could be handled inside input component or via external logic, 
+                     but standard input error display is usually enough if the component supports it. 
+                     Since ui-input doesn't seem to have explicit error slot shown in previous view_file, 
+                     we add it externally here for specific feedback or rely on touched class. 
+                     We are adding explicit messages below inputs for clarity as requested. -->
+
+                <!-- Senha -->
+                <div>
+                    <ui-input
+                        label="Senha"
+                        [control]="$any(registerForm.get('password'))"
+                        type="password"
+                        placeholder="Mínimo 8 caracteres"
+                        icon="lock">
+                    </ui-input>
+                    <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger text-xs mt-1">
+                         <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Mínimo 8 caracteres.</span>
+                         <span *ngIf="registerForm.get('password')?.errors?.['required']">Digite uma senha.</span>
+                    </div>
+                </div>
+
+                <!-- Confirmar Senha -->
+                <div>
+                    <ui-input
+                        label="Confirmar Senha"
+                        [control]="$any(registerForm.get('confirmPassword'))"
+                        type="password"
+                        placeholder="Repita a senha"
+                        icon="lock_clock">
+                    </ui-input>
+                    <div *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched" class="text-danger text-xs mt-1">
+                        As senhas não conferem.
+                    </div>
+                </div>
+
+                <!-- Termos de Uso -->
+                <div class="flex items-start">
+                    <ui-checkbox 
+                        id="terms-check"
+                        [control]="$any(registerForm.get('terms'))">
+                        Li e concordo com os <a routerLink="/legal/terms" target="_blank" class="text-primary hover:underline cursor-pointer">Termos de Uso</a> e <a routerLink="/legal/privacy" target="_blank" class="text-primary hover:underline cursor-pointer">Política de Privacidade</a>.
+                    </ui-checkbox>
+                </div>
+                
+                 <!-- Validation Message for Terms if touched and invalid -->
+                 <div *ngIf="registerForm.get('terms')?.invalid && registerForm.get('terms')?.touched" class="text-danger text-xs ml-2 -mt-4">
+                    Você precisa aceitar os termos para continuar.
+                 </div>
+
+                <!-- Submit Button -->
+                 <ui-button 
+                    type="submit" 
+                    variant="primary" 
+                    class="w-full"
+                    [disabled]="registerForm.invalid"
+                    [loading]="false">
+                    CRIAR CONTA
                 </ui-button>
             </form>
 

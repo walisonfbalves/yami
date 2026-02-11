@@ -17,6 +17,16 @@ export const routes: Routes = [
     redirectTo: 'auth/login'
   },
   {
+    path: 'legal/terms',
+    loadComponent: () => import('./features/legal/legal.component').then(m => m.LegalComponent),
+    data: { type: 'terms' }
+  },
+  {
+    path: 'legal/privacy',
+    loadComponent: () => import('./features/legal/legal.component').then(m => m.LegalComponent),
+    data: { type: 'privacy' }
+  },
+  {
     path: 'admin',
     loadComponent: () =>
       import('./features/admin/layout/admin-layout.component').then((m) => m.AdminLayoutComponent),

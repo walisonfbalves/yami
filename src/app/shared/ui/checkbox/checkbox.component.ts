@@ -19,7 +19,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, ReactiveFormsModu
             </span>
         </label>
         <label [for]="id" class="ml-2 block text-sm text-stone-600 dark:text-stone-400 cursor-pointer select-none font-medium">
-            {{ label }}
+            <span *ngIf="label">{{ label }}</span>
+            <ng-content></ng-content>
         </label>
     </div>
   `,

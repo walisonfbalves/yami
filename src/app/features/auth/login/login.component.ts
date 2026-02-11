@@ -22,7 +22,10 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  registerForm: FormGroup;
   showPassword = false;
+  showConfirmPassword = false;
+  activeTab: 'login' | 'register' = 'login';
 
   constructor(
     private fb: FormBuilder, 
@@ -33,20 +36,69 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+
+    this.registerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(6)]],
+      login: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-z0-9-]+$')]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]],
+      terms: [false, [Validators.requiredTrue]]
+    }, { validators: this.passwordMatchValidator });
   }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.toast.show('Login realizado com sucesso!', 'success');
-      localStorage.setItem('yami_token', 'mock_token_' + Date.now());
-      setTimeout(() => this.router.navigate(['/admin']), 800);
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  toggleTab(tab: 'login' | 'register'): void {
+    this.activeTab = tab;
+  }
+
+  passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password');
+    const confirmPassword = form.get('confirmPassword');
+
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    if (password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
     } else {
-        this.loginForm.markAllAsTouched();
-        this.toast.show('Por favor, preencha todos os campos.', 'error');
+      // Create a new object without passwordMismatch error if it exists
+      if (confirmPassword.errors) {
+          const { passwordMismatch, ...otherErrors } = confirmPassword.errors;
+          confirmPassword.setErrors(Object.keys(otherErrors).length ? otherErrors : null);
+      }
+    }
+    return null;
+  }
+
+  onSubmit(): void {
+    if (this.activeTab === 'login') {
+      if (this.loginForm.valid) {
+        this.toast.show('Login realizado com sucesso!', 'success');
+        localStorage.setItem('yami_token', 'mock_token_' + Date.now());
+        setTimeout(() => this.router.navigate(['/admin']), 800);
+      } else {
+          this.loginForm.markAllAsTouched();
+          this.toast.show('Por favor, preencha todos os campos.', 'error');
+      }
+    } else {
+      if (this.registerForm.valid) {
+        console.log('Dados de Cadastro:', this.registerForm.value);
+        this.toast.show('Conta criada com sucesso! Faça login.', 'success');
+        this.toggleTab('login');
+        this.registerForm.reset();
+      } else {
+        this.registerForm.markAllAsTouched();
+        this.toast.show('Corrija os erros do formulário.', 'error');
+      }
     }
   }
 }
