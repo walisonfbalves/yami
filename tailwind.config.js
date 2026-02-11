@@ -14,10 +14,10 @@ module.exports = {
       colors: {
         // 1. BRAND (A cor da marca)
         primary: {
-          DEFAULT: '#f59f0a', // amber-500
-          hover: '#d97706',   // amber-600
-          light: 'rgba(245, 159, 10, 0.15)', // amber-500/15 (Bg de ícones/badges)
-          content: '#ffffff'  // Texto sobre a cor primária
+          DEFAULT: 'var(--color-primary, #f59f0a)',
+          hover: 'var(--color-primary-hover, #d97706)',
+          light: 'var(--color-primary-light, rgba(245, 159, 10, 0.15))',
+          content: '#ffffff'
         },
 
         // 2. SURFACE (Camadas do Dark Mode)

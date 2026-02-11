@@ -45,11 +45,11 @@ export class ButtonComponent {
     const base = 'inline-flex items-center justify-center rounded-lg font-heading font-medium transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed';
     
     const variants = {
-      primary: 'bg-amber-500 text-stone-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20',
+      primary: 'bg-primary text-primary-content hover:bg-primary-hover shadow-lg shadow-primary/20',
       secondary: 'bg-transparent border border-stone-800 text-stone-300 hover:bg-stone-800 hover:text-white',
       ghost: 'bg-transparent text-stone-400 hover:text-white hover:bg-white/5',
       danger: 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20',
-      outline: 'bg-transparent border border-amber-500 text-amber-500 hover:bg-amber-500/10'
+      outline: 'bg-transparent border border-primary text-primary hover:bg-primary-light'
     };
 
     const sizes = this.iconOnly ? {

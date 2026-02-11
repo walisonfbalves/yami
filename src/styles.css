@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary: #f59f0a;
+  --color-primary-hover: #d97706;
+  --color-primary-light: rgba(245, 159, 10, 0.15);
+}
+
 body {
   @apply bg-background text-text-primary font-sans;
 }

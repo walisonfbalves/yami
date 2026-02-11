@@ -1,11 +1,12 @@
 <div class="flex h-screen overflow-hidden bg-background text-text-primary antialiased font-display">
     <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 border-r border-surface-border bg-surface flex flex-col hidden lg:flex">
+    <aside class="w-64 flex-shrink-0 border-r border-surface-border bg-surface flex flex-col hidden lg:flex" *ngIf="tenant$ | async as tenant">
         <div class="p-6 flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-background">
-                <span class="material-symbols-outlined font-bold">restaurant_menu</span>
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center overflow-hidden">
+                <img *ngIf="tenant.logo" [src]="tenant.logo" class="w-full h-full object-cover" [alt]="tenant.name"/>
+                <span *ngIf="!tenant.logo" class="material-symbols-outlined font-bold text-background">store</span>
             </div>
-            <h1 class="text-2xl font-heading text-white tracking-tighter uppercase font-bold">Yami</h1>
+            <h1 class="text-2xl font-heading text-white tracking-tighter uppercase font-bold">{{ tenant.name.split(' ')[0] }}</h1>
         </div>
         <nav class="flex-1 px-4 space-y-2 mt-4">
             <a routerLink="/admin/dashboard" routerLinkActive="bg-primary/10 text-primary border-primary/20" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors">
@@ -32,15 +33,14 @@
 
         </nav>
         <div class="p-4 border-t border-surface-border">
-            <div class="bg-primary/5 rounded-xl p-4 border border-primary/10">
-                <p class="text-xs text-primary font-bold uppercase tracking-wider mb-2">Saúde do Sistema</p>
-                <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-400">Status do Servidor</span>
-                    <span class="flex items-center gap-1.5 text-emerald-500 font-medium">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Operacional
-                    </span>
-                </div>
+            <div class="bg-surface-hover rounded-xl p-3 border border-surface-border">
+                <label class="text-[10px] text-text-tertiary font-bold uppercase tracking-widest mb-2 block">Trocar Loja</label>
+                <select 
+                    class="w-full bg-background border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary transition-colors cursor-pointer appearance-none"
+                    [value]="tenant.slug"
+                    (change)="switchTenant($any($event.target).value)">
+                    <option *ngFor="let t of availableTenants" [value]="t.slug">{{ t.name }}</option>
+                </select>
             </div>
         </div>
     </aside>
