@@ -32,10 +32,127 @@ export class OrderKanbanComponent {
 
   selectedOrder: Order | null = null; // For the modal
 
+  viewMode: 'kanban' | 'grid' = 'kanban';
+  categories: string[] = ['Todas', 'Cozinha Quente', 'Bebidas', 'Sobremesas'];
+  selectedCategory: string = 'Todas';
+
   constructor() {
     this.initializeMockData();
   }
 
+  toggleView(mode: 'kanban' | 'grid') {
+    this.viewMode = mode;
+  }
+
+  selectCategory(category: string) {
+    this.selectedCategory = category;
+  }
+
+  get kdsOrders(): Order[] {
+    // Combine active orders for KDS (Pending, Preparing, Ready)
+    // Exclude 'OUT_FOR_DELIVERY' and 'DELIVERED' from Kitchen View usually, unless configured otherwise.
+    // For this requirement, we'll show Pending -> Preparing -> Ready.
+    let orders = [
+        ...this.pendingOrders,
+        ...this.preparingOrders,
+        ...this.readyOrders
+    ];
+
+    // Mock Category Filtering
+    if (this.selectedCategory !== 'Todas') {
+        // In a real app, orders would have categories. 
+        // Here we just mock filter to show it works visually if we had data
+        // orders = orders.filter(o => o.items.some(i => i.includes(this.selectedCategory)));
+    }
+
+    // Sort by creation time (Oldest first for KDS)
+    return orders.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }
+
+  advanceOrderStatus(order: Order) {
+    let newStatus: OrderStatus | null = null;
+
+    switch (order.status) {
+        case 'PENDING':
+            newStatus = 'PREPARING';
+            break;
+        case 'PREPARING':
+            newStatus = 'READY';
+            break;
+        case 'READY':
+            newStatus = 'OUT_FOR_DELIVERY';
+            break;
+        default:
+            return;
+    }
+
+    if (newStatus) {
+        // Remove from current list
+        this.removeFromCurrentList(order);
+        
+        // Update status and add to new list
+        order.status = newStatus;
+        this.addToList(order, newStatus);
+        
+        console.log(`[KDS] Order ${order.id} advanced to ${newStatus}`);
+    }
+  }
+
+  private removeFromCurrentList(order: Order) {
+      this.pendingOrders = this.pendingOrders.filter(o => o.id !== order.id);
+      this.preparingOrders = this.preparingOrders.filter(o => o.id !== order.id);
+      this.readyOrders = this.readyOrders.filter(o => o.id !== order.id);
+      this.outForDeliveryOrders = this.outForDeliveryOrders.filter(o => o.id !== order.id);
+  }
+
+  private addToList(order: Order, status: OrderStatus) {
+      switch (status) {
+          case 'PENDING': this.pendingOrders.push(order); break;
+          case 'PREPARING': this.preparingOrders.push(order); break;
+          case 'READY': this.readyOrders.push(order); break;
+          case 'OUT_FOR_DELIVERY': this.outForDeliveryOrders.push(order); break;
+          case 'DELIVERED': this.historyOrders.push(order); break;
+      }
+  }
+
+  getKdsColorInfo(order: Order): { bg: string, text: string, btnBg: string, btnText: string, label: string } {
+      const elapsed = this.getElapsedTimeMinutes(order.createdAt);
+      
+      // Delayed check (> 20 min)
+      if (elapsed > 20 && order.status !== 'READY') {
+          return {
+              bg: 'bg-red-600',
+              text: 'text-white',
+              btnBg: 'bg-red-600',
+              btnText: 'ATRASADO',
+              label: 'ATRASADO'
+          };
+      }
+
+      switch (order.status) {
+          case 'PENDING':
+              return { bg: 'bg-amber-500', text: 'text-black', btnBg: 'bg-amber-500', btnText: 'ACEITAR PEDIDO', label: 'NOVO' };
+          case 'PREPARING':
+              return { bg: 'bg-orange-500', text: 'text-black', btnBg: 'bg-orange-500', btnText: 'PRONTO', label: 'PREPARO' };
+          case 'READY':
+              return { bg: 'bg-emerald-500', text: 'text-white', btnBg: 'bg-emerald-500', btnText: 'DESPACHAR', label: 'PRONTO' };
+          default:
+              return { bg: 'bg-stone-700', text: 'text-white', btnBg: 'bg-stone-700', btnText: 'VER', label: order.status };
+      }
+  }
+
+  getElapsedTimeMinutes(date: Date): number {
+    const now = new Date();
+    return Math.floor((now.getTime() - date.getTime()) / 1000 / 60);
+  }
+
+  get formattedTimer(): string {
+      // Logic to return a timer string like "04:12" would go here.
+      // For now we use static elapsed time text, or we could implement a ticker.
+      // We'll trust the template to use `getElapsedTime` for now or a simple format.
+      return "00:00"; 
+  }
+  
   drop(event: CdkDragDrop<Order[]>, newStatus: OrderStatus) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -64,12 +181,8 @@ export class OrderKanbanComponent {
   }
 
   onCancelOrder(order: Order) {
-      // Remove from all lists
-      this.pendingOrders = this.pendingOrders.filter(o => o.id !== order.id);
-      this.preparingOrders = this.preparingOrders.filter(o => o.id !== order.id);
-      this.readyOrders = this.readyOrders.filter(o => o.id !== order.id);
-      this.outForDeliveryOrders = this.outForDeliveryOrders.filter(o => o.id !== order.id);
-      this.historyOrders = this.historyOrders.filter(o => o.id !== order.id);
+      this.removeFromCurrentList(order);
+      this.historyOrders = this.historyOrders.filter(o => o.id !== order.id); // Also ensure not in history if cancelled completely
       
       this.closeOrderDetails();
       console.log(`Order ${order.id} cancelled`);

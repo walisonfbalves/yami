@@ -4,14 +4,43 @@
                 <span class="material-symbols-outlined text-primary">shopping_cart</span>
                 Pedidos em tempo real
             </h1>
+            
+            <!-- Center: Category Filters -->
+            <div class="flex items-center bg-stone-900/50 p-1 rounded-xl gap-1 overflow-x-auto custom-scrollbar max-w-lg">
+                <button 
+                    *ngFor="let cat of categories" 
+                    (click)="selectCategory(cat)"
+                    class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+                    [ngClass]="selectedCategory === cat ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                    {{ cat }}
+                </button>
+            </div>
+
             <div class="flex items-center gap-4">
+                 <!-- View Mode Toggle -->
+                 <div class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1">
+                    <button 
+                        (click)="toggleView('kanban')" 
+                        class="p-2 rounded-md transition-all flex items-center justify-center"
+                        [ngClass]="viewMode === 'kanban' ? 'bg-stone-800 text-amber-500 shadow-md' : 'text-gray-500 hover:text-gray-300'">
+                        <span class="material-symbols-outlined text-[20px]">view_week</span>
+                    </button>
+                    <button 
+                        (click)="toggleView('grid')" 
+                        class="p-2 rounded-md transition-all flex items-center justify-center"
+                        [ngClass]="viewMode === 'grid' ? 'bg-amber-500 text-stone-950 shadow-lg shadow-amber-500/20' : 'text-gray-500 hover:text-gray-300'">
+                        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                    </button>
+                 </div>
+
                  <div class="px-4 py-2 rounded-xl bg-surface-dark border border-white/5 text-sm text-gray-400">
                     <span class="text-white font-bold">{{ getTotalActiveOrders() }}</span> Pedidos Ativos
                  </div>
             </div>
         </header>
 
-        <div class="flex-1 w-full grid grid-cols-5 gap-4 overflow-y-hidden p-8 custom-scrollbar h-full" cdkDropListGroup>
+        <!-- KANBAN VIEW -->
+        <div *ngIf="viewMode === 'kanban'" class="flex-1 w-full grid grid-cols-5 gap-4 overflow-y-hidden p-8 custom-scrollbar h-full" cdkDropListGroup>
             <!-- 1. Novos -->
             <div class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
                 <div class="p-4 border-b border-white/5 bg-yellow-500/10 flex items-center justify-between">
@@ -225,6 +254,58 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- GRID VIEW (KDS) -->
+        <div *ngIf="viewMode === 'grid'" class="flex-1 w-full bg-black/40 overflow-y-auto custom-scrollbar p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div *ngFor="let order of kdsOrders" class="relative bg-stone-900 rounded-lg overflow-hidden flex flex-col shadow-xl border border-white/5 h-full">
+                     <!-- Dynamic Header -->
+                     <div class="h-10 px-4 flex items-center justify-between" [ngClass]="getKdsColorInfo(order).bg">
+                        <div class="flex items-center gap-2">
+                             <span class="font-bold text-sm tracking-wide" [ngClass]="getKdsColorInfo(order).text">#{{ order.id }}</span>
+                        </div>
+                        <span class="font-bold text-xs uppercase tracking-wider" [ngClass]="getKdsColorInfo(order).text">{{ getKdsColorInfo(order).label }}</span>
+                     </div>
+
+                     <!-- Body -->
+                     <div class="p-4 flex-1 flex flex-col relative">
+                        <!-- Timer -->
+                        <div class="absolute top-4 right-4 font-mono text-4xl font-bold tracking-tighter"
+                             [ngClass]="getKdsColorInfo(order).btnBg === 'bg-red-600' ? 'text-red-500' : 'text-gray-200'">
+                            {{ getElapsedTime(order.createdAt).replace('há ', '').replace(' min', '') }}:00 <!-- Mock Timer visual -->
+                        </div>
+
+                        <div class="mb-6 mt-1">
+                             <h3 class="text-lg font-bold text-white">Mesa 12</h3> <!-- Mock Table/Type -->
+                             <span class="text-gray-500 text-xs font-bold uppercase">{{ order.customerName }}</span>
+                        </div>
+
+                        <!-- Items List -->
+                        <div class="space-y-2 mb-4">
+                            <div *ngFor="let item of order.items" class="flex items-start gap-2 text-sm text-gray-300">
+                                <span class="bg-orange-500/20 text-orange-500 font-bold px-1.5 rounded text-xs mt-0.5">1x</span> <!-- Mock Qty -->
+                                <span class="leading-tight">{{ item.substring(item.indexOf('x') + 1).trim() }}</span>
+                            </div>
+                        </div>
+
+                     </div>
+
+                     <!-- Footer Action -->
+                     <button 
+                        (click)="advanceOrderStatus(order)"
+                        class="w-full h-12 flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:brightness-110 transition-all active:brightness-95"
+                        [ngClass]="getKdsColorInfo(order).btnBg + ' ' + getKdsColorInfo(order).text">
+                         {{ getKdsColorInfo(order).btnText }}
+                     </button>
+                </div>
+            </div>
+            
+            <!-- Empty State for Grid -->
+            <div *ngIf="kdsOrders.length === 0" class="flex flex-col items-center justify-center h-full text-gray-500">
+                <span class="material-symbols-outlined text-6xl mb-4 text-stone-700">inventory_2</span>
+                <p class="text-lg font-medium">Nenhum pedido na cozinha</p>
+            </div>
         </div>
     </div>
 
