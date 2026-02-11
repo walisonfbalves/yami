@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { DialogType } from './dialog.component';
+import { BehaviorSubject } from 'rxjs';
 
 export interface DialogConfig {
   title: string;
   message: string;
-  type?: DialogType;
+  variant?: 'danger' | 'primary';
   confirmText?: string;
   cancelText?: string;
 }
@@ -38,13 +37,13 @@ export class DialogService {
   }
 
   alert(title: string, message: string): Promise<boolean> {
-      return this.confirm({
-          title,
-          message,
-          type: 'alert',
-          confirmText: 'OK',
-          cancelText: ''
-      });
+    return this.confirm({
+      title,
+      message,
+      variant: 'primary',
+      confirmText: 'OK',
+      cancelText: 'Cancelar'
+    });
   }
 
   onConfirm() {

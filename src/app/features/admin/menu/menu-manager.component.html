@@ -78,7 +78,7 @@
                         </div>
                         <div class="flex gap-1">
                              <ui-button variant="ghost" (click)="openForm(product)" icon="edit_note" class="!p-2"></ui-button>
-                             <ui-button variant="danger" (click)="deleteProduct(product.id)" icon="delete" class="!p-2"></ui-button>
+                             <ui-button variant="danger" (click)="confirmDelete(product)" icon="delete" class="!p-2"></ui-button>
                         </div>
                     </div>
                 </div>
@@ -115,4 +115,15 @@
                           (update)="updateCategories($event)"
                           (close)="showCategoryManager = false">
     </app-category-manager>
+
+    <ui-dialog
+        [isOpen]="showDeleteModal"
+        title="Excluir Produto"
+        [message]="'Tem certeza que deseja excluir o item \'' + (itemToDelete?.name || '') + '\'? Esta ação não pode ser desfeita.'"
+        variant="danger"
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        (confirm)="executeDelete()"
+        (cancel)="cancelDelete()">
+    </ui-dialog>
 </div>

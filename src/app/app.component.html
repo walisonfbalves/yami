@@ -7,7 +7,7 @@
     [isOpen]="state.isOpen"
     [title]="state.title"
     [message]="state.message"
-    [type]="state.type || 'confirm'"
+    [variant]="state.variant || 'primary'"
     [confirmText]="state.confirmText || 'Confirmar'"
     [cancelText]="state.cancelText || 'Cancelar'"
     (confirm)="dialogService.onConfirm()"

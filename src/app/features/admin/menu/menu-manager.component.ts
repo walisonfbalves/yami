@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -8,7 +8,7 @@ import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
-import { DialogService } from '../../../shared/ui/dialog/dialog.service';
+import { DialogComponent } from '../../../shared/ui/dialog/dialog.component';
 
 @Component({
   selector: 'app-menu-manager',
@@ -23,7 +23,8 @@ import { DialogService } from '../../../shared/ui/dialog/dialog.service';
     CardComponent,
     ButtonComponent,
     InputComponent,
-    BadgeComponent
+    BadgeComponent,
+    DialogComponent
   ],
   templateUrl: './menu-manager.component.html'
 })
@@ -96,18 +97,17 @@ export class MenuManagerComponent {
   searchTerm = '';
   searchControl = new FormControl('');
 
-
-  private dialogService = inject(DialogService);
+  showForm = false;
+  showCategoryManager = false;
+  editingProduct: any = null;
+  showDeleteModal = false;
+  itemToDelete: any = null;
 
   constructor() {
     this.searchControl.valueChanges.subscribe(value => {
       this.searchTerm = value || '';
     });
   }
-
-  showForm = false;
-  showCategoryManager = false;
-  editingProduct: any = null;
 
   setCategory(category: string) {
     this.selectedCategory = category;
@@ -159,20 +159,23 @@ export class MenuManagerComponent {
       }
       this.closeForm();
   }
-  
-  async deleteProduct(id: number) {
-      const confirmed = await this.dialogService.confirm({
-        title: 'Excluir Produto',
-        message: 'Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.',
-        type: 'danger',
-        confirmText: 'Excluir',
-        cancelText: 'Cancelar'
-      });
 
-      if(confirmed) {
-          this.products = this.products.filter(p => p.id !== id);
-          console.log('Deleted product', id);
-      }
+  confirmDelete(product: any) {
+    this.itemToDelete = product;
+    this.showDeleteModal = true;
+  }
+
+  executeDelete() {
+    if (this.itemToDelete) {
+      this.products = this.products.filter(p => p.id !== this.itemToDelete.id);
+      console.log('Deleted product', this.itemToDelete.id);
+    }
+    this.cancelDelete();
+  }
+
+  cancelDelete() {
+    this.showDeleteModal = false;
+    this.itemToDelete = null;
   }
 
   updateCategories(newCategories: string[]) {
