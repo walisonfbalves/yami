@@ -1,4 +1,17 @@
 <div class="min-h-screen bg-background font-sans text-foreground">
   <router-outlet></router-outlet>
 <ui-toast-container></ui-toast-container>
+
+<ng-container *ngIf="dialogState$ | async as state">
+  <ui-dialog 
+    [isOpen]="state.isOpen"
+    [title]="state.title"
+    [message]="state.message"
+    [type]="state.type || 'confirm'"
+    [confirmText]="state.confirmText || 'Confirmar'"
+    [cancelText]="state.cancelText || 'Cancelar'"
+    (confirm)="dialogService.onConfirm()"
+    (cancel)="dialogService.onCancel()">
+  </ui-dialog>
+</ng-container>
 </div>

@@ -1,5 +1,5 @@
-<div class="h-full flex flex-col font-display bg-background-light dark:bg-background-dark">
-    <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-surface-dark/50 backdrop-blur-md z-10">
+<div class="h-full flex flex-col font-display bg-stone-50 dark:bg-background">
+    <header class="h-20 border-b border-surface-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-md z-10">
         <div class="flex items-center gap-6 flex-1">
             <div class="w-full max-w-md">
                 <ui-input
@@ -29,11 +29,11 @@
     <div class="flex-1 overflow-y-auto custom-scrollbar p-8">
         <div class="mb-8">
             <h2 class="text-3xl font-heading font-bold mb-6 text-white">Menu & Catálogo</h2>
-            <div class="flex gap-2 p-1 bg-surface-dark w-fit rounded-xl border border-white/5">
+            <div class="flex gap-2 p-1 bg-surface w-fit rounded-xl border border-surface-border">
                 <button *ngFor="let category of categories" 
                         (click)="setCategory(category)"
                         [class.bg-primary]="selectedCategory === category"
-                        [class.text-background-dark]="selectedCategory === category"
+                        [class.text-background]="selectedCategory === category"
                         [class.text-gray-400]="selectedCategory !== category"
                         class="px-6 py-2 rounded-lg font-bold text-sm transition-colors hover:text-white">
                     {{ category }}

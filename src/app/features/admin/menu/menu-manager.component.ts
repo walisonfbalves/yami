@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -8,6 +8,7 @@ import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
+import { DialogService } from '../../../shared/ui/dialog/dialog.service';
 
 @Component({
   selector: 'app-menu-manager',
@@ -95,6 +96,9 @@ export class MenuManagerComponent {
   searchTerm = '';
   searchControl = new FormControl('');
 
+
+  private dialogService = inject(DialogService);
+
   constructor() {
     this.searchControl.valueChanges.subscribe(value => {
       this.searchTerm = value || '';
@@ -156,8 +160,16 @@ export class MenuManagerComponent {
       this.closeForm();
   }
   
-  deleteProduct(id: number) {
-      if(confirm('Tem certeza que deseja excluir este produto?')) {
+  async deleteProduct(id: number) {
+      const confirmed = await this.dialogService.confirm({
+        title: 'Excluir Produto',
+        message: 'Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.',
+        type: 'danger',
+        confirmText: 'Excluir',
+        cancelText: 'Cancelar'
+      });
+
+      if(confirmed) {
           this.products = this.products.filter(p => p.id !== id);
           console.log('Deleted product', id);
       }

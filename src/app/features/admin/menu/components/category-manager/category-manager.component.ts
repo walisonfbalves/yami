@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DialogService } from '../../../../../shared/ui/dialog/dialog.service';
 
 @Component({
   selector: 'app-category-manager',
@@ -8,13 +9,13 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-stone-200 dark:border-stone-800 flex flex-col max-h-[90vh] animate-scale-in">
+        <div class="bg-white dark:bg-surface rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-stone-200 dark:border-surface-border flex flex-col max-h-[90vh] animate-scale-in">
             <!-- Header -->
-            <div class="flex items-center justify-between p-6 border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/50">
-                <h3 class="text-xl font-heading font-bold text-stone-900 dark:text-white">
+            <div class="flex items-center justify-between p-6 border-b border-stone-200 dark:border-surface-border bg-stone-50 dark:bg-surface/50">
+                <h3 class="text-xl font-heading font-bold text-stone-900 dark:text-text-primary">
                     Gerenciar Categorias
                 </h3>
-                <button (click)="onClose()" class="text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors">
+                <button (click)="onClose()" class="text-stone-400 hover:text-stone-900 dark:hover:text-text-primary transition-colors">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
@@ -28,11 +29,11 @@ import { FormsModule } from '@angular/forms';
                            (keydown.enter)="addCategory()"
                            type="text" 
                            placeholder="Nova Categoria"
-                           class="flex-1 bg-stone-100 dark:bg-card-dark border border-stone-200 dark:border-stone-700 rounded-xl px-4 py-2 text-stone-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-stone-400 dark:placeholder-stone-500">
+                           class="flex-1 bg-stone-100 dark:bg-surface border border-stone-200 dark:border-surface-active rounded-xl px-4 py-2 text-stone-900 dark:text-text-primary focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-stone-400 dark:placeholder-text-secondary">
                     
                     <button (click)="addCategory()" 
                             [disabled]="!newCategoryName.trim()"
-                            class="bg-primary/20 text-primary hover:bg-primary hover:text-white w-10 h-10 rounded-xl flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="bg-primary/20 text-primary hover:bg-primary hover:text-background w-10 h-10 rounded-xl flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         <span class="material-symbols-outlined">add</span>
                     </button>
                 </div>
@@ -40,15 +41,15 @@ import { FormsModule } from '@angular/forms';
                 <!-- List -->
                 <ul class="space-y-2">
                     <li *ngFor="let category of internalCategories; let i = index" 
-                        class="flex items-center justify-between p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 hover:bg-stone-100 dark:hover:bg-stone-800 border border-transparent hover:border-stone-200 dark:hover:border-stone-700 transition-all group">
+                        class="flex items-center justify-between p-3 rounded-xl bg-stone-50 dark:bg-surface-hover/50 hover:bg-stone-100 dark:hover:bg-surface-hover border border-transparent hover:border-stone-200 dark:hover:border-surface-border transition-all group">
                         
-                        <span class="font-bold text-stone-700 dark:text-stone-300 group-hover:text-stone-900 dark:group-hover:text-white transition-colors">
+                        <span class="font-bold text-stone-700 dark:text-text-secondary group-hover:text-stone-900 dark:group-hover:text-text-primary transition-colors">
                             {{ category }}
                         </span>
 
                         <button *ngIf="category !== 'Todos'" 
                                 (click)="removeCategory(i)"
-                                class="w-8 h-8 rounded-lg flex items-center justify-center text-stone-400 hover:bg-red-500/10 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                                class="w-8 h-8 rounded-lg flex items-center justify-center text-stone-400 hover:bg-danger-bg hover:text-danger transition-colors opacity-0 group-hover:opacity-100">
                             <span class="material-symbols-outlined text-lg">delete</span>
                         </button>
                          <span *ngIf="category === 'Todos'" class="text-xs font-bold text-stone-400 uppercase tracking-wider px-2">Sistema</span>
@@ -58,9 +59,9 @@ import { FormsModule } from '@angular/forms';
             </div>
 
             <!-- Footer -->
-            <div class="p-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/50 flex justify-end">
+            <div class="p-4 border-t border-stone-200 dark:border-surface-border bg-stone-50 dark:bg-surface/50 flex justify-end">
                 <button (click)="saveAndClose()" 
-                        class="px-6 py-2.5 rounded-xl bg-primary text-background-dark font-bold hover:bg-amber-600 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+                        class="px-6 py-2.5 rounded-xl bg-primary text-background font-bold hover:bg-primary-hover transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">check</span>
                     Concluir
                 </button>
@@ -85,6 +86,7 @@ export class CategoryManagerComponent {
 
   internalCategories: string[] = [];
   newCategoryName = '';
+  private dialogService = inject(DialogService);
 
   addCategory() {
     const name = this.newCategoryName.trim();
@@ -92,7 +94,7 @@ export class CategoryManagerComponent {
 
     // Case insensitive duplicate check
     if (this.internalCategories.some(c => c.toLowerCase() === name.toLowerCase())) {
-      alert('Esta categoria já existe!'); // Simple alert for now, could be a toast
+      this.dialogService.alert('Categoria Duplicada', 'Esta categoria já existe!');
       return;
     }
 

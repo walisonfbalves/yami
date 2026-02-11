@@ -1,14 +1,14 @@
-<div *ngIf="product" class="flex gap-4 p-4 bg-surface border border-muted rounded-xl shadow-sm hover:border-primary/50 transition-colors">
+<div *ngIf="product" class="flex gap-4 p-4 bg-surface border border-surface-border rounded-xl shadow-sm hover:border-primary/50 transition-colors">
   <!-- Image -->
   <div class="shrink-0">
-    <img [src]="product.imageUrl" [alt]="product.name" class="w-20 h-20 rounded-lg object-cover bg-muted">
+    <img [src]="product.imageUrl" [alt]="product.name" class="w-20 h-20 rounded-lg object-cover bg-surface-hover">
   </div>
   
   <!-- Content -->
   <div class="flex flex-col flex-1 justify-between">
     <div>
-      <h3 class="font-heading font-medium text-text-main text-lg leading-tight">{{ product.name }}</h3>
-      <p class="text-sm text-text-muted mt-1 line-clamp-2">{{ product.description }}</p>
+      <h3 class="font-heading font-medium text-text-primary text-lg leading-tight">{{ product.name }}</h3>
+      <p class="text-sm text-text-secondary mt-1 line-clamp-2">{{ product.description }}</p>
     </div>
     
     <!-- Price & Action -->
