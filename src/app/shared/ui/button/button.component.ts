@@ -33,6 +33,7 @@ export class ButtonComponent {
   @Input() iconOnly: boolean = false;
   @Input() loading: boolean = false;
   @Input() disabled: boolean = false;
+  @Input() fullWidth: boolean = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
 
   onClick(event: MouseEvent) {
@@ -62,7 +63,9 @@ export class ButtonComponent {
       lg: 'px-6 py-3 text-base'
     };
 
-    return `${base} ${variants[this.variant]} ${sizes[this.size]}`;
+    const widthClass = this.fullWidth ? 'w-full' : '';
+
+    return `${base} ${variants[this.variant]} ${sizes[this.size]} ${widthClass}`;
   }
 }
 
