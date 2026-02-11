@@ -1,14 +1,29 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ProductFormComponent } from './components/product-form/product-form.component';
 import { CategoryManagerComponent } from './components/category-manager/category-manager.component';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { InputComponent } from '../../../shared/ui/input/input.component';
+import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 
 @Component({
   selector: 'app-menu-manager',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ProductFormComponent, CategoryManagerComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    FormsModule, 
+    ReactiveFormsModule,
+    ProductFormComponent, 
+    CategoryManagerComponent,
+    CardComponent,
+    ButtonComponent,
+    InputComponent,
+    BadgeComponent
+  ],
   templateUrl: './menu-manager.component.html'
 })
 export class MenuManagerComponent {
@@ -78,6 +93,13 @@ export class MenuManagerComponent {
   selectedCategory = 'Todos';
   categories = ['Todos', 'Burgers', 'Pratos Principais', 'Bebidas', 'Sobremesas'];
   searchTerm = '';
+  searchControl = new FormControl('');
+
+  constructor() {
+    this.searchControl.valueChanges.subscribe(value => {
+      this.searchTerm = value || '';
+    });
+  }
 
   showForm = false;
   showCategoryManager = false;

@@ -1,132 +1,119 @@
-<div class="h-full flex flex-col font-display bg-background-dark overflow-y-auto custom-scrollbar relative">
+<div class="p-8 max-w-4xl mx-auto font-display">
     
-    <!-- Top Bar -->
-    <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-surface-dark/50 backdrop-blur-md sticky top-0 z-10">
-        <h1 class="text-2xl font-heading font-bold text-white tracking-tight flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary">settings</span>
-            Configurações da Loja
-        </h1>
-        <ui-button (click)="onSubmit()" variant="primary" class="flex items-center gap-2">
-            <span class="material-symbols-outlined">save</span>
-            Salvar Alterações
-        </ui-button>
+    <header class="mb-8">
+        <h1 class="text-3xl font-heading font-bold text-white tracking-tight mb-2">Configurações da Loja</h1>
+        <p class="text-gray-400">Gerencie as informações principais do seu estabelecimento.</p>
     </header>
 
-    <div class="p-8 max-w-4xl mx-auto w-full space-y-8 pb-24" [formGroup]="settingsForm">
-
-        <!-- Section A: Store Identity -->
-        <ui-card className="overflow-hidden block">
-            <!-- Banner Area -->
-            <div class="h-48 bg-gradient-to-r from-stone-800 to-stone-900 relative group cursor-pointer -m-4 mb-4">
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 transition-all">
-                    <span class="text-white font-bold flex items-center gap-2"><span class="material-symbols-outlined">photo_camera</span> Alterar Capa</span>
-                </div>
-                <!-- Avatar Overlap -->
-                <div class="absolute -bottom-10 left-8 w-24 h-24 rounded-full border-4 border-surface-dark bg-stone-800 flex items-center justify-center overflow-hidden cursor-pointer group/avatar">
-                     <span class="text-2xl font-bold text-gray-500 group-hover/avatar:hidden">Y</span>
-                     <div class="absolute inset-0 bg-black/50 hidden group-hover/avatar:flex items-center justify-center text-white">
-                        <span class="material-symbols-outlined text-sm">edit</span>
-                     </div>
-                </div>
-            </div>
-
-            <div class="pt-14 p-4 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Store Name -->
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nome da Loja</label>
-                        <input formControlName="storeName" type="text" class="w-full bg-background-dark border border-white/10 rounded-xl p-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
-                    </div>
-                    
-                    <!-- Slug -->
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">URL da Loja</label>
-                        <div class="flex items-center bg-background-dark border border-white/10 rounded-xl px-3 text-gray-400 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
-                            <span class="text-sm border-r border-white/10 pr-3 mr-3">yami.com/</span>
-                            <input formControlName="storeSlug" type="text" class="bg-transparent w-full py-3 text-white outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bio -->
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Descrição Curta (Bio)</label>
-                    <textarea formControlName="storeBio" rows="2" class="w-full bg-background-dark border border-white/10 rounded-xl p-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"></textarea>
-                    <p class="text-xs text-gray-500 text-right">0/150 caracteres</p>
-                </div>
-            </div>
-        </ui-card>
-
-        <!-- Section B: Status & Operations -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Open/Close Toggle (Critical) -->
-            <ui-card className="col-span-2 flex items-center justify-between group hover:border-white/10 transition-all">
-                <div>
-                    <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                        <span class="material-symbols-outlined" [class.text-green-500]="isOpen" [class.text-red-500]="!isOpen">store</span>
-                        Status da Loja
-                    </h3>
-                    <p class="text-sm text-gray-400">Quando desligado, o cardápio aparece como "Fechado" para os clientes.</p>
-                </div>
-                
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" formControlName="isOpen" class="sr-only peer">
-                    <div class="w-14 h-7 bg-stone-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
-                </label>
-            </ui-card>
-
-            <!-- Wait Time -->
-            <!-- Wait Time -->
-             <ui-card>
-                <div class="space-y-3">
-                     <label class="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-2">
-                        <span class="material-symbols-outlined text-base">schedule</span>
-                        Tempo de Preparo
-                     </label>
-                     <div class="flex items-center gap-2">
-                        <input formControlName="prepTime" type="text" class="w-20 bg-background-dark border border-white/10 rounded-xl p-2 text-center font-bold text-white focus:border-primary outline-none">
-                        <span class="text-sm text-gray-400 font-bold">minutos</span>
-                     </div>
-                </div>
-             </ui-card>
-        </section>
-
-        <!-- Section C: Finance & Delivery -->
+    <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        
+        <!-- Identidade -->
         <ui-card>
-             <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2 border-b border-white/5 pb-4">
-                <span class="material-symbols-outlined text-amber-500">payments</span>
-                Financeiro & Entrega
-            </h3>
+            <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                <span class="material-symbols-outlined text-amber-500">storefront</span>
+                <h2 class="text-lg font-bold text-white">Identidade</h2>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Taxa de Entrega</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-3 text-gray-500 font-bold">R$</span>
-                        <input formControlName="deliveryFee" type="number" class="w-full bg-background-dark border border-white/10 rounded-xl pl-10 pr-3 py-3 text-white focus:border-primary outline-none transition-all font-bold">
-                    </div>
-                </div>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                
+                <ui-input
+                    label="Nome da Loja"
+                    [control]="getControl('storeName')"
+                    placeholder="Ex: Yami Burger">
+                </ui-input>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pedido Mínimo</label>
-                    <div class="relative">
-                         <span class="absolute left-3 top-3 text-gray-500 font-bold">R$</span>
-                        <input formControlName="minOrder" type="number" class="w-full bg-background-dark border border-white/10 rounded-xl pl-10 pr-3 py-3 text-white focus:border-primary outline-none transition-all font-bold">
-                    </div>
-                </div>
+                <ui-input
+                    label="Slug (URL)"
+                    [control]="getControl('storeSlug')"
+                    placeholder="yami-backend"
+                    prefix="yami.com/">
+                </ui-input>
 
-                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Chave Pix</label>
-                    <input formControlName="pixKey" type="text" class="w-full bg-background-dark border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none transition-all">
+                <div class="md:col-span-2">
+                     <ui-textarea
+                        label="Biografia"
+                        [control]="getControl('storeBio')"
+                        placeholder="Uma breve descrição da sua loja..."
+                        [maxLength]="160">
+                     </ui-textarea>
                 </div>
             </div>
         </ui-card>
 
-    </div>
+        <!-- Funcionamento -->
+        <ui-card>
+            <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                <span class="material-symbols-outlined text-blue-500">schedule</span>
+                <h2 class="text-lg font-bold text-white">Funcionamento</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Status da Loja -->
+                <ui-switch
+                   [label]="isOpen ? 'Loja Aberta' : 'Loja Fechada'"
+                   description="Controle se os clientes podem fazer novos pedidos agora."
+                   [control]="getControl('isOpen')">
+                </ui-switch>
+
+                 <div class="grid md:grid-cols-2 gap-6">
+                     <ui-input
+                        label="Tempo de Preparo"
+                        [control]="getControl('prepTime')"
+                        placeholder="40-50"
+                        suffix="minutos">
+                    </ui-input>
+                 </div>
+            </div>
+        </ui-card>
+
+        <!-- Financeiro -->
+        <ui-card>
+             <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                <span class="material-symbols-outlined text-green-500">payments</span>
+                <h2 class="text-lg font-bold text-white">Financeiro & Entrega</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                 <ui-input
+                    label="Taxa de Entrega"
+                    [control]="getControl('deliveryFee')"
+                    type="number"
+                    prefix="R$">
+                </ui-input>
+
+                 <ui-input
+                    label="Pedido Mínimo"
+                    [control]="getControl('minOrder')"
+                    type="number"
+                    prefix="R$">
+                </ui-input>
+
+                 <ui-input
+                    label="Chave PIX"
+                    [control]="getControl('pixKey')"
+                    placeholder="00.000.000/0001-00">
+                </ui-input>
+            </div>
+        </ui-card>
+
+        <!-- Actions -->
+        <div class="flex justify-end pt-4">
+            <ui-button 
+                type="submit" 
+                variant="primary" 
+                size="lg"
+                [loading]="false"
+                icon="save">
+                Salvar Alterações
+            </ui-button>
+        </div>
+
+    </form>
 
     <!-- Toast Notification -->
-    <div *ngIf="showToast" class="fixed bottom-8 right-8 bg-green-500 text-black px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in-up z-50 font-bold">
-        <span class="material-symbols-outlined bg-black/10 rounded-full p-1">check</span>
-        Configurações salvas com sucesso!
+    <div *ngIf="showToast" class="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in z-50">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span class="font-bold">Alterações salvas com sucesso!</span>
     </div>
+
 </div>

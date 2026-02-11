@@ -27,7 +27,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonComponent {
-  @Input() variant: 'primary' | 'secondary' | 'ghost' | 'danger' = 'primary';
+  @Input() variant: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() icon: string = '';
   @Input() loading: boolean = false;
@@ -47,7 +47,8 @@ export class ButtonComponent {
       primary: 'bg-amber-500 text-stone-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20',
       secondary: 'bg-transparent border border-stone-800 text-stone-300 hover:bg-stone-800 hover:text-white',
       ghost: 'bg-transparent text-stone-400 hover:text-white hover:bg-white/5',
-      danger: 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20'
+      danger: 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20',
+      outline: 'bg-transparent border border-amber-500 text-amber-500 hover:bg-amber-500/10'
     };
 
     const sizes = {

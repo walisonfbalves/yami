@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BadgeComponent {
-  @Input() variant: 'neutral' | 'brand' | 'success' | 'warning' | 'danger' = 'neutral';
+  @Input() variant: 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'primary' = 'neutral';
   @Input() label: string = '';
   @Input() icon: string = '';
 
@@ -28,7 +28,8 @@ export class BadgeComponent {
           brand: 'bg-amber-500/10 text-amber-500 border-amber-500/20 shadow-[0_0_10px_-3px_rgba(245,158,11,0.3)]',
           success: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_10px_-3px_rgba(16,185,129,0.3)]',
           warning: 'bg-orange-500/10 text-orange-500 border-orange-500/20 shadow-[0_0_10px_-3px_rgba(249,115,22,0.3)]',
-          danger: 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_10px_-3px_rgba(239,68,68,0.3)]'
+          danger: 'bg-red-500/10 text-red-500 border-red-500/20 shadow-[0_0_10px_-3px_rgba(239,68,68,0.3)]',
+          primary: 'bg-amber-500/10 text-amber-500 border-amber-500/20'
       };
 
       return `${base} ${variants[this.variant]}`;
