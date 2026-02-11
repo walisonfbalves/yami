@@ -1,21 +1,21 @@
 <div id="analytics-report" class="p-8 space-y-8 bg-stone-950 min-h-screen font-display">
-    <!-- Header Section -->
+
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-            <h2 class="text-4xl font-heading font-bold text-white tracking-tight uppercase">Analytics & Relatórios</h2>
+            <h2 class="text-4xl font-heading font-bold text-white tracking-tight uppercase">Análises & Relatórios</h2>
             <p class="text-gray-500 mt-1 font-medium">Visão detalhada de performance e operações</p>
         </div>
         <div class="flex items-center gap-3">
-             <!-- Date Range Picker (Mock) -->
+
              <div class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1" data-html2canvas-ignore="true">
                 <yami-button variant="ghost" size="sm" [class.bg-white_10]="selectedPeriod === '7d'" (click)="loadData('7d')" class="text-xs font-bold text-gray-400 hover:text-white">7 Dias</yami-button>
                 <yami-button variant="ghost" size="sm" [class.bg-white_10]="selectedPeriod === '30d'" (click)="loadData('30d')" class="text-xs font-bold text-gray-400 hover:text-white">30 Dias</yami-button>
                 <yami-button variant="ghost" size="sm" [class.bg-white_10]="selectedPeriod === 'month'" (click)="loadData('month')" class="text-xs font-bold text-gray-400 hover:text-white">Este Mês</yami-button>
             </div>
 
-            <button (click)="exportToPdf()" data-html2canvas-ignore="true" class="flex items-center gap-2 px-6 py-2 bg-amber-500 rounded-lg text-sm font-bold text-black hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 uppercase tracking-wide">
-                <span class="material-symbols-outlined text-[20px]">download</span>
-                Exportar PDF
+            <button (click)="downloadExcel()" data-html2canvas-ignore="true" class="flex items-center gap-2 px-6 py-2 bg-emerald-600 rounded-lg text-sm font-bold text-white hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-600/20 uppercase tracking-wide">
+                <span class="material-symbols-outlined text-[20px]">table_view</span>
+                Baixar relatório excel
             </button>
         </div>
     </div>
@@ -30,9 +30,9 @@
     </div>
 
     <ng-container *ngIf="!isLoading && analyticsData">
-        <!-- KPI Cards (Row 1) -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Total Revenue -->
+
             <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-amber-500 opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start mb-4">
@@ -51,7 +51,7 @@
                 </div>
             </yami-card>
 
-            <!-- Total Orders -->
+
              <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start mb-4">
@@ -70,7 +70,7 @@
                 </div>
             </yami-card>
 
-            <!-- Avg Ticket -->
+
              <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start mb-4">
@@ -89,7 +89,7 @@
                 </div>
             </yami-card>
 
-            <!-- Customer Growth (Standardized) -->
+
             <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start mb-4">
@@ -109,9 +109,9 @@
             </yami-card>
         </div>
 
-        <!-- Charts Section (Row 2) -->
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Main Chart (Revenue) -->
+
             <yami-card class="bg-stone-900 border-stone-800 lg:col-span-2 flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-8">
                     <div>
@@ -132,7 +132,7 @@
                 </div>
             </yami-card>
 
-            <!-- Doughnut (Categories) -->
+
             <yami-card class="bg-stone-900 border-stone-800 flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-8">
                     <div>
@@ -150,9 +150,9 @@
             </yami-card>
         </div>
 
-        <!-- Operational Metrics (Row 3 - Standardized) -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Avg Prep Time -->
+
              <yami-card class="bg-stone-900 border-stone-800 group hover:border-blue-500/30 transition-all cursor-default relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start mb-4">
@@ -176,7 +176,7 @@
                 </div>
             </yami-card>
 
-            <!-- Customer Satisfaction -->
+
              <yami-card class="bg-stone-900 border-stone-800 group hover:border-yellow-500/30 transition-all cursor-default relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="flex justify-between items-start mb-4">
@@ -202,47 +202,6 @@
                 </div>
             </yami-card>
         </div>
-
-        <!-- Reports Table (Row 3) -->
-        <div class="bg-stone-900 border border-stone-800 rounded-xl overflow-hidden" data-html2canvas-ignore="true">
-            <div class="p-6 border-b border-stone-800 flex items-center justify-between">
-                <div>
-                     <h4 class="text-xl font-heading font-bold text-white tracking-tight uppercase">Relatórios Recentes</h4>
-                     <p class="text-sm text-gray-500 font-medium">Histórico de exportações e fechamentos</p>
-                </div>
-                <button class="text-amber-500 text-xs font-bold hover:text-amber-400 uppercase tracking-widest hover:underline">Ver Todos</button>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="bg-stone-950 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-                            <th class="px-6 py-4">Nome do Relatório</th>
-                            <th class="px-6 py-4">Período</th>
-                            <th class="px-6 py-4">Gerado Em</th>
-                            <th class="px-6 py-4">Formato</th>
-                            <th class="px-6 py-4 text-right">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-stone-800">
-                        <tr *ngFor="let report of analyticsData.recentReports" class="group hover:bg-stone-800/50 transition-colors">
-                            <td class="px-6 py-4 text-sm font-bold text-white">{{ report.name }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-400">{{ report.period }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-400">{{ report.generatedAt }}</td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border"
-                                    [ngClass]="report.format === 'PDF' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'">
-                                    {{ report.format }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="text-gray-500 hover:text-white transition-colors">
-                                    <span class="material-symbols-outlined text-lg">download</span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </ng-container>
 </div>
+

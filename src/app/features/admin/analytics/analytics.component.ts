@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, Chart, registerables } from 'chart.js';
 import { AnalyticsService, AnalyticsData } from './analytics.service';
+import { ExcelService } from '../../../core/services/excel.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
@@ -27,7 +28,6 @@ export class AnalyticsComponent implements OnInit {
   error: string | null = null;
   selectedPeriod: '7d' | '30d' | 'month' | 'all' = '30d';
 
-  // Bar Chart Config (Revenue)
   public barChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
     datasets: [{ data: [], label: 'Receita (R$)' }]
@@ -75,7 +75,6 @@ export class AnalyticsComponent implements OnInit {
     }
   };
 
-  // Hourly Volume Chart (Histogram)
   public hourlyChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
     datasets: []
@@ -108,14 +107,13 @@ export class AnalyticsComponent implements OnInit {
     },
     elements: {
       bar: {
-        backgroundColor: '#d97706', // Amber-600
+        backgroundColor: '#d97706',
         borderRadius: 4,
-        hoverBackgroundColor: '#f59e0b' // Amber-500
+        hoverBackgroundColor: '#f59e0b'
       }
     }
   };
 
-  // Categories Doughnut Chart
   public categoryChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: [],
     datasets: []
@@ -141,7 +139,10 @@ export class AnalyticsComponent implements OnInit {
     }
   };
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(
+    private analyticsService: AnalyticsService,
+    private excelService: ExcelService
+  ) {}
 
   ngOnInit() {
     this.loadData('30d');
@@ -159,7 +160,6 @@ export class AnalyticsComponent implements OnInit {
   }
 
   updateChart(data: AnalyticsData) {
-    // Update Revenue Chart
     this.barChartData = {
       labels: data.revenueChart.labels,
       datasets: [
@@ -172,7 +172,6 @@ export class AnalyticsComponent implements OnInit {
       ]
     };
 
-    // Update Hourly Volume Chart
     this.hourlyChartData = {
       labels: data.hourlyVolume.hours,
       datasets: [
@@ -186,7 +185,6 @@ export class AnalyticsComponent implements OnInit {
       ]
     };
 
-    // Update Category Chart
     this.categoryChartData = {
       labels: data.popularCategories.labels,
       datasets: [
@@ -200,7 +198,9 @@ export class AnalyticsComponent implements OnInit {
     };
   }
 
-  exportToPdf() {
-    window.print();
+  downloadExcel() {
+    if (this.analyticsData) {
+      this.excelService.generateAnalyticsReport(this.analyticsData);
+    }
   }
 }
