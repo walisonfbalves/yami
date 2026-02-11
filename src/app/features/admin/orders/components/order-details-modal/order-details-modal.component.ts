@@ -17,6 +17,22 @@ export class OrderDetailsModalComponent {
 
   observations: string = '';
 
+  statusLabels: Record<string, string> = {
+    'PENDING': 'Novo',
+    'PREPARING': 'Em Preparo',
+    'READY': 'Pronto',
+    'OUT_FOR_DELIVERY': 'Em Rota',
+    'DELIVERED': 'Entregue'
+  };
+
+  statusColors: Record<string, string> = {
+    'PENDING': 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30',
+    'PREPARING': 'bg-orange-500/20 text-orange-500 border-orange-500/30',
+    'READY': 'bg-blue-500/20 text-blue-500 border-blue-500/30',
+    'OUT_FOR_DELIVERY': 'bg-green-500/20 text-green-500 border-green-500/30',
+    'DELIVERED': 'bg-stone-500/20 text-stone-400 border-stone-500/30'
+  };
+
   constructor() {}
 
   ngOnInit() {

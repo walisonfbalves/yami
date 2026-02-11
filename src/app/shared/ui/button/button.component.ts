@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
         </svg>
       </span>
       
-      <span *ngIf="icon && !loading" class="material-symbols-outlined text-[20px] mr-2">{{ icon }}</span>
+      <span *ngIf="icon && !loading" class="material-symbols-outlined text-[20px]" [class.mr-2]="!iconOnly">{{ icon }}</span>
       
       <ng-content></ng-content>
     </button>
@@ -30,6 +30,7 @@ export class ButtonComponent {
   @Input() variant: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() icon: string = '';
+  @Input() iconOnly: boolean = false;
   @Input() loading: boolean = false;
   @Input() disabled: boolean = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
@@ -51,7 +52,11 @@ export class ButtonComponent {
       outline: 'bg-transparent border border-amber-500 text-amber-500 hover:bg-amber-500/10'
     };
 
-    const sizes = {
+    const sizes = this.iconOnly ? {
+      sm: 'w-7 h-7',
+      md: 'w-9 h-9',
+      lg: 'w-11 h-11'
+    } : {
       sm: 'px-3 py-1.5 text-xs',
       md: 'px-4 py-2 text-sm',
       lg: 'px-6 py-3 text-base'
@@ -60,3 +65,4 @@ export class ButtonComponent {
     return `${base} ${variants[this.variant]} ${sizes[this.size]}`;
   }
 }
+

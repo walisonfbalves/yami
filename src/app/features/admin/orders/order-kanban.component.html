@@ -326,3 +326,14 @@
         (close)="closeOrderDetails()"
         (cancelOrder)="onCancelOrder($event)">
     </app-order-details-modal>
+
+    <ui-dialog
+        [isOpen]="showCancelModal"
+        title="Cancelar Pedido"
+        [message]="'Tem certeza que deseja cancelar o pedido #' + (orderToCancel?.id || '') + '? Esta ação não pode ser desfeita.'"
+        variant="danger"
+        confirmText="Cancelar Pedido"
+        cancelText="Voltar"
+        (confirm)="executeCancelOrder()"
+        (cancel)="cancelCancelOrder()">
+    </ui-dialog>

@@ -6,6 +6,7 @@ import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { DialogComponent } from '../../../shared/ui/dialog/dialog.component';
 
 export type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'OUT_FOR_DELIVERY' | 'DELIVERED';
 
@@ -29,7 +30,8 @@ export interface Order {
     CardComponent,
     ButtonComponent,
     BadgeComponent,
-    IconComponent
+    IconComponent,
+    DialogComponent
   ],
   templateUrl: './order-kanban.component.html',
   styleUrls: ['./order-kanban.component.css']
@@ -42,7 +44,9 @@ export class OrderKanbanComponent {
   outForDeliveryOrders: Order[] = [];
   historyOrders: Order[] = [];
 
-  selectedOrder: Order | null = null; // For the modal
+  selectedOrder: Order | null = null;
+  showCancelModal = false;
+  orderToCancel: Order | null = null;
 
   viewMode: 'kanban' | 'grid' = 'kanban';
   categories: string[] = ['Todas', 'Cozinha Quente', 'Bebidas', 'Sobremesas'];
@@ -193,11 +197,23 @@ export class OrderKanbanComponent {
   }
 
   onCancelOrder(order: Order) {
-      this.removeFromCurrentList(order);
-      this.historyOrders = this.historyOrders.filter(o => o.id !== order.id); // Also ensure not in history if cancelled completely
-      
+      this.orderToCancel = order;
+      this.showCancelModal = true;
+  }
+
+  executeCancelOrder() {
+      if (this.orderToCancel) {
+          this.removeFromCurrentList(this.orderToCancel);
+          this.historyOrders = this.historyOrders.filter(o => o.id !== this.orderToCancel!.id);
+          console.log(`Order ${this.orderToCancel.id} cancelled`);
+      }
+      this.cancelCancelOrder();
       this.closeOrderDetails();
-      console.log(`Order ${order.id} cancelled`);
+  }
+
+  cancelCancelOrder() {
+      this.showCancelModal = false;
+      this.orderToCancel = null;
   }
 
   getTotalActiveOrders() {

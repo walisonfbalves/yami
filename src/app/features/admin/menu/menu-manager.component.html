@@ -54,7 +54,7 @@
                         <ui-badge variant="danger">ESGOTADO</ui-badge>
                     </div>
 
-                    <img [src]="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" [alt]="product.name"/>
+                    <img [src]="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" [class.grayscale]="!product.available" [alt]="product.name"/>
                     
                     <div *ngIf="product.popular" class="absolute bottom-3 left-4 z-20">
                          <ui-badge variant="primary">POPULAR</ui-badge>
@@ -77,8 +77,8 @@
                             <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">{{ product.available ? 'Disponível' : 'Indisponível' }}</span>
                         </div>
                         <div class="flex gap-1">
-                             <ui-button variant="ghost" (click)="openForm(product)" icon="edit_note" class="!p-2"></ui-button>
-                             <ui-button variant="danger" (click)="confirmDelete(product)" icon="delete" class="!p-2"></ui-button>
+                             <ui-button variant="ghost" (click)="openForm(product)" icon="edit_note" [iconOnly]="true"></ui-button>
+                             <ui-button variant="danger" (click)="confirmDelete(product)" icon="delete" [iconOnly]="true"></ui-button>
                         </div>
                     </div>
                 </div>
