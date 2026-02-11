@@ -6,6 +6,7 @@ import { AnalyticsService, AnalyticsData } from './analytics.service';
 import { ExcelService } from '../../../core/services/excel.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { MetricCardComponent } from '../../../shared/ui/metric-card/metric-card.component';
 
 Chart.register(...registerables);
 
@@ -16,7 +17,8 @@ Chart.register(...registerables);
     CommonModule, 
     NgChartsModule,
     CardComponent,
-    ButtonComponent
+    ButtonComponent,
+    MetricCardComponent
   ],
   templateUrl: './analytics.component.html',
   styleUrls: ['./analytics.component.css']

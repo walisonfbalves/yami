@@ -2,37 +2,60 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'yami-button',
+  selector: 'ui-button',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './button.component.html',
-  styleUrls: ['./button.component.css'],
+  template: `
+    <button 
+      [class]="getClasses()" 
+      [disabled]="disabled || loading"
+      (click)="onClick($event)">
+      
+      <span *ngIf="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-current">
+        <svg class="opacity-75" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </span>
+      
+      <span *ngIf="icon && !loading" class="material-symbols-outlined text-[20px] mr-2">{{ icon }}</span>
+      
+      <ng-content></ng-content>
+    </button>
+  `,
+  styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonComponent {
-  @Input() variant: 'primary' | 'outline' | 'ghost' = 'primary';
+  @Input() variant: 'primary' | 'secondary' | 'ghost' | 'danger' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() icon: string = '';
+  @Input() loading: boolean = false;
   @Input() disabled: boolean = false;
+  @Input() type: 'button' | 'submit' | 'reset' = 'button';
+
+  onClick(event: MouseEvent) {
+      if (this.disabled || this.loading) {
+          event.stopPropagation();
+      }
+  }
 
   getClasses(): string {
-    const base = 'inline-flex items-center justify-center rounded-lg font-heading font-medium transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none';
+    const base = 'inline-flex items-center justify-center rounded-lg font-heading font-medium transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed';
     
     const variants = {
-      primary: 'bg-primary text-primary-fg hover:bg-amber-400 shadow-lg shadow-amber-900/20',
-      outline: 'border border-muted bg-transparent hover:bg-surface text-text-main',
-      ghost: 'bg-transparent hover:bg-surface text-text-main' // Implicit ghost style, though not explicitly detained in prompt, adding logical default
+      primary: 'bg-amber-500 text-stone-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20',
+      secondary: 'bg-transparent border border-stone-800 text-stone-300 hover:bg-stone-800 hover:text-white',
+      ghost: 'bg-transparent text-stone-400 hover:text-white hover:bg-white/5',
+      danger: 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20'
     };
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2 text-base',
-      lg: 'px-6 py-3 text-lg'
+      sm: 'px-3 py-1.5 text-xs',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-6 py-3 text-base'
     };
 
-    // Note: User prompt for outline was: "border border-muted bg-transparent hover:bg-surface text-text-main"
-    // User prompt for primary was: "bg-primary text-primary-fg hover:bg-amber-400 shadow-lg shadow-amber-900/20"
-    // User requested ghost variant input but didn't specify exact styles for it, so I'll use a minimal version of outline/transparent.
-
-    return `${base} ${variants[this.variant] || variants.primary} ${sizes[this.size] || sizes.md}`;
+    return `${base} ${variants[this.variant]} ${sizes[this.size]}`;
   }
 }

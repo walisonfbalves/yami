@@ -8,15 +8,36 @@
         <div class="flex items-center gap-3">
 
              <div class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1" data-html2canvas-ignore="true">
-                <yami-button variant="ghost" size="sm" [class.bg-white_10]="selectedPeriod === '7d'" (click)="loadData('7d')" class="text-xs font-bold text-gray-400 hover:text-white">7 Dias</yami-button>
-                <yami-button variant="ghost" size="sm" [class.bg-white_10]="selectedPeriod === '30d'" (click)="loadData('30d')" class="text-xs font-bold text-gray-400 hover:text-white">30 Dias</yami-button>
-                <yami-button variant="ghost" size="sm" [class.bg-white_10]="selectedPeriod === 'month'" (click)="loadData('month')" class="text-xs font-bold text-gray-400 hover:text-white">Este Mês</yami-button>
+                <ui-button 
+                    variant="ghost" 
+                    size="sm" 
+                    [class.bg-white_10]="selectedPeriod === '7d'" 
+                    (click)="loadData('7d')">
+                    7 Dias
+                </ui-button>
+                <ui-button 
+                    variant="ghost" 
+                    size="sm" 
+                    [class.bg-white_10]="selectedPeriod === '30d'" 
+                    (click)="loadData('30d')">
+                    30 Dias
+                </ui-button>
+                <ui-button 
+                    variant="ghost" 
+                    size="sm" 
+                    [class.bg-white_10]="selectedPeriod === 'month'" 
+                    (click)="loadData('month')">
+                    Este Mês
+                </ui-button>
             </div>
 
-            <button (click)="downloadExcel()" data-html2canvas-ignore="true" class="flex items-center gap-2 px-6 py-2 bg-emerald-600 rounded-lg text-sm font-bold text-white hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-600/20 uppercase tracking-wide">
-                <span class="material-symbols-outlined text-[20px]">table_view</span>
-                Baixar relatório excel
-            </button>
+            <ui-button 
+                variant="primary" 
+                icon="table_view" 
+                (click)="downloadExcel()" 
+                data-html2canvas-ignore="true">
+                BAIXAR RELATÓRIO EXCEL
+            </ui-button>
         </div>
     </div>
 
@@ -33,86 +54,47 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-            <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-amber-500 opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-2 bg-amber-500/10 rounded-lg text-amber-500 shadow-lg shadow-amber-500/10">
-                        <span class="material-symbols-outlined">payments</span>
-                    </div>
-                    <span class="flex items-center gap-1 text-emerald-500 text-sm font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                        12.5%
-                    </span>
-                </div>
-                <p class="text-gray-400 text-sm font-medium">Faturamento Total</p>
-                <h3 class="text-3xl font-heading font-bold mt-1 text-white shadow-amber-500/20 drop-shadow-md">{{ analyticsData.totalRevenue | currency:'BRL' }}</h3>
-                <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                    <span class="text-emerald-500 font-bold">+R$ 1.250</span> vs. anterior
-                </div>
-            </yami-card>
+            <ui-metric-card
+                title="Faturamento Total"
+                [value]="analyticsData.totalRevenue | currency:'BRL'"
+                icon="payments"
+                trend="12.5%"
+                variant="finance">
+                <span class="text-emerald-500 font-bold">+R$ 1.250</span> vs. anterior
+            </ui-metric-card>
 
+             <ui-metric-card
+                title="Total de Pedidos"
+                [value]="analyticsData.totalOrders.toString()"
+                icon="shopping_bag"
+                trend="5.2%"
+                variant="orders">
+                <span class="text-emerald-500 font-bold">+12</span> vs. anterior
+            </ui-metric-card>
 
-             <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-2 bg-blue-500/10 rounded-lg text-blue-500">
-                        <span class="material-symbols-outlined">shopping_bag</span>
-                    </div>
-                    <span class="flex items-center gap-1 text-emerald-500 text-sm font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                        5.2%
-                    </span>
-                </div>
-                <p class="text-gray-400 text-sm font-medium">Total de Pedidos</p>
-                <h3 class="text-3xl font-heading font-bold mt-1 text-white">{{ analyticsData.totalOrders }}</h3>
-                <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                    <span class="text-emerald-500 font-bold">+12</span> vs. anterior
-                </div>
-            </yami-card>
+             <ui-metric-card
+                title="Ticket Médio"
+                [value]="analyticsData.avgTicket | currency:'BRL'"
+                icon="receipt_long"
+                trend="0%"
+                variant="finance">
+                 <span class="text-gray-400 font-bold">Estável</span> vs. anterior
+            </ui-metric-card>
 
-
-             <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-2 bg-amber-500/10 rounded-lg text-amber-500">
-                        <span class="material-symbols-outlined">receipt_long</span>
-                    </div>
-                    <span class="flex items-center gap-1 text-gray-500 text-sm font-bold bg-gray-500/10 px-2 py-0.5 rounded">
-                         <span class="material-symbols-outlined text-[16px]">remove</span>
-                        0%
-                    </span>
-                </div>
-                <p class="text-gray-400 text-sm font-medium">Ticket Médio</p>
-                <h3 class="text-3xl font-heading font-bold mt-1 text-white">{{ analyticsData.avgTicket | currency:'BRL' }}</h3>
-                 <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                    <span class="text-gray-400 font-bold">Estável</span> vs. anterior
-                </div>
-            </yami-card>
-
-
-            <yami-card class="bg-stone-900 border-stone-800 group hover:border-amber-500/30 transition-all cursor-default relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-2 bg-violet-500/10 rounded-lg text-violet-500">
-                        <span class="material-symbols-outlined">group_add</span>
-                    </div>
-                    <span class="flex items-center gap-1 text-emerald-500 text-sm font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
-                        <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                        {{ analyticsData.customerGrowth.percentage }}%
-                    </span>
-                </div>
-                <p class="text-gray-400 text-sm font-medium">Novos Clientes</p>
-                <h3 class="text-3xl font-heading font-bold mt-1 text-white">{{ analyticsData.customerGrowth.total }}</h3>
-                 <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                    <span class="text-emerald-500 font-bold">+{{ analyticsData.customerGrowth.percentage }}%</span> mês atual
-                </div>
-            </yami-card>
+            <ui-metric-card
+                title="Novos Clientes"
+                [value]="analyticsData.customerGrowth.total.toString()"
+                icon="group_add"
+                [trend]="analyticsData.customerGrowth.percentage + '%'"
+                variant="people">
+                 <span class="text-emerald-500 font-bold">+{{ analyticsData.customerGrowth.percentage }}%</span> mês atual
+            </ui-metric-card>
         </div>
 
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <yami-card class="bg-stone-900 border-stone-800 lg:col-span-2 flex flex-col min-h-[400px]">
+            <ui-card className="lg:col-span-2 flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-8">
                     <div>
                         <h4 class="text-xl font-heading font-bold text-white uppercase">Histórico de Receita</h4>
@@ -130,10 +112,9 @@
                         [type]="'bar'">
                     </canvas>
                 </div>
-            </yami-card>
+            </ui-card>
 
-
-            <yami-card class="bg-stone-900 border-stone-800 flex flex-col min-h-[400px]">
+            <ui-card className="flex flex-col min-h-[400px]">
                 <div class="flex items-center justify-between mb-8">
                     <div>
                         <h4 class="text-xl font-heading font-bold text-white uppercase">Categorias</h4>
@@ -147,60 +128,35 @@
                         [type]="'doughnut'">
                     </canvas>
                 </div>
-            </yami-card>
+            </ui-card>
         </div>
 
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-             <yami-card class="bg-stone-900 border-stone-800 group hover:border-blue-500/30 transition-all cursor-default relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-2 bg-blue-500/10 rounded-lg text-blue-500">
-                        <span class="material-symbols-outlined">timer</span>
-                    </div>
-                     <span class="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded border"
-                        [ngClass]="analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'">
-                        <span class="material-symbols-outlined text-[14px]">
-                            {{ analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'check_circle' : 'warning' }}
-                        </span>
-                        {{ analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'Dentro da Meta' : 'Atenção' }}
-                    </span>
-                </div>
-                <p class="text-gray-400 text-sm font-medium">Tempo Médio de Preparo</p>
-                <h3 class="text-3xl font-heading font-bold mt-1 text-white">
-                    {{ analyticsData.prepTime.current }} <span class="text-lg text-gray-500 font-medium">{{ analyticsData.prepTime.unit }}</span>
-                </h3>
-                 <div class="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                    <span class="text-gray-400">Meta:</span> <strong class="text-white">{{ analyticsData.prepTime.target }} {{ analyticsData.prepTime.unit }}</strong>
-                </div>
-            </yami-card>
+             <ui-metric-card
+                title="Tempo Médio de Preparo"
+                [value]="analyticsData.prepTime.current + ' ' + analyticsData.prepTime.unit"
+                icon="timer"
+                [trend]="analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'Dentro da Meta' : 'Atenção'"
+                variant="performance">
+                 <span class="text-gray-400">Meta:</span> <strong class="text-white">{{ analyticsData.prepTime.target }} {{ analyticsData.prepTime.unit }}</strong>
+            </ui-metric-card>
 
-
-             <yami-card class="bg-stone-900 border-stone-800 group hover:border-yellow-500/30 transition-all cursor-default relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-stone-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-2 bg-yellow-500/10 rounded-lg text-yellow-500">
-                        <span class="material-symbols-outlined">sentiment_satisfied</span>
-                    </div>
-                    <span class="flex items-center gap-1 text-amber-500 text-xs font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                        <span class="material-symbols-outlined text-[14px]">star</span>
-                        Excelente
-                    </span>
-                </div>
-                <p class="text-gray-400 text-sm font-medium">Satisfação do Cliente</p>
-                <div class="flex items-baseline gap-2 mt-1">
-                     <h3 class="text-3xl font-heading font-bold text-white">{{ analyticsData.customerSatisfaction.score }}</h3>
-                     <span class="text-sm text-gray-500">/ 5.0</span>
-                </div>
-                 <div class="mt-4 flex items-center gap-1 text-xs text-amber-500">
+             <ui-metric-card
+                title="Satisfação do Cliente"
+                [value]="analyticsData.customerSatisfaction.score.toString()"
+                icon="sentiment_satisfied"
+                trend="Excelente"
+                variant="finance">
+                 <div class="flex items-center gap-1 text-xs text-amber-500">
                      <span class="material-symbols-outlined text-[16px]">star</span>
                      <span class="material-symbols-outlined text-[16px]">star</span>
                      <span class="material-symbols-outlined text-[16px]">star</span>
                      <span class="material-symbols-outlined text-[16px]">star</span>
                      <span class="material-symbols-outlined text-[16px]">star_half</span>
                 </div>
-            </yami-card>
+            </ui-metric-card>
         </div>
     </ng-container>
 </div>
