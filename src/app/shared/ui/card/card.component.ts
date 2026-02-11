@@ -10,7 +10,9 @@ import { CommonModule } from '@angular/common';
       <ng-content></ng-content>
     </div>
   `,
-  styles: [],
+  styles: [`
+    :host { display: block; }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardComponent {
@@ -18,7 +20,7 @@ export class CardComponent {
     @Input() className: string = '';
 
     getClasses(): string {
-        const base = 'bg-stone-900 border border-stone-800 rounded-xl shadow-sm overflow-hidden h-full flex flex-col';
+        const base = 'bg-stone-900 border border-stone-800 rounded-xl shadow-sm overflow-hidden flex flex-col';
         const padding = this.noPadding ? '' : 'p-6';
         
         return `${base} ${padding} ${this.className}`;
