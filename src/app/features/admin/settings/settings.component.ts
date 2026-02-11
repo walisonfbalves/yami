@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { InputComponent } from '../../../shared/ui/input/input.component';
+import { TextareaComponent } from '../../../shared/ui/textarea/textarea.component';
+import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 
 @Component({
   selector: 'app-settings',
@@ -11,7 +14,10 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
     CommonModule, 
     ReactiveFormsModule,
     CardComponent,
-    ButtonComponent
+    ButtonComponent,
+    InputComponent,
+    TextareaComponent,
+    SwitchComponent
   ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
@@ -48,4 +54,8 @@ export class SettingsComponent {
 
   // Helper for toggle class
   get isOpen() { return this.settingsForm.get('isOpen')?.value; }
+
+  getControl(name: string): FormControl {
+    return this.settingsForm.get(name) as FormControl;
+  }
 }

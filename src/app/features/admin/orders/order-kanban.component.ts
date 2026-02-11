@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { OrderDetailsModalComponent } from './components/order-details-modal/order-details-modal.component';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 
 export type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'OUT_FOR_DELIVERY' | 'DELIVERED';
 
@@ -18,7 +22,15 @@ export interface Order {
 @Component({
   selector: 'app-order-kanban',
   standalone: true,
-  imports: [CommonModule, DragDropModule, OrderDetailsModalComponent],
+  imports: [
+    CommonModule, 
+    DragDropModule, 
+    OrderDetailsModalComponent,
+    CardComponent,
+    ButtonComponent,
+    BadgeComponent,
+    IconComponent
+  ],
   templateUrl: './order-kanban.component.html',
   styleUrls: ['./order-kanban.component.css']
 })
@@ -275,5 +287,11 @@ export class OrderKanbanComponent {
         return 'bg-red-500/10 text-red-500 border-red-500/30';
     }
     return 'bg-stone-500/10 text-stone-400 border-stone-500/30';
+  }
+
+  getTimeBadgeVariant(date: Date): 'neutral' | 'danger' {
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000 / 60);
+    return diff > 20 ? 'danger' : 'neutral';
   }
 }

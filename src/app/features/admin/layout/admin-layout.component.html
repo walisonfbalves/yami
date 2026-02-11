@@ -48,22 +48,25 @@
     <!-- Main Content Wrapper -->
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
         <!-- Top Nav -->
-        <header class="h-20 border-b border-border-dark bg-surface-dark/50 backdrop-blur-md flex items-center justify-between px-8 z-10">
+        <header class="h-20 border-b border-white/5 bg-surface-dark/50 backdrop-blur-md flex items-center justify-between px-8 z-10">
             <div class="flex items-center gap-8 flex-1">
-                <div class="relative max-w-md w-full">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">search</span>
-                    <input class="w-full bg-background-dark border-border-dark rounded-xl pl-10 pr-4 py-2 text-sm text-gray-300 focus:ring-primary focus:border-primary placeholder-stone-600" placeholder="Buscar pedidos, entregadores ou hubs..." type="text">
+                <div class="max-w-md w-full">
+                    <ui-input
+                        [control]="$any(searchControl)"
+                        placeholder="Buscar pedidos, entregadores ou hubs..."
+                        icon="search">
+                    </ui-input>
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button class="w-10 h-10 rounded-xl border border-border-dark flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/5 transition-all">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
-                <div class="h-8 w-[1px] bg-border-dark mx-2"></div>
+                 <ui-button variant="secondary" icon="notifications" class="!p-2"></ui-button>
+                
+                <div class="h-8 w-[1px] bg-white/10 mx-2"></div>
+                
                 <div class="flex items-center gap-3">
-                    <div class="text-right">
+                    <div class="text-right hidden sm:block">
                         <p class="text-sm font-semibold text-white">Alex Chen</p>
-                        <p class="text-xs text-gray-500 font-medium">Diretor de Operações</p>
+                        <p class="text-xs text-gray-400 font-medium">Diretor de Operações</p>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-primary/20 p-0.5 border border-primary/30">
                         <img alt="Profile" class="w-full h-full rounded-[14px] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7XJMdn_mnAxv30f3dNr2l2sbVV24vnt2NRN7w8xSJrxmphDDMlzwBYPEB8dY4lwRcRRXiR1xQqnLkon5_tGEzfYds3ruizqla0WMZhlwf8nVJja2lKF3ROLXd4oHZZA0S4zL_Lu94OmpwxCSOqudE72k2Wk2t-k0YLAoX0g5WSrqp3p8YVX2ggb48Q3zrfszrQD3kuV3McZt_VZK-Ie22T7iSJ_nHH6xsjOon-_60i8XrmH387aEgD96Ibj63W4qeuBsC0DfqP28">

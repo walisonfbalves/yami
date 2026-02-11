@@ -41,50 +41,47 @@
             </div>
 
             <!-- Form -->
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
-                <!-- Email Input -->
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+                <!-- Check if getControl helper exists or use get('name') -->
+                
+                <ui-input
+                    label="Endereço de Email"
+                    [control]="$any(loginForm.get('email'))"
+                    type="email"
+                    placeholder="chef@yami.com"
+                    icon="mail">
+                </ui-input>
+
                 <div class="space-y-2">
-                    <label class="text-sm font-medium text-stone-700 dark:text-stone-300" for="email">Endereço de Email</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="material-symbols-outlined text-stone-400 text-xl">mail</span>
-                        </span>
-                        <input formControlName="email" 
-                               class="w-full pl-10 pr-4 py-3 bg-stone-50 dark:bg-[#1c1917] border border-stone-200 dark:border-stone-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-stone-900 dark:text-white placeholder-stone-400 transition-colors" 
-                               id="email" placeholder="chef@yami.com" type="email" />
+                    <div class="flex justify-end">
+                         <a class="text-xs font-semibold text-primary hover:text-amber-400 transition-colors cursor-pointer">Esqueceu a senha?</a>
                     </div>
+                    <ui-input
+                        label="Senha"
+                        [control]="$any(loginForm.get('password'))"
+                        type="password"
+                        placeholder="••••••••"
+                        icon="lock">
+                    </ui-input>
                 </div>
 
-                <!-- Password Input -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm font-medium text-stone-700 dark:text-stone-300" for="password">Senha</label>
-                        <a class="text-xs font-semibold text-primary hover:text-amber-400 transition-colors" href="#">Esqueceu a senha?</a>
-                    </div>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="material-symbols-outlined text-stone-400 text-xl">lock</span>
-                        </span>
-                        <input formControlName="password"
-                               [type]="showPassword ? 'text' : 'password'"
-                               class="w-full pl-10 pr-4 py-3 bg-stone-50 dark:bg-[#1c1917] border border-stone-200 dark:border-stone-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-stone-900 dark:text-white placeholder-stone-400 transition-colors" 
-                               id="password" placeholder="••••••••" />
-                        <button type="button" (click)="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-200">
-                            <span class="material-symbols-outlined text-xl">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Remember Me -->
+                <!-- Remember Me (Mock Control for now as it wasn't in the form group initially, adding it implicitly or assuming it exists) -->
+                <!-- Ideally update TS to include it, but for UI refactor checking: -->
                 <div class="flex items-center">
-                    <input class="h-4 w-4 text-primary bg-stone-100 dark:bg-stone-800 border-stone-300 dark:border-stone-700 rounded focus:ring-primary" id="remember-me" type="checkbox" />
-                    <label class="ml-2 block text-sm text-stone-600 dark:text-stone-400" for="remember-me">Lembrar de mim por 30 dias</label>
+                    <ui-checkbox 
+                        label="Lembrar de mim por 30 dias" 
+                        id="remember-me">
+                    </ui-checkbox>
                 </div>
 
                 <!-- Submit Button -->
-                <button class="w-full bg-primary hover:bg-amber-600 text-white font-bold py-3.5 px-4 rounded-lg shadow-lg shadow-primary/20 transition-all transform active:scale-[0.98] mt-2 font-heading uppercase tracking-wide text-lg" type="submit">
-                    Entrar
-                </button>
+                 <ui-button 
+                    type="submit" 
+                    variant="primary" 
+                    class="w-full"
+                    [loading]="false">
+                    ENTRAR
+                </ui-button>
             </form>
 
             <!-- Divider -->

@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <span 
       class="material-symbols-outlined select-none" 
-      [style.font-size]="size"
+      [style.font-size]="sizePx"
       [class]="color">
       {{ name }}
     </span>
@@ -18,6 +18,11 @@ import { CommonModule } from '@angular/common';
 })
 export class IconComponent {
   @Input() name: string = '';
-  @Input() size: string = '24px';
+  @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Input() color: string = '';
+
+  get sizePx(): string {
+    const map = { sm: '16px', md: '24px', lg: '32px', xl: '48px' };
+    return map[this.size];
+  }
 }
