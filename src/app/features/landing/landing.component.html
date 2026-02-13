@@ -48,8 +48,18 @@
 
   <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden">
     <div
-      class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50"
-    ></div>
+      class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full -z-10 opacity-40 pointer-events-none"
+    >
+      <div
+        class="absolute top-0 -left-4 w-72 h-72 bg-primary rounded-full mix-blend-screen filter blur-[128px] animate-blob"
+      ></div>
+      <div
+        class="absolute top-0 -right-4 w-72 h-72 bg-orange-600 rounded-full mix-blend-screen filter blur-[128px] animate-blob animation-delay-2000"
+      ></div>
+      <div
+        class="absolute -bottom-8 left-20 w-72 h-72 bg-rose-600 rounded-full mix-blend-screen filter blur-[128px] animate-blob animation-delay-4000"
+      ></div>
+    </div>
 
     <div class="max-w-5xl mx-auto text-center relative z-10">
       <h1
@@ -57,7 +67,7 @@
       >
         Gestão de pedidos que dá <br />
         <span
-          class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-orange-400 to-amber-500"
+          class="animate-shimmer bg-gradient-to-r from-primary via-white/80 to-primary bg-[length:200%_100%] bg-clip-text text-transparent"
           >água na boca</span
         >
       </h1>
@@ -88,9 +98,6 @@
     <div
       class="max-w-6xl mx-auto bg-stone-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden relative group"
     >
-      <div
-        class="absolute inset-0 bg-gradient-to-b from-transparent to-stone-950/80 z-20 pointer-events-none"
-      ></div>
       <img
         src="https://ui.aceternity.com/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1551288049-bebda4e38f71%3Fq%3D80%26w%3D2670%26auto%3Dformat%26fit%3Dcrop&w=3840&q=75"
         alt="Dashboard Preview"
