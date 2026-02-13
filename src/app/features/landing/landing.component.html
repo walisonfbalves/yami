@@ -1,21 +1,45 @@
-<div class="min-h-screen bg-stone-950 text-stone-200 font-display selection:bg-primary selection:text-primary-content">
-  
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-stone-950/80 backdrop-blur-md border-b border-white/5">
+<div
+  class="min-h-screen bg-stone-950 text-stone-200 font-display selection:bg-primary selection:text-primary-content"
+>
+  <nav
+    class="fixed top-0 left-0 right-0 z-50 bg-stone-950/80 backdrop-blur-md border-b border-white/5"
+  >
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="flex items-center gap-2">
-         <span class="material-symbols-outlined text-primary text-3xl">restaurant_menu</span>
-         <span class="font-heading text-2xl font-bold text-white tracking-tight uppercase">Yami</span>
+        <span class="material-symbols-outlined text-primary text-3xl"
+          >restaurant_menu</span
+        >
+        <span
+          class="font-heading text-2xl font-bold text-white tracking-tight uppercase"
+          >Yami</span
+        >
       </div>
 
       <div class="hidden md:flex items-center gap-8">
-        <a href="#features" class="text-sm font-medium text-stone-400 hover:text-white transition-colors">Funcionalidades</a>
-        <a href="#pricing" class="text-sm font-medium text-stone-400 hover:text-white transition-colors">Planos</a>
-        <a href="#testimonials" class="text-sm font-medium text-stone-400 hover:text-white transition-colors">Depoimentos</a>
+        <a
+          href="#features"
+          class="text-sm font-medium text-stone-400 hover:text-white transition-colors"
+          >Funcionalidades</a
+        >
+        <a
+          href="#pricing"
+          class="text-sm font-medium text-stone-400 hover:text-white transition-colors"
+          >Planos</a
+        >
       </div>
 
       <div class="flex items-center gap-4">
-        <a routerLink="/auth/login" class="text-sm font-bold text-white hover:text-primary transition-colors">Entrar</a>
-        <ui-button routerLink="/auth/login" [queryParams]="{tab: 'register'}" variant="primary" size="sm">
+        <a
+          routerLink="/auth/login"
+          class="text-sm font-bold text-white hover:text-primary transition-colors"
+          >Entrar</a
+        >
+        <ui-button
+          routerLink="/auth/login"
+          [queryParams]="{ tab: 'register' }"
+          variant="primary"
+          size="sm"
+        >
           Começar Grátis
         </ui-button>
       </div>
@@ -23,130 +47,339 @@
   </nav>
 
   <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50"></div>
+    <div
+      class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50"
+    ></div>
 
     <div class="max-w-5xl mx-auto text-center relative z-10">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 animate-fade-in-up">
-        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-        <span class="text-xs font-medium text-primary uppercase tracking-wider">Novo: Integração com iFood</span>
-      </div>
-      
-      <h1 class="text-5xl md:text-7xl font-heading font-bold text-white leading-tight mb-6 tracking-tight">
-        Gestão de pedidos que dá <br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-orange-400 to-amber-500">água na boca</span>
+      <h1
+        class="text-5xl md:text-7xl font-heading font-bold text-white leading-tight mb-6 tracking-tight"
+      >
+        Gestão de pedidos que dá <br />
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-orange-400 to-amber-500"
+          >água na boca</span
+        >
       </h1>
-      
-      <p class="text-lg md:text-xl text-stone-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        O Yami é o sistema operacional completo para restaurantes modernos. 
-        Cardápio digital, gestão de entregas e fidelização em uma única plataforma.
+
+      <p
+        class="text-lg md:text-xl text-stone-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+      >
+        O Yami é o sistema operacional completo para restaurantes modernos.
+        Cardápio digital flexível, métricas de venda, acompanhamento em tempo
+        real e fidelização em uma única plataforma.
       </p>
 
       <div class="flex flex-col md:flex-row items-center justify-center gap-4">
-        <ui-button routerLink="/auth/login" [queryParams]="{tab: 'register'}" variant="primary" size="lg" icon="rocket_launch">
+        <ui-button
+          routerLink="/auth/login"
+          [queryParams]="{ tab: 'register' }"
+          variant="primary"
+          size="lg"
+          icon="rocket_launch"
+        >
           Criar Conta Grátis
         </ui-button>
-        <ui-button variant="secondary" size="lg" icon="play_circle">
-          Ver Demonstração
-        </ui-button>
-      </div>
-
-      <div class="mt-12 text-sm text-stone-500 flex items-center justify-center gap-6">
-        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">check_circle</span> Sem cartão de crédito</span>
-        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">check_circle</span> 14 dias grátis</span>
-        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-primary">check_circle</span> Cancelamento fácil</span>
       </div>
     </div>
   </section>
 
   <section class="px-6 pb-32">
-    <div class="max-w-6xl mx-auto bg-stone-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden relative group">
-       <div class="absolute inset-0 bg-gradient-to-b from-transparent to-stone-950/80 z-20 pointer-events-none"></div>
-       <img src="https://ui.aceternity.com/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1551288049-bebda4e38f71%3Fq%3D80%26w%3D2670%26auto%3Dformat%26fit%3Dcrop&w=3840&q=75" 
-            alt="Dashboard Preview" 
-            class="w-full h-auto opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out"
-       >
-       <div class="absolute bottom-0 left-0 right-0 p-12 text-center z-30">
-          <h3 class="text-2xl font-bold text-white mb-2">Tudo em um só lugar</h3>
-          <p class="text-stone-400">Acompanhe pedidos, estoque e entregas em tempo real.</p>
-       </div>
+    <div
+      class="max-w-6xl mx-auto bg-stone-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden relative group"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-transparent to-stone-950/80 z-20 pointer-events-none"
+      ></div>
+      <img
+        src="https://ui.aceternity.com/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1551288049-bebda4e38f71%3Fq%3D80%26w%3D2670%26auto%3Dformat%26fit%3Dcrop&w=3840&q=75"
+        alt="Dashboard Preview"
+        class="w-full h-auto opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out"
+      />
+      <div class="absolute bottom-0 left-0 right-0 p-12 text-center z-30">
+        <h3 class="text-2xl font-bold text-white mb-2">Tudo em um só lugar</h3>
+        <p class="text-stone-400">
+          Acompanhe pedidos, estoque e entregas em tempo real.
+        </p>
+      </div>
     </div>
   </section>
 
   <section id="features" class="py-24 bg-stone-900/50 border-y border-white/5">
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Feito para quem tem fome de crescer</h2>
-        <p class="text-stone-400 max-w-2xl mx-auto">Ferramentas poderosas simplificadas para o dia a dia da sua operação.</p>
+        <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+          Feito para quem tem fome de crescer
+        </h2>
+        <p class="text-stone-400 max-w-2xl mx-auto">
+          Ferramentas poderosas simplificadas para o dia a dia da sua operação.
+        </p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group">
-          <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-            <span class="material-symbols-outlined text-primary text-2xl">menu_book</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div
+          class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors"
+          >
+            <span class="material-symbols-outlined text-primary text-2xl"
+              >notifications_active</span
+            >
           </div>
-          <h3 class="text-xl font-bold text-white mb-3">Cardápio Digital</h3>
-          <p class="text-stone-400 leading-relaxed">Crie um cardápio atraente, atualize preços em segundos e receba pedidos via QR Code ou Link.</p>
+          <h3 class="text-xl font-bold text-white mb-3">
+            Acompanhamento em Tempo Real
+          </h3>
+          <p class="text-stone-400 leading-relaxed">
+            Receba pedidos instantaneamente na sua tela. Controle o status de
+            preparo e saída para entrega sem perder nenhum detalhe.
+          </p>
         </div>
 
-        <div class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group">
-          <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-            <span class="material-symbols-outlined text-primary text-2xl">two_wheeler</span>
+        <div
+          class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors"
+          >
+            <span class="material-symbols-outlined text-primary text-2xl"
+              >restaurant_menu</span
+            >
           </div>
-          <h3 class="text-xl font-bold text-white mb-3">Gestão de Entregas</h3>
-          <p class="text-stone-400 leading-relaxed">Otimize rotas, gerencie taxas de entrega por bairro e mantenha seus motoboys organizados.</p>
+          <h3 class="text-xl font-bold text-white mb-3">
+            Cardápio Digital Flexível
+          </h3>
+          <p class="text-stone-400 leading-relaxed">
+            Edite preços, fotos e descrições em segundos. Ative ou pause
+            produtos com um clique, sem depender de suporte.
+          </p>
         </div>
 
-        <div class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group">
-          <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-            <span class="material-symbols-outlined text-primary text-2xl">monitoring</span>
+        <div
+          class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors"
+          >
+            <span class="material-symbols-outlined text-primary text-2xl"
+              >monitoring</span
+            >
           </div>
-          <h3 class="text-xl font-bold text-white mb-3">Relatórios Inteligentes</h3>
-          <p class="text-stone-400 leading-relaxed">Entenda o que vende mais, quais os melhores horários e tome decisões baseadas em dados.</p>
+          <h3 class="text-xl font-bold text-white mb-3">Métricas de Venda</h3>
+          <p class="text-stone-400 leading-relaxed">
+            Visualize seu faturamento diário e mensal. Saiba exatamente quanto
+            sua cozinha lucrou no final do expediente.
+          </p>
+        </div>
+
+        <div
+          class="bg-stone-950 p-8 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors"
+          >
+            <span class="material-symbols-outlined text-primary text-2xl"
+              >dashboard</span
+            >
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Visão Geral da Loja</h3>
+          <p class="text-stone-400 leading-relaxed">
+            Uma central de comando para sua operação. Visualize pedidos
+            recentes, status da loja e avisos importantes em um só lugar.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
+  <section id="pricing" class="py-24 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+          Preço justo que cresce com você
+        </h2>
+        <p class="text-stone-400 max-w-2xl mx-auto">
+          Pague apenas pelo que faz sentido para o tamanho da sua operação.
+        </p>
+      </div>
+
+      <div class="bg-stone-900 rounded-2xl border border-white/10 p-8 md:p-12">
+        <div class="mb-10">
+          <label class="block text-sm font-medium text-stone-400 mb-4">
+            Sua venda mensal estimada:
+            <span class="text-white font-bold text-lg ml-2">
+              R$ {{ formattedRevenue }}
+            </span>
+          </label>
+          <input
+            type="range"
+            [(ngModel)]="revenue"
+            min="0"
+            max="30000"
+            step="500"
+            class="w-full h-2 rounded-full appearance-none cursor-pointer bg-stone-700 accent-primary [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-primary/30 [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+          />
+          <div class="flex justify-between text-xs text-stone-600 mt-2">
+            <span>R$ 0</span>
+            <span>R$ 5.000</span>
+            <span>R$ 15.000</span>
+            <span>R$ 30.000</span>
+          </div>
+        </div>
+
+        <div
+          class="rounded-2xl p-8 md:p-10 text-center border transition-all duration-300"
+          [ngClass]="{
+            'bg-emerald-950/30 border-emerald-500/30': isFree,
+            'bg-stone-950 border-primary/30': !isFree,
+          }"
+        >
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4"
+            [ngClass]="{
+              'bg-emerald-500/10 text-emerald-400': isFree,
+              'bg-primary/10 text-primary': !isFree,
+            }"
+          >
+            Plano {{ planName }}
+          </span>
+
+          <div class="mb-2">
+            <span
+              class="text-5xl md:text-6xl font-heading font-bold"
+              [ngClass]="{
+                'text-emerald-400': isFree,
+                'text-white': !isFree,
+              }"
+            >
+              {{ formattedPrice }}
+            </span>
+            <span *ngIf="!isFree" class="text-stone-500 text-lg">/mês</span>
+          </div>
+
+          <p class="text-stone-400 text-sm mb-8">
+            Para quem fatura até R$ {{ formattedRevenue }} por mês
+          </p>
+
+          <ui-button
+            routerLink="/auth/login"
+            [queryParams]="{ tab: 'register' }"
+            variant="primary"
+            size="lg"
+            icon="rocket_launch"
+          >
+            Começar com este plano
+          </ui-button>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flex items-center gap-3 text-stone-300">
+            <span class="material-symbols-outlined text-primary text-xl"
+              >check_circle</span
+            >
+            <span class="text-sm">Cardápio Digital Ilimitado</span>
+          </div>
+          <div class="flex items-center gap-3 text-stone-300">
+            <span class="material-symbols-outlined text-primary text-xl"
+              >check_circle</span
+            >
+            <span class="text-sm">Gestão de Pedidos</span>
+          </div>
+          <div class="flex items-center gap-3 text-stone-300">
+            <span class="material-symbols-outlined text-primary text-xl"
+              >check_circle</span
+            >
+            <span class="text-sm">Suporte via WhatsApp</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <footer class="bg-stone-950 pt-24 pb-12 border-t border-white/5">
     <div class="max-w-7xl mx-auto px-6">
       <div class="grid md:grid-cols-4 gap-12 mb-16">
         <div class="col-span-1 md:col-span-2">
           <div class="flex items-center gap-2 mb-6">
-            <span class="material-symbols-outlined text-primary text-2xl">restaurant_menu</span>
-            <span class="font-heading text-xl font-bold text-white tracking-tight uppercase">Yami</span>
+            <span class="material-symbols-outlined text-primary text-2xl"
+              >restaurant_menu</span
+            >
+            <span
+              class="font-heading text-xl font-bold text-white tracking-tight uppercase"
+              >Yami</span
+            >
           </div>
           <p class="text-stone-500 max-w-sm">
-            A plataforma completa para gestão de delivery e restaurantes. 
+            A plataforma completa para gestão de delivery e restaurantes.
             Construída com amor e tecnologia de ponta.
           </p>
         </div>
-        
+
         <div>
           <h4 class="font-bold text-white mb-6">Produto</h4>
           <ul class="space-y-4 text-stone-400">
-            <li><a href="#" class="hover:text-primary transition-colors">Funcionalidades</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Integrações</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Preços</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Changelog</a></li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Funcionalidades</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Integrações</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Preços</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Changelog</a
+              >
+            </li>
           </ul>
         </div>
 
         <div>
           <h4 class="font-bold text-white mb-6">Empresa</h4>
           <ul class="space-y-4 text-stone-400">
-            <li><a href="#" class="hover:text-primary transition-colors">Sobre Nós</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Carreiras</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Blog</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Contato</a></li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Sobre Nós</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Carreiras</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors">Blog</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-primary transition-colors"
+                >Contato</a
+              >
+            </li>
           </ul>
         </div>
       </div>
-      
-      <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-stone-600">
+
+      <div
+        class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-stone-600"
+      >
         <p>&copy; 2026 Yami Inc. Todos os direitos reservados.</p>
         <div class="flex gap-6">
-          <a routerLink="/legal/privacy" class="hover:text-primary transition-colors">Privacidade</a>
-          <a routerLink="/legal/terms" class="hover:text-primary transition-colors">Termos</a>
+          <a
+            routerLink="/legal/privacy"
+            class="hover:text-primary transition-colors"
+            >Privacidade</a
+          >
+          <a
+            routerLink="/legal/terms"
+            class="hover:text-primary transition-colors"
+            >Termos</a
+          >
         </div>
       </div>
     </div>
