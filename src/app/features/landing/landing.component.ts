@@ -39,4 +39,27 @@ export class LandingComponent {
   get isFree(): boolean {
     return this.planPrice === 0;
   }
+
+  faqItems = [
+    {
+      question: 'É verdade que posso começar de graça?',
+      answer: 'Sim! O plano Start é 100% gratuito para quem fatura até R$ 1.000,00 por mês pelo sistema. Você usa todas as ferramentas sem pagar mensalidade. Cresceu? O plano se ajusta automaticamente.'
+    },
+    {
+      question: 'O dinheiro das vendas cai na minha conta?',
+      answer: 'Com certeza. O Yami não segura seu dinheiro. Se você vender via Pix ou Cartão na entrega, o dinheiro é todo seu na hora. Nós somos o sistema de gestão, não o banco.'
+    },
+    {
+      question: 'Preciso de computador ou funciona no celular?',
+      answer: 'Funciona onde você estiver. O Yami foi desenhado para rodar leve no celular do dono, no tablet da cozinha ou no computador do caixa.'
+    },
+    {
+      question: 'Se eu não vender nada no mês, eu pago?',
+      answer: 'Não. Nosso modelo é justo: se você não usar ou não vender acima do limite gratuito, sua fatura é Zero. Nós só crescemos quando você cresce.'
+    },
+    {
+      question: 'Tem contrato de fidelidade?',
+      answer: 'Nenhum. Você é livre para cancelar quando quiser, sem multas e sem letras miúdas. Acreditamos que você vai ficar porque o sistema é bom, não porque está preso.'
+    }
+  ];
 }
