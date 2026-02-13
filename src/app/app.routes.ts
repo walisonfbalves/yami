@@ -4,7 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth/login', // Default redirect for now to show off new screens
+    loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent),
     pathMatch: 'full',
   },
   {
