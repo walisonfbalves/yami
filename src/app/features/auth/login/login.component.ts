@@ -6,6 +6,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { CheckboxComponent } from '../../../shared/ui/checkbox/checkbox.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SupabaseService } from '../../../core/services/supabase.service';
 
 @Component({
   selector: 'app-login',
@@ -26,14 +27,16 @@ export class LoginComponent {
   showPassword = false;
   showConfirmPassword = false;
   activeTab: 'login' | 'register' = 'login';
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder, 
     private router: Router,
-    private toast: ToastService
+    private toast: ToastService,
+    private supabase: SupabaseService
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required]], // Removed Validator.email to allow username
       password: ['', [Validators.required]]
     });
 
@@ -80,26 +83,51 @@ export class LoginComponent {
 
 
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
+    this.isLoading = true;
+
     if (this.activeTab === 'login') {
       if (this.loginForm.valid) {
-        // Here we should also implement Supabase Email Login later, but keeping mock for now as requested only Google Auth today.
-        this.toast.show('Login realizado com sucesso!', 'success');
-        localStorage.setItem('yami_token', 'mock_token_' + Date.now());
-        setTimeout(() => this.router.navigate(['/admin']), 800);
+        const { email, password } = this.loginForm.value;
+        const { data, error } = await this.supabase.signIn(email, password);
+
+        if (error) {
+          this.toast.show(error.message, 'error');
+          this.isLoading = false;
+        } else {
+          this.toast.show('Login realizado com sucesso!', 'success');
+          // Supabase persists session automatically
+          await this.router.navigate(['/admin']);
+          this.isLoading = false;
+        }
       } else {
           this.loginForm.markAllAsTouched();
           this.toast.show('Por favor, preencha todos os campos.', 'error');
+          this.isLoading = false;
       }
     } else {
       if (this.registerForm.valid) {
-        console.log('Dados de Cadastro:', this.registerForm.value);
-        this.toast.show('Conta criada com sucesso! Faça login.', 'success');
-        this.toggleTab('login');
-        this.registerForm.reset();
+        const { name, login, email, password } = this.registerForm.value;
+        const { data, error } = await this.supabase.signUp(email, password, { name, username: login });
+
+        if (error) {
+          this.toast.show(error.message, 'error');
+          this.isLoading = false;
+        } else {
+          if (data.session) {
+            this.toast.show('Conta criada com sucesso!', 'success');
+            await this.router.navigate(['/admin']);
+          } else {
+             this.toast.show('Conta criada! Verifique seu email para confirmar.', 'success');
+             this.toggleTab('login');
+             this.registerForm.reset();
+          }
+          this.isLoading = false;
+        }
       } else {
         this.registerForm.markAllAsTouched();
         this.toast.show('Corrija os erros do formulário.', 'error');
+        this.isLoading = false;
       }
     }
   }

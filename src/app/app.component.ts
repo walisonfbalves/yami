@@ -5,6 +5,8 @@ import { ToastComponent } from './shared/ui/toast/toast.component';
 import { DialogComponent } from './shared/ui/dialog/dialog.component';
 import { DialogService } from './shared/ui/dialog/dialog.service';
 
+import { SupabaseService } from './core/services/supabase.service';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,5 +17,10 @@ import { DialogService } from './shared/ui/dialog/dialog.service';
 export class AppComponent {
   title = 'yami';
   dialogService = inject(DialogService);
+  supabaseService = inject(SupabaseService);
   dialogState$ = this.dialogService.state$;
+
+  constructor() {
+    console.log('Supabase Status:', this.supabaseService.client ? 'Inicializado' : 'Erro');
+  }
 }

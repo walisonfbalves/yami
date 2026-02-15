@@ -97,11 +97,11 @@
         class="flex flex-col gap-6"
       >
         <ui-input
-          label="Endereço de Email"
+          label="Email ou Usuário"
           [control]="$any(loginForm.get('email'))"
-          type="email"
-          placeholder="chef@yami.com"
-          icon="mail"
+          type="text"
+          placeholder="chef@yami.com ou nome-de-usuario"
+          icon="account_circle"
         >
         </ui-input>
 
@@ -131,7 +131,7 @@
           type="submit"
           variant="primary"
           [fullWidth]="true"
-          [loading]="false"
+          [loading]="isLoading"
         >
           ENTRAR
         </ui-button>
@@ -323,7 +323,7 @@
           variant="primary"
           [fullWidth]="true"
           [disabled]="registerForm.invalid"
-          [loading]="false"
+          [loading]="isLoading"
         >
           CRIAR CONTA
         </ui-button>
