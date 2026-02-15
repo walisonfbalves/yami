@@ -6,7 +6,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { CheckboxComponent } from '../../../shared/ui/checkbox/checkbox.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
-import { SupabaseService } from '../../../core/services/supabase.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -33,10 +33,10 @@ export class LoginComponent {
     private fb: FormBuilder, 
     private router: Router,
     private toast: ToastService,
-    private supabase: SupabaseService
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]], // Removed Validator.email to allow username
+      email: ['', [Validators.required]], 
       password: ['', [Validators.required]]
     });
 
@@ -81,23 +81,25 @@ export class LoginComponent {
     return null;
   }
 
-
-
   async onSubmit(): Promise<void> {
     this.isLoading = true;
 
     if (this.activeTab === 'login') {
       if (this.loginForm.valid) {
         const { email, password } = this.loginForm.value;
-        const { data, error } = await this.supabase.signIn(email, password);
+        try {
+          const { error } = await this.authService.signIn(email, password);
 
-        if (error) {
-          this.toast.show(error.message, 'error');
-          this.isLoading = false;
-        } else {
-          this.toast.show('Login realizado com sucesso!', 'success');
-          // Supabase persists session automatically
-          await this.router.navigate(['/admin']);
+          if (error) {
+            this.toast.show(error.message, 'error');
+            this.isLoading = false;
+          } else {
+            this.toast.show('Login realizado com sucesso!', 'success');
+            await this.router.navigate(['/admin']);
+            this.isLoading = false;
+          }
+        } catch (err: any) {
+          this.toast.show(err.message || 'Erro ao realizar login', 'error');
           this.isLoading = false;
         }
       } else {
@@ -108,21 +110,26 @@ export class LoginComponent {
     } else {
       if (this.registerForm.valid) {
         const { name, login, email, password } = this.registerForm.value;
-        const { data, error } = await this.supabase.signUp(email, password, { name, username: login });
+        try {
+          const { data, error } = await this.authService.signUp(email, password, { name, username: login });
 
-        if (error) {
-          this.toast.show(error.message, 'error');
-          this.isLoading = false;
-        } else {
-          if (data.session) {
-            this.toast.show('Conta criada com sucesso!', 'success');
-            await this.router.navigate(['/admin']);
+          if (error) {
+            this.toast.show(error.message, 'error');
+            this.isLoading = false;
           } else {
-             this.toast.show('Conta criada! Verifique seu email para confirmar.', 'success');
-             this.toggleTab('login');
-             this.registerForm.reset();
+            if (data.session) {
+              this.toast.show('Conta criada com sucesso!', 'success');
+              await this.router.navigate(['/admin']);
+            } else {
+              this.toast.show('Conta criada! Verifique seu email para confirmar.', 'success');
+              this.toggleTab('login');
+              this.registerForm.reset();
+            }
+            this.isLoading = false;
           }
-          this.isLoading = false;
+        } catch (err: any) {
+            this.toast.show(err.message || 'Erro ao criar conta', 'error');
+            this.isLoading = false;
         }
       } else {
         this.registerForm.markAllAsTouched();

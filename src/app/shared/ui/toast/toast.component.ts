@@ -41,11 +41,11 @@ export class ToastComponent {
 
   getClasses(type: string): string {
     switch (type) {
-      case 'success': return 'bg-emerald-500/90 text-white';
-      case 'error': return 'bg-red-500/90 text-white';
-      case 'warning': return 'bg-amber-500/90 text-white';
-      case 'info': return 'bg-blue-500/90 text-white';
-      default: return 'bg-stone-800 text-white';
+      case 'success': return 'bg-emerald-600 text-white border-emerald-400';
+      case 'error': return 'bg-red-600 text-white border-red-400';
+      case 'warning': return 'bg-amber-600 text-white border-amber-400';
+      case 'info': return 'bg-blue-600 text-white border-blue-400';
+      default: return 'bg-stone-800 text-white border-stone-600';
     }
   }
 
