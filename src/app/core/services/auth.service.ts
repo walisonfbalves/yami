@@ -8,7 +8,10 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private supabase = inject(SupabaseService).client;
+  // Mantém a injeção no contexto de inicialização (permitido)
+  // Mas agora guardamos o serviço inteiro, não só o client, para usar os métodos customizados (signIn/signUp)
+  private supabaseService = inject(SupabaseService);
+  private supabase = this.supabaseService.client;
   private router = inject(Router);
 
   private _session = new BehaviorSubject<Session | null>(null);
@@ -49,18 +52,12 @@ export class AuthService {
   }
 
   async signIn(identifier: string, password: string) {
-    // Reutiliza a lógica de login híbrido do SupabaseService, mas agora centralizada
-    // Precisamos acessar o método signIn do SupabaseService, não do client diretamente
-    // Porém, como injetamos o 'client' acima, vamos precisar injetar o service completo
-    // ou mover a lógica de "identifier" para cá.
-    // Vamos usar o SupabaseService injetado.
-    
-    // Pequeno ajuste: injetar o serviço inteiro, não só o client
-    return inject(SupabaseService).signIn(identifier, password);
+    // Agora usamos a instância injetada corretamente
+    return this.supabaseService.signIn(identifier, password);
   }
 
   async signUp(email: string, password: string, data: { name: string; username: string; }) {
-    return inject(SupabaseService).signUp(email, password, data);
+    return this.supabaseService.signUp(email, password, data);
   }
 
   async signOut() {
