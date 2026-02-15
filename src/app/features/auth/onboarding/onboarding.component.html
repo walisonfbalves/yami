@@ -1,0 +1,141 @@
+<div
+  class="min-h-screen bg-stone-950 flex flex-col items-center justify-center p-4"
+>
+  <div class="w-full max-w-md space-y-8 animate-fade-in-up">
+    <!-- Header -->
+    <div class="text-center space-y-2">
+      <div class="flex justify-center mb-6">
+        <span class="material-symbols-outlined text-4xl text-amber-500"
+          >storefront</span
+        >
+      </div>
+      <h1 class="text-3xl font-black text-white tracking-tight">
+        Crie seu Restaurante
+      </h1>
+      <p class="text-stone-400">
+        Configure sua loja para começar a receber pedidos.
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form
+      [formGroup]="storeForm"
+      (ngSubmit)="onSubmit()"
+      class="bg-stone-900 border border-stone-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6"
+    >
+      <!-- Nome da Loja -->
+      <div class="space-y-4">
+        <div>
+          <label
+            class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1.5 block"
+            >Nome do Restaurante</label
+          >
+          <div class="relative group">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 group-focus-within:text-amber-500 transition-colors"
+              >restaurant</span
+            >
+            <input
+              formControlName="name"
+              type="text"
+              class="w-full bg-stone-800 border-stone-700 text-white pl-10 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none placeholder:text-stone-600"
+              placeholder="Ex: Yami Burgers"
+              (input)="generateSlug()"
+            />
+          </div>
+          <p
+            *ngIf="
+              storeForm.get('name')?.touched && storeForm.get('name')?.invalid
+            "
+            class="text-red-400 text-xs mt-1 ml-1"
+          >
+            Nome é obrigatório.
+          </p>
+        </div>
+
+        <!-- URL da Loja (Slug) -->
+        <div>
+          <label
+            class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1.5 block"
+            >Link do Cardápio</label
+          >
+          <div class="relative group">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 group-focus-within:text-amber-500 transition-colors"
+              >link</span
+            >
+            <div
+              class="flex items-center w-full bg-stone-800 border border-stone-700 rounded-xl focus-within:ring-2 focus-within:ring-amber-500/50 focus-within:border-amber-500 transition-all overflow-hidden"
+            >
+              <span class="pl-10 pr-1 py-3 text-stone-500 text-sm select-none"
+                >yami.app/</span
+              >
+              <input
+                formControlName="slug"
+                type="text"
+                class="flex-1 bg-transparent border-none text-white py-3 pr-4 focus:ring-0 outline-none placeholder:text-stone-600 text-sm font-mono"
+                placeholder="yami-burgers"
+              />
+            </div>
+          </div>
+          <p class="text-stone-500 text-xs mt-1 ml-1">
+            Este será o link para seus clientes acessarem o cardápio.
+          </p>
+          <p
+            *ngIf="
+              storeForm.get('slug')?.touched && storeForm.get('slug')?.invalid
+            "
+            class="text-red-400 text-xs mt-1 ml-1"
+          >
+            URL inválida (use apenas letras minúsculas e hifens).
+          </p>
+        </div>
+
+        <!-- Telefone (WhatsApp) -->
+        <div>
+          <label
+            class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1.5 block"
+            >WhatsApp (Opcional)</label
+          >
+          <div class="relative group">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 group-focus-within:text-amber-500 transition-colors"
+              >chat</span
+            >
+            <input
+              formControlName="phone"
+              type="tel"
+              class="w-full bg-stone-800 border-stone-700 text-white pl-10 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none placeholder:text-stone-600"
+              placeholder="(11) 99999-9999"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão de Ação -->
+      <button
+        type="submit"
+        [disabled]="storeForm.invalid || isLoading"
+        class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl transition-all transform active:scale-[0.98] shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span
+          *ngIf="isLoading"
+          class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+        ></span>
+        <span *ngIf="!isLoading">CRIAR RESTAURANTE</span>
+        <span *ngIf="!isLoading" class="material-symbols-outlined text-lg"
+          >arrow_forward</span
+        >
+      </button>
+    </form>
+
+    <div class="text-center">
+      <button
+        (click)="logout()"
+        class="text-stone-500 hover:text-stone-300 text-sm transition-colors"
+      >
+        Sair da conta
+      </button>
+    </div>
+  </div>
+</div>

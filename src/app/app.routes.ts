@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { storeGuard, onboardingGuard } from './core/guards/store.guard';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,11 @@ export const routes: Routes = [
     redirectTo: 'auth/login'
   },
   {
+    path: 'onboarding',
+    loadComponent: () => import('./features/auth/onboarding/onboarding.component').then(m => m.OnboardingComponent),
+    canActivate: [authGuard, onboardingGuard] // Só logado + SEM loja
+  },
+  {
     path: 'legal/terms',
     loadComponent: () => import('./features/legal/legal.component').then(m => m.LegalComponent),
     data: { type: 'terms' }
@@ -30,7 +36,7 @@ export const routes: Routes = [
     path: 'admin',
     loadComponent: () =>
       import('./features/admin/layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
-    canActivate: [authGuard],
+    canActivate: [authGuard, storeGuard], // Só logado + COM loja
     children: [
         {
             path: 'dashboard',
