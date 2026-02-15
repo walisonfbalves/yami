@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../../../environments/environment';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { CheckboxComponent } from '../../../shared/ui/checkbox/checkbox.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
@@ -28,15 +26,12 @@ export class LoginComponent {
   showPassword = false;
   showConfirmPassword = false;
   activeTab: 'login' | 'register' = 'login';
-  private supabase: SupabaseClient;
 
   constructor(
     private fb: FormBuilder, 
     private router: Router,
     private toast: ToastService
   ) {
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
-
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
@@ -83,21 +78,7 @@ export class LoginComponent {
     return null;
   }
 
-  async signInWithGoogle(): Promise<void> {
-    try {
-      const { error } = await this.supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
 
-      if (error) throw error;
-      
-    } catch (error: any) {
-      this.toast.show('Erro ao conectar com Google: ' + error.message, 'error');
-    }
-  }
 
   onSubmit(): void {
     if (this.activeTab === 'login') {
