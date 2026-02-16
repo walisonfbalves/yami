@@ -71,7 +71,7 @@ export class OnboardingComponent {
   }
 
   navigateToAdmin() {
-    window.location.href = '/admin';
+    this.router.navigate(['/admin']);
   }
 
   async logout() {

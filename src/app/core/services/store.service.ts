@@ -21,7 +21,7 @@ export class StoreService {
   private authService = inject(AuthService);
   private supabase = this.supabaseService.supabaseClient;
 
-  private _currentStore = new BehaviorSubject<Store | null>(null);
+  private _currentStore = new BehaviorSubject<Store | null | undefined>(undefined);
   readonly currentStore$ = this._currentStore.asObservable();
 
   constructor() {
@@ -59,6 +59,7 @@ export class StoreService {
       tap(store => this._currentStore.next(store)),
       catchError(err => {
         console.error('Erro ao buscar loja:', err);
+        this._currentStore.next(null);
         return of(null);
       })
     );

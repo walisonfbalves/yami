@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { StoreService } from '../services/store.service';
-import { map, take, tap } from 'rxjs/operators';
+import { map, take, tap, filter } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
 export const storeGuard = () => {
@@ -15,12 +15,11 @@ export const storeGuard = () => {
   }
 
   return storeService.currentStore$.pipe(
-    // Garante que não é o valor inicial null (loading)
-    // Se for null e não tiver carregado ainda, o switchMap no construtor do StoreService vai resolver
-    // Mas aqui vamos assumir que o fluxo de auth já startou o fetchStore
+    // Garante que não é o valor inicial undefined (loading)
+    filter(store => store !== undefined),
     take(1),
     map(store => {
-      // Se não tem loja, manda criar
+      // Se não tem loja (null), manda criar
       if (!store) {
         return router.createUrlTree(['/onboarding']);
       }
@@ -36,6 +35,7 @@ export const onboardingGuard = () => {
     const storeService = inject(StoreService);
   
     return storeService.currentStore$.pipe(
+      filter(store => store !== undefined),
       take(1),
       map(store => {
         // Se JÁ tem loja, não deve acessar onboarding, vai pro admin
