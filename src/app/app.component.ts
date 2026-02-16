@@ -21,6 +21,6 @@ export class AppComponent {
   dialogState$ = this.dialogService.state$;
 
   constructor() {
-    console.log('Supabase Status:', this.supabaseService.client ? 'Inicializado' : 'Erro');
+    console.log('Supabase Status:', this.supabaseService.supabaseClient ? 'Inicializado' : 'Erro');
   }
 }

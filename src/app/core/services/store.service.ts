@@ -19,7 +19,7 @@ export interface Store {
 export class StoreService {
   private supabaseService = inject(SupabaseService);
   private authService = inject(AuthService);
-  private supabase = this.supabaseService.client;
+  private supabase = this.supabaseService.supabaseClient;
 
   private _currentStore = new BehaviorSubject<Store | null>(null);
   readonly currentStore$ = this._currentStore.asObservable();

@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { compressImage } from '../../../../../shared/utils/image-compressor';
+import { MenuService } from '../../../../../core/services/menu.service';
 
 @Component({
   selector: 'app-product-form',
@@ -25,15 +26,19 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                         <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Imagem do Produto</label>
                         <div class="flex items-center gap-6">
                             <div class="w-24 h-24 rounded-lg bg-stone-950 border border-stone-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative group">
-                                <img *ngIf="imageUrl?.value && !imageError" 
-                                     [src]="imageUrl?.value" 
+                                <img *ngIf="productForm.get('image_url')?.value && !imageError" 
+                                     [src]="productForm.get('image_url')?.value" 
                                      class="w-full h-full object-cover" 
                                      alt="Preview">
-                                <span *ngIf="!imageUrl?.value" class="material-symbols-outlined text-stone-700 text-3xl">image</span>
+                                <span *ngIf="!productForm.get('image_url')?.value" class="material-symbols-outlined text-stone-700 text-3xl">image</span>
                                 
-                                <button *ngIf="imageUrl?.value" (click)="productForm.patchValue({image: ''})" class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button *ngIf="productForm.get('image_url')?.value" (click)="productForm.patchValue({image_url: ''})" class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span class="material-symbols-outlined text-white">delete</span>
                                 </button>
+                                
+                                <div *ngIf="isUploading" class="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                    <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                </div>
                             </div>
 
                             <div class="flex-1">
@@ -50,7 +55,7 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                                         <p class="mb-1 text-xs text-stone-500"><span class="font-bold text-stone-400 group-hover:text-white transition-colors">Clique para upload</span> ou arraste</p>
                                         <p class="text-[10px] text-stone-600">SVG, PNG, JPG or GIF (MAX. 800x800px)</p>
                                     </div>
-                                    <input type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" />
+                                    <input type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" [disabled]="isUploading" />
                                 </label>
                             </div>
                         </div>
@@ -81,9 +86,9 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
                         </div>
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Categoria</label>
-                            <select formControlName="category" 
+                            <select formControlName="category_id" 
                                     class="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
-                                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                                <option *ngFor="let cat of categoriesList" [value]="cat.id">{{ cat.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -102,12 +107,13 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
             <div class="p-6 border-t border-stone-800 bg-stone-900/50 flex justify-end gap-3">
                 <button (click)="onCancel()" class="px-6 py-2.5 rounded-lg border border-stone-700 font-bold text-stone-400 hover:bg-stone-800 hover:text-white transition-all">Cancelar</button>
                 <button (click)="onSave()" 
-                        [disabled]="productForm.invalid"
-                        [class.opacity-50]="productForm.invalid"
-                        [class.cursor-not-allowed]="productForm.invalid"
+                        [disabled]="productForm.invalid || isUploading"
+                        [class.opacity-50]="productForm.invalid || isUploading"
+                        [class.cursor-not-allowed]="productForm.invalid || isUploading"
                         class="px-6 py-2.5 rounded-lg bg-primary text-background-dark font-bold hover:bg-amber-600 transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Salvar Produto
+                    <span *ngIf="!isUploading" class="material-symbols-outlined text-[18px]">save</span>
+                    <span *ngIf="isUploading" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+                    {{ isUploading ? 'Salvando...' : 'Salvar Produto' }}
                 </button>
             </div>
         </div>
@@ -120,42 +126,55 @@ import { compressImage } from '../../../../../shared/utils/image-compressor';
     .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
   `]
 })
-export class ProductFormComponent implements OnChanges {
+export class ProductFormComponent implements OnChanges, OnInit {
   @Input() product: any = null;
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
+  private menuService = inject(MenuService);
+
   productForm: FormGroup;
-  categories = ['Burgers', 'Bebidas', 'Sobremesas', 'Pratos Principais', 'Entradas'];
-  productImage: string | null = null;
+  categoriesList: any[] = []; // Should be injected or passed as input
+  isUploading = false;
   imageError = false;
+  isDragging = false;
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
       price: [0, [Validators.required, Validators.min(0)]],
-      category: ['Burgers', Validators.required],
-      image: [''],
-      available: [true]
+      category_id: ['', Validators.required],
+      image_url: [''],
+      is_available: [true]
     });
+  }
+
+  ngOnInit() {
+      // Fetch categories for the select dropdown
+      // For now, assuming we have a valid storeId available or we pass categories as input
+      // Let's rely on parent passing categories ideally, but for quick fix, fetching here:
+      const storeId = '639d6759-3315-420a-86c3-16298517220b'; 
+      this.menuService.getCategories(storeId).subscribe(cats => {
+          this.categoriesList = cats;
+          if (cats.length > 0 && !this.productForm.get('category_id')?.value) {
+              this.productForm.patchValue({ category_id: cats[0].id });
+          }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
       if (changes['product'] && this.product) {
-          this.productForm.patchValue(this.product);
+          this.productForm.patchValue({
+              ...this.product,
+              category_id: this.product.category_id || this.product.category // handle both naming conventions if transitioned
+          });
           this.imageError = false;
       }
   }
 
-  isDragging = false;
-
   get isEditing(): boolean {
       return !!this.product;
-  }
-
-  get imageUrl() {
-      return this.productForm.get('image');
   }
 
   onDragOver(event: DragEvent) {
@@ -172,7 +191,6 @@ export class ProductFormComponent implements OnChanges {
 
   onDrop(event: DragEvent) {
       event.preventDefault();
-      event.stopPropagation();
       this.isDragging = false;
       
       const file = event.dataTransfer?.files[0];
@@ -190,18 +208,21 @@ export class ProductFormComponent implements OnChanges {
 
   async processFile(file: File) {
       this.imageError = false;
-      // Show optimizing state (optional UI feedback logic could be added here)
+      this.isUploading = true;
       try {
-          console.log('Optimizing image...');
+          // Compress before upload if needed
           const compressedBlob = await compressImage(file);
-          const previewUrl = URL.createObjectURL(compressedBlob);
+          const compressedFile = new File([compressedBlob], file.name, { type: file.type });
+
+          const publicUrl = await this.menuService.uploadImage(compressedFile);
           
-          this.productForm.patchValue({ image: previewUrl });
-          this.productImage = previewUrl; 
+          this.productForm.patchValue({ image_url: publicUrl });
           
       } catch (error) {
-          console.error('Image compression failed', error);
+          console.error('Image upload failed', error);
           this.imageError = true;
+      } finally {
+          this.isUploading = false;
       }
   }
 

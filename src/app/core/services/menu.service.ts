@@ -1,81 +1,174 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { MenuData } from '../models/yami.types';
+import { Injectable, inject } from '@angular/core';
+import { SupabaseService } from './supabase.service';
+import { Observable, from, map } from 'rxjs';
+
+export interface Category {
+  id?: string;
+  store_id?: string;
+  name: string;
+  sort_order?: number;
+  created_at?: string;
+}
+
+export interface Product {
+    id?: string;
+    store_id?: string;
+    category_id: string;
+    name: string;
+    description?: string;
+    price: number;
+    image_url?: string;
+    is_available?: boolean;
+    created_at?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
+  private supabase = inject(SupabaseService).supabaseClient;
 
   constructor() { }
 
-  getRestaurantData(slug: string): Observable<MenuData> {
-    // Mock data mimicking a real backend response
-    const data: MenuData = {
-      restaurant: {
-        name: 'Burger Kingo',
-        bannerUrl: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1000&auto=format&fit=crop', // Burger banner
-        logoUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&auto=format&fit=crop'   // Burger logo placeholder
-      },
-      categories: [
-        { id: '1', name: 'Populares' },
-        { id: '2', name: 'Burgers' },
-        { id: '3', name: 'Bebidas' },
-        { id: '4', name: 'Sobremesas' }
-      ],
-      products: [
-        {
-          id: '101',
-          categoryId: '1',
-          name: 'X-Bacon Supremo',
-          description: 'Pão brioche, 2 blends de 150g, muito bacon crocante, queijo cheddar e maionese da casa.',
-          price: 32.90,
-          imageUrl: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=200&auto=format&fit=crop'
-        },
-        {
-          id: '102',
-          categoryId: '1',
-          name: 'Combo Casal',
-          description: '2 X-Salada, 2 Batatas fritas médias e 1 Refrigerante de 2L.',
-          price: 54.90,
-          imageUrl: 'https://images.unsplash.com/photo-1551782450-17144efb9c50?q=80&w=200&auto=format&fit=crop'
-        },
-        {
-          id: '201',
-          categoryId: '2',
-          name: 'Classic Burger',
-          description: 'Pão australiano, blend 180g, queijo prato, alface, tomate e cebola roxa.',
-          price: 24.50,
-          imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&auto=format&fit=crop'
-        },
-        {
-          id: '202',
-          categoryId: '2',
-          name: 'Cheddar Melt',
-          description: 'Pão brioche, blend 180g, muito cheddar cremoso e cebola caramelizada.',
-          price: 28.00,
-          imageUrl: 'https://images.unsplash.com/photo-1550317138-10000687a72b?q=80&w=200&auto=format&fit=crop'
-        },
-        {
-          id: '301',
-          categoryId: '3',
-          name: 'Coca-Cola Lata 350ml',
-          description: 'Geladíssima.',
-          price: 6.00,
-          imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=200&auto=format&fit=crop'
-        },
-        {
-          id: '302',
-          categoryId: '3',
-          name: 'Suco de Laranja Natural',
-          description: '500ml. Feito na hora.',
-          price: 9.00,
-          imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=200&auto=format&fit=crop'
-        }
-      ]
-    };
-
-    return of(data).pipe(delay(2000));
+  // Categories
+  getCategories(storeId: string): Observable<Category[]> {
+      return from(
+          this.supabase
+              .from('categories')
+              .select('*')
+              .eq('store_id', storeId)
+              .order('sort_order', { ascending: true })
+      ).pipe(
+          map(({ data, error }) => {
+              if (error) throw error;
+              return data as Category[];
+          })
+      );
   }
+
+  createCategory(category: Category): Observable<Category> {
+      return from(
+          this.supabase
+              .from('categories')
+              .insert(category)
+              .select()
+              .single()
+      ).pipe(
+          map(({ data, error }) => {
+              if (error) throw error;
+              return data as Category;
+          })
+      );
+  }
+
+  updateCategory(id: string, updates: Partial<Category>): Observable<Category> {
+    return from(
+        this.supabase
+            .from('categories')
+            .update(updates)
+            .eq('id', id)
+            .select()
+            .single()
+    ).pipe(
+        map(({ data, error }) => {
+            if (error) throw error;
+            return data as Category;
+        })
+    );
+  }
+
+  deleteCategory(id: string): Observable<void> {
+    return from(
+        this.supabase
+            .from('categories')
+            .delete()
+            .eq('id', id)
+    ).pipe(
+        map(({ error }) => {
+            if (error) throw error;
+        })
+    );
+  }
+
+
+  // Products
+  getProducts(storeId: string, categoryId?: string): Observable<Product[]> {
+      let query = this.supabase
+          .from('products')
+          .select('*')
+          .eq('store_id', storeId);
+
+      if (categoryId && categoryId !== 'Todos') {
+          query = query.eq('category_id', categoryId);
+      }
+
+      return from(query).pipe(
+          map(({ data, error }) => {
+              if (error) throw error;
+              return data as Product[];
+          })
+      );
+  }
+
+    createProduct(product: Product): Observable<Product> {
+        return from(
+            this.supabase
+                .from('products')
+                .insert(product)
+                .select()
+                .single()
+        ).pipe(
+            map(({ data, error }) => {
+                if (error) throw error;
+                return data as Product;
+            })
+        );
+    }
+
+    updateProduct(id: string, updates: Partial<Product>): Observable<Product> {
+        return from(
+            this.supabase
+                .from('products')
+                .update(updates)
+                .eq('id', id)
+                .select()
+                .single()
+        ).pipe(
+            map(({ data, error }) => {
+                if (error) throw error;
+                return data as Product;
+            })
+        );
+    }
+
+    deleteProduct(id: string): Observable<void> {
+        return from(
+            this.supabase
+                .from('products')
+                .delete()
+                .eq('id', id)
+        ).pipe(
+            map(({ error }) => {
+                if (error) throw error;
+            })
+        );
+    }
+
+    async uploadImage(file: File): Promise<string> {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error } = await this.supabase.storage
+            .from('menu-images')
+            .upload(filePath, file);
+
+        if (error) throw error;
+
+        const { data } = this.supabase.storage
+            .from('menu-images')
+            .getPublicUrl(filePath);
+        
+        return data.publicUrl;
+    }
 }

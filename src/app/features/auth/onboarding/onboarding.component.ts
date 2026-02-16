@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { StoreService } from '../../../core/services/store.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { DialogComponent } from '../../../shared/ui/dialog/dialog.component';
 
 @Component({
   selector: 'app-onboarding',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DialogComponent],
   templateUrl: './onboarding.component.html',
 })
 export class OnboardingComponent {
@@ -21,6 +22,7 @@ export class OnboardingComponent {
 
   storeForm: FormGroup;
   isLoading = false;
+  showSuccessModal = false;
 
   constructor() {
     this.storeForm = this.fb.group({
@@ -54,9 +56,7 @@ export class OnboardingComponent {
     try {
       await this.storeService.createStore({ name, slug, phone });
       this.toast.show('Restaurante criado com sucesso!', 'success');
-      
-      // Força recarregamento ou navegação limpa para atualizar guards
-      window.location.href = '/admin'; 
+      this.showSuccessModal = true;
     } catch (error: any) {
       console.error(error);
       if (error.code === '23505') { // Erro de unicidade (slug duplicado)
@@ -68,6 +68,10 @@ export class OnboardingComponent {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  navigateToAdmin() {
+    window.location.href = '/admin';
   }
 
   async logout() {

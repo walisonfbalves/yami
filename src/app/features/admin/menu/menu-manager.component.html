@@ -1,129 +1,233 @@
 <div class="h-full flex flex-col font-display bg-stone-50 dark:bg-background">
-    <header class="h-20 border-b border-surface-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-md z-10">
-        <div class="flex items-center gap-6 flex-1">
-            <div class="w-full max-w-md">
-                <ui-input
-                    placeholder="Buscar itens do menu..."
-                    [control]="$any(searchControl)" 
-                    icon="search">
-                </ui-input>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-             <ui-button 
-                variant="outline" 
-                (click)="showCategoryManager = true"
-                icon="category">
-                Gerenciar Categorias
-            </ui-button>
-            
-            <ui-button 
-                variant="primary" 
-                (click)="openForm()"
-                icon="add_circle">
-                Novo Item
-            </ui-button>
-        </div>
-    </header>
+  <header
+    class="h-20 border-b border-surface-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-md z-10"
+  >
+    <div class="flex items-center gap-6 flex-1">
+      <div class="w-full max-w-md">
+        <ui-input
+          placeholder="Buscar itens do menu..."
+          [control]="$any(searchControl)"
+          icon="search"
+        >
+        </ui-input>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <ui-button
+        variant="outline"
+        (click)="showCategoryManager = true"
+        icon="category"
+      >
+        Gerenciar Categorias
+      </ui-button>
 
-    <div class="flex-1 overflow-y-auto custom-scrollbar p-8">
-        <div class="mb-8">
-            <h2 class="text-3xl font-heading font-bold mb-6 text-white">Menu & Catálogo</h2>
-            <div class="flex gap-2 p-1 bg-surface w-fit rounded-xl border border-surface-border">
-                <button *ngFor="let category of categories" 
-                        (click)="setCategory(category)"
-                        [class.bg-primary]="selectedCategory === category"
-                        [class.text-background]="selectedCategory === category"
-                        [class.text-gray-400]="selectedCategory !== category"
-                        class="px-6 py-2 rounded-lg font-bold text-sm transition-colors hover:text-white">
-                    {{ category }}
-                </button>
-            </div>
-        </div>
+      <ui-button variant="primary" (click)="openForm()" icon="add_circle">
+        Novo Item
+      </ui-button>
+    </div>
+  </header>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <ui-card *ngFor="let product of filteredProducts" 
-                     [class.opacity-60]="!product.available"
-                     [noPadding]="true"
-                     class="group overflow-hidden hover:border-primary/50 transition-all duration-300 block h-full">
-                
-                <div class="relative aspect-[4/3] overflow-hidden bg-stone-900 group-hover:shadow-inner">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
-                    
-                    <div *ngIf="!product.available" class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center">
-                        <ui-badge variant="danger">ESGOTADO</ui-badge>
-                    </div>
-
-                    <img [src]="product.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" [class.grayscale]="!product.available" [alt]="product.name"/>
-                    
-                    <div *ngIf="product.popular" class="absolute bottom-3 left-4 z-20">
-                         <ui-badge variant="primary">POPULAR</ui-badge>
-                    </div>
-                </div>
-                
-                <div class="p-5">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-bold text-lg text-white group-hover:text-primary transition-colors leading-tight">{{ product.name }}</h3>
-                        <span class="text-primary font-bold whitespace-nowrap ml-2">{{ product.price | currency:'BRL' }}</span>
-                    </div>
-                    <p class="text-xs text-gray-400 mb-6 line-clamp-3">{{ product.description }}</p>
-                    
-                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
-                        <div class="flex items-center gap-2">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" [checked]="product.available" (change)="toggleAvailability(product)" class="sr-only peer"/>
-                                <div class="w-9 h-5 bg-stone-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                            </label>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">{{ product.available ? 'Disponível' : 'Indisponível' }}</span>
-                        </div>
-                        <div class="flex gap-1">
-                             <ui-button variant="ghost" (click)="openForm(product)" icon="edit_note" [iconOnly]="true"></ui-button>
-                             <ui-button variant="danger" (click)="confirmDelete(product)" icon="delete" [iconOnly]="true"></ui-button>
-                        </div>
-                    </div>
-                </div>
-            </ui-card>
-
-            <button (click)="openForm()" class="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-xl bg-surface-dark/30 hover:bg-primary/5 hover:border-primary/50 transition-all group py-12 min-h-[380px]">
-                <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <span class="material-symbols-outlined text-gray-400 group-hover:text-primary">add</span>
-                </div>
-                <span class="text-sm font-bold text-gray-500 group-hover:text-primary">Adicionar Novo Item</span>
-            </button>
-        </div>
-
-        <div class="mt-12 flex items-center justify-between border-t border-white/5 pt-6 pb-12 text-gray-400">
-            <p class="text-sm">Mostrando <span class="font-bold text-white">{{products.length}}</span> produtos</p>
-            <div class="flex items-center gap-2">
-                 <ui-button variant="outline" icon="chevron_left" class="!p-2"></ui-button>
-                 <ui-button variant="primary" class="!w-10 !h-10 !p-0 flex items-center justify-center">1</ui-button>
-                 <ui-button variant="ghost" class="!w-10 !h-10 !p-0 flex items-center justify-center">2</ui-button>
-                 <ui-button variant="ghost" class="!w-10 !h-10 !p-0 flex items-center justify-center">3</ui-button>
-                 <ui-button variant="outline" icon="chevron_right" class="!p-2"></ui-button>
-            </div>
-        </div>
+  <div class="flex-1 overflow-y-auto custom-scrollbar p-8">
+    <div class="mb-8">
+      <h2 class="text-3xl font-heading font-bold mb-6 text-white">
+        Menu & Catálogo
+      </h2>
+      <div
+        class="flex gap-2 p-1 bg-surface w-fit rounded-xl border border-surface-border"
+      >
+        <button
+          (click)="setCategory('Todos')"
+          [class.bg-primary]="selectedCategory === 'Todos'"
+          [class.text-background]="selectedCategory === 'Todos'"
+          [class.text-gray-400]="selectedCategory !== 'Todos'"
+          class="px-6 py-2 rounded-lg font-bold text-sm transition-colors hover:text-white"
+        >
+          Todos
+        </button>
+        <button
+          *ngFor="let category of categories"
+          (click)="setCategory(category)"
+          [class.bg-primary]="selectedCategory === category"
+          [class.text-background]="selectedCategory === category"
+          [class.text-gray-400]="selectedCategory !== category"
+          class="px-6 py-2 rounded-lg font-bold text-sm transition-colors hover:text-white"
+        >
+          {{ category.name }}
+        </button>
+      </div>
     </div>
 
-    <app-product-form *ngIf="showForm" 
-                      [product]="editingProduct"
-                      (save)="handleSaveProduct($event)"
-                      (cancel)="closeForm()">
-    </app-product-form>
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+    >
+      <ui-card
+        *ngFor="let product of filteredProducts"
+        [class.opacity-60]="!product.is_available"
+        [noPadding]="true"
+        class="group overflow-hidden hover:border-primary/50 transition-all duration-300 block h-full"
+      >
+        <div
+          class="relative aspect-[4/3] overflow-hidden bg-stone-900 group-hover:shadow-inner"
+        >
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"
+          ></div>
 
-    <app-category-manager *ngIf="showCategoryManager"
-                          [categories]="categories"
-                          (update)="updateCategories($event)"
-                          (close)="showCategoryManager = false">
-    </app-category-manager>
+          <div
+            *ngIf="!product.is_available"
+            class="absolute inset-0 bg-black/40 z-10 flex items-center justify-center"
+          >
+            <ui-badge variant="danger">ESGOTADO</ui-badge>
+          </div>
 
-    <ui-dialog
-        [isOpen]="showDeleteModal"
-        title="Excluir Produto"
-        [message]="'Tem certeza que deseja excluir o item \'' + (itemToDelete?.name || '') + '\'? Esta ação não pode ser desfeita.'"
-        variant="danger"
-        confirmText="Excluir"
-        cancelText="Cancelar"
-        (confirm)="executeDelete()"
-        (cancel)="cancelDelete()">
-    </ui-dialog>
+          <img
+            [src]="product.image_url"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            [class.grayscale]="!product.is_available"
+            [alt]="product.name"
+          />
+        </div>
+
+        <div class="p-5">
+          <div class="flex justify-between items-start mb-2">
+            <h3
+              class="font-bold text-lg text-white group-hover:text-primary transition-colors leading-tight"
+            >
+              {{ product.name }}
+            </h3>
+            <span class="text-primary font-bold whitespace-nowrap ml-2">{{
+              product.price | currency: "BRL"
+            }}</span>
+          </div>
+          <p class="text-xs text-gray-400 mb-6 line-clamp-3">
+            {{ product.description }}
+          </p>
+
+          <div
+            class="flex items-center justify-between pt-4 border-t border-white/5"
+          >
+            <div class="flex items-center gap-2">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  [checked]="product.is_available"
+                  (change)="toggleAvailability(product)"
+                  class="sr-only peer"
+                />
+                <div
+                  class="w-9 h-5 bg-stone-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"
+                ></div>
+              </label>
+              <span
+                class="text-xs font-bold uppercase tracking-wider text-gray-400"
+                >{{
+                  product.is_available ? "Disponível" : "Indisponível"
+                }}</span
+              >
+            </div>
+            <div class="flex gap-1">
+              <ui-button
+                variant="ghost"
+                (click)="openForm(product)"
+                icon="edit_note"
+                [iconOnly]="true"
+              ></ui-button>
+              <ui-button
+                variant="danger"
+                (click)="confirmDelete(product)"
+                icon="delete"
+                [iconOnly]="true"
+              ></ui-button>
+            </div>
+          </div>
+        </div>
+      </ui-card>
+
+      <button
+        (click)="openForm()"
+        class="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-xl bg-surface-dark/30 hover:bg-primary/5 hover:border-primary/50 transition-all group py-12 min-h-[380px]"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors"
+        >
+          <span
+            class="material-symbols-outlined text-gray-400 group-hover:text-primary"
+            >add</span
+          >
+        </div>
+        <span class="text-sm font-bold text-gray-500 group-hover:text-primary"
+          >Adicionar Novo Item</span
+        >
+      </button>
+    </div>
+
+    <div
+      class="mt-12 flex items-center justify-between border-t border-white/5 pt-6 pb-12 text-gray-400"
+    >
+      <p class="text-sm">
+        Mostrando
+        <span class="font-bold text-white">{{ products.length }}</span> produtos
+      </p>
+      <div class="flex items-center gap-2">
+        <ui-button
+          variant="outline"
+          icon="chevron_left"
+          class="!p-2"
+        ></ui-button>
+        <ui-button
+          variant="primary"
+          class="!w-10 !h-10 !p-0 flex items-center justify-center"
+          >1</ui-button
+        >
+        <ui-button
+          variant="ghost"
+          class="!w-10 !h-10 !p-0 flex items-center justify-center"
+          >2</ui-button
+        >
+        <ui-button
+          variant="ghost"
+          class="!w-10 !h-10 !p-0 flex items-center justify-center"
+          >3</ui-button
+        >
+        <ui-button
+          variant="outline"
+          icon="chevron_right"
+          class="!p-2"
+        ></ui-button>
+      </div>
+    </div>
+  </div>
+
+  <app-product-form
+    *ngIf="showForm"
+    [product]="editingProduct"
+    (save)="handleSaveProduct($event)"
+    (cancel)="closeForm()"
+  >
+  </app-product-form>
+
+  <app-category-manager
+    *ngIf="showCategoryManager"
+    [categories]="categories"
+    [storeId]="storeId"
+    (update)="updateCategories()"
+    (close)="showCategoryManager = false"
+  >
+  </app-category-manager>
+
+  <ui-dialog
+    [isOpen]="showDeleteModal"
+    title="Excluir Produto"
+    [message]="
+      'Tem certeza que deseja excluir o item \'' +
+      (itemToDelete?.name || '') +
+      '\'? Esta ação não pode ser desfeita.'
+    "
+    variant="danger"
+    confirmText="Excluir"
+    cancelText="Cancelar"
+    (confirm)="executeDelete()"
+    (cancel)="cancelDelete()"
+  >
+  </ui-dialog>
 </div>

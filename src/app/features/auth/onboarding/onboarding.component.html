@@ -138,4 +138,20 @@
       </button>
     </div>
   </div>
+
+  <!-- Modal de Sucesso -->
+  <ui-dialog
+    [isOpen]="showSuccessModal"
+    title="Restaurante Criado!"
+    [message]="
+      'Sua loja ' +
+      storeForm.get('name')?.value +
+      ' está pronta. Vamos configurar seu cardápio?'
+    "
+    confirmText="Acessar Painel"
+    cancelText="Fechar"
+    variant="primary"
+    (confirm)="navigateToAdmin()"
+    (cancel)="navigateToAdmin()"
+  ></ui-dialog>
 </div>

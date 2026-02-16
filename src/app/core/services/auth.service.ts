@@ -11,7 +11,7 @@ export class AuthService {
   // Mantém a injeção no contexto de inicialização (permitido)
   // Mas agora guardamos o serviço inteiro, não só o client, para usar os métodos customizados (signIn/signUp)
   private supabaseService = inject(SupabaseService);
-  private supabase = this.supabaseService.client;
+  private supabase = this.supabaseService.supabaseClient;
   private router = inject(Router);
 
   private _session = new BehaviorSubject<Session | null>(null);
