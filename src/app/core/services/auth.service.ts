@@ -21,18 +21,26 @@ export class AuthService {
   readonly user$ = this._user.asObservable();
 
   constructor() {
-    // Carrega sessão inicial
-    this.supabase.auth.getSession().then(({ data }) => {
-      this._session.next(data.session);
-      this._user.next(data.session?.user ?? null);
-    });
+    this.initializeAuth();
+  }
 
-    // Escuta mudanças na autenticação
-    this.supabase.auth.onAuthStateChange((_event, session) => {
+  async initializeAuth() {
+    // 1. Tenta recuperar a sessão que o Supabase salvou no LocalStorage
+    const { data: { session } } = await this.supabase.auth.getSession();
+
+    if (session) {
+      this._session.next(session);
+      this._user.next(session.user);
+    }
+
+    // 2. Escuta mudanças (Login, Logout, Token renovado)
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth Event:', event);
       this._session.next(session);
       this._user.next(session?.user ?? null);
-
-      if (_event === 'SIGNED_OUT') {
+      
+      // Se a sessão caiu ou o usuário deslogou, redireciona para o login
+      if (event === 'SIGNED_OUT') {
         this.router.navigate(['/auth/login']);
       }
     });

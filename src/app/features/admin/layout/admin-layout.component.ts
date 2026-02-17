@@ -10,11 +10,11 @@ import { TenantService, TenantConfig } from '../../../core/services/tenant.servi
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, InputComponent, ButtonComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './admin-layout.component.html',
 })
 export class AdminLayoutComponent {
-  searchControl = new FormControl('');
+
 
   private tenantService = inject(TenantService);
   private authService = inject(AuthService);

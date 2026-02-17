@@ -15,7 +15,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
         <div class="relative flex items-center bg-background-dark border border-white/10 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all overflow-hidden group">
             
             <!-- Prefix -->
-            <div *ngIf="prefix" class="bg-white/5 px-3 py-3 text-gray-500 font-bold border-r border-white/10 text-sm">
+            <div *ngIf="prefix" class="bg-white/5 px-3 uppercase text-gray-500 font-bold border-r border-white/10 text-sm h-full flex items-center">
                 {{ prefix }}
             </div>
             

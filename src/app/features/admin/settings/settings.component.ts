@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
@@ -24,7 +24,8 @@ import { AuthService } from '../../../core/services/auth.service'; // Keeping fo
     SwitchComponent
   ],
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.css']
+  styleUrls: ['./settings.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent {
   settingsForm: FormGroup;
