@@ -43,15 +43,20 @@
       <!-- Store Preview / Identity -->
       <ui-card
         class="h-full"
-        className="!bg-stone-800 h-full flex flex-col"
+        className="!bg-stone-800 h-full flex flex-col space-y-6"
         [noPadding]="true"
       >
         <!-- Banner Area -->
         <div
           class="h-32 w-full bg-stone-700/50 relative group cursor-pointer hover:bg-stone-700 transition-colors border-b border-white/5"
         >
+          <img
+            *ngIf="getControl('cover_url').value"
+            [src]="getControl('cover_url').value"
+            class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+          />
           <div
-            class="absolute inset-0 flex flex-col items-center justify-center text-stone-500 gap-2"
+            class="absolute inset-0 flex flex-col items-center justify-center text-stone-500 gap-2 z-10"
           >
             <span class="material-symbols-outlined">add_photo_alternate</span>
             <span
@@ -63,12 +68,19 @@
 
         <div class="px-6 pb-6 flex-1 flex flex-col">
           <!-- Logo - Overlapping Banner -->
-          <div class="relative -mt-12 mb-6 self-start">
+          <div class="relative -mt-12 mb-6 self-start z-20">
             <div
               class="w-24 h-24 rounded-full bg-stone-800 border-4 border-stone-800 overflow-hidden relative group cursor-pointer shadow-lg"
             >
+              <img
+                *ngIf="getControl('logo_url').value"
+                [src]="getControl('logo_url').value"
+                class="w-full h-full object-cover"
+              />
               <div
                 class="absolute inset-0 bg-stone-700/50 flex items-center justify-center text-stone-500 hover:bg-stone-700 transition-colors"
+                [class.opacity-0]="getControl('logo_url').value"
+                [class.group-hover:opacity-100]="getControl('logo_url').value"
               >
                 <span class="material-symbols-outlined">add_a_photo</span>
               </div>
@@ -86,21 +98,31 @@
           </div>
 
           <div class="space-y-6">
-            <ui-input
-              label="Nome da Loja"
-              [control]="getControl('name')"
-              placeholder="Ex: Yami Burger"
-            >
-            </ui-input>
+            <div class="space-y-2">
+              <label
+                class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                >Nome da Loja</label
+              >
+              <ui-input
+                [control]="getControl('name')"
+                placeholder="Ex: Yami Burger"
+              >
+              </ui-input>
+            </div>
 
-            <ui-textarea
-              label="Biografia"
-              [control]="getControl('bio')"
-              placeholder="Uma breve descrição da sua loja..."
-              [maxLength]="160"
-              [rows]="4"
-            >
-            </ui-textarea>
+            <div class="space-y-2">
+              <label
+                class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                >Biografia</label
+              >
+              <ui-textarea
+                [control]="getControl('description')"
+                placeholder="Uma breve descrição da sua loja..."
+                [maxLength]="160"
+                [rows]="4"
+              >
+              </ui-textarea>
+            </div>
           </div>
         </div>
       </ui-card>
@@ -109,7 +131,7 @@
     <!-- Right Column: Operations & Settings -->
     <div class="lg:col-span-2 space-y-8">
       <!-- Operations -->
-      <ui-card className="!bg-stone-800">
+      <ui-card className="!bg-stone-800 space-y-6">
         <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
           <span class="material-symbols-outlined text-blue-500">tune</span>
           <h2 class="text-lg font-bold text-white">Operacional</h2>
@@ -117,19 +139,27 @@
 
         <div class="grid md:grid-cols-2 gap-8">
           <!-- Status Switch -->
-          <ui-switch
-            class="md:col-span-2"
-            [label]="'Status de Funcionamento'"
-            [description]="
-              'Controle se sua loja está recebendo pedidos automaticamente.'
-            "
-            [control]="getControl('is_open')"
-          >
-          </ui-switch>
+          <div class="md:col-span-2 space-y-2">
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+              >Status de Funcionamento</label
+            >
+            <ui-switch
+              [label]="'Status de Funcionamento'"
+              [description]="
+                'Controle se sua loja está recebendo pedidos automaticamente.'
+              "
+              [control]="getControl('is_open')"
+            >
+            </ui-switch>
+          </div>
 
-          <div class="relative">
+          <div class="relative space-y-2">
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+              >Tempo de Preparo Estimado</label
+            >
             <ui-input
-              label="Tempo de Preparo Estimado"
               [control]="getControl('prep_time')"
               placeholder="40-50"
               suffix="minutos"
@@ -137,7 +167,7 @@
             </ui-input>
             <!-- Tooltip Icon absolute positioned near label or inside input area context -->
             <div
-              class="absolute top-0 right-0"
+              class="absolute top-8 right-0"
               title="Este tempo é exibido para os clientes antes de finalizarem o pedido."
             >
               <span
@@ -150,7 +180,7 @@
       </ui-card>
 
       <!-- Finance -->
-      <ui-card className="!bg-stone-800">
+      <ui-card className="!bg-stone-800 space-y-6">
         <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
           <span class="material-symbols-outlined text-emerald-500"
             >payments</span
@@ -159,29 +189,43 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-6">
-          <ui-input
-            label="Taxa de Entrega Fixa"
-            [control]="getControl('delivery_fee')"
-            type="number"
-            prefix="R$"
-          >
-          </ui-input>
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+              >Taxa de Entrega Fixa</label
+            >
+            <ui-input
+              [control]="getControl('delivery_fee')"
+              type="number"
+              prefix="R$"
+            >
+            </ui-input>
+          </div>
 
-          <ui-input
-            label="Valor Mínimo do Pedido"
-            [control]="getControl('min_order')"
-            type="number"
-            prefix="R$"
-          >
-          </ui-input>
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+              >Valor Mínimo do Pedido</label
+            >
+            <ui-input
+              [control]="getControl('min_order_value')"
+              type="number"
+              prefix="R$"
+            >
+            </ui-input>
+          </div>
 
-          <ui-input
-            class="md:col-span-2"
-            label="Chave PIX (Para Recebimento)"
-            [control]="getControl('pix_key')"
-            placeholder="00.000.000/0001-00"
-          >
-          </ui-input>
+          <div class="md:col-span-2 space-y-2">
+            <label
+              class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+              >Chave PIX (Para Recebimento)</label
+            >
+            <ui-input
+              [control]="getControl('pix_key')"
+              placeholder="00.000.000/0001-00"
+            >
+            </ui-input>
+          </div>
         </div>
       </ui-card>
 

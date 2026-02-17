@@ -40,9 +40,9 @@ export class SettingsComponent {
       // Store Identity
       name: ['', Validators.required],
       slug: ['', Validators.required],
-      bio: [''],
+      description: [''],
       logo_url: [''],
-      banner_url: [''],
+      cover_url: [''],
       
       // Operation
       is_open: [false],
@@ -50,7 +50,7 @@ export class SettingsComponent {
       
       // Finance & Delivery
       delivery_fee: [0, Validators.required],
-      min_order: [0, Validators.required],
+      min_order_value: [0, Validators.required],
       pix_key: ['']
     });
 
@@ -60,13 +60,13 @@ export class SettingsComponent {
         this.settingsForm.patchValue({
           name: store.name,
           slug: store.slug,
-          bio: store.bio,
+          description: store.description,
           logo_url: store.logo_url,
-          banner_url: store.banner_url,
+          cover_url: store.cover_url,
           is_open: store.is_open,
           prep_time: store.prep_time,
           delivery_fee: store.delivery_fee,
-          min_order: store.min_order,
+          min_order_value: store.min_order_value,
           pix_key: store.pix_key
         }, { emitEvent: false }); // Avoid triggering valueChanges if any
       }
