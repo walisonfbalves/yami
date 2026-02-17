@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -16,10 +17,18 @@ export class AdminLayoutComponent {
   searchControl = new FormControl('');
 
   private tenantService = inject(TenantService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
   tenant$ = this.tenantService.tenant$;
   availableTenants = this.tenantService.availableTenants;
 
   switchTenant(slug: string) {
     this.tenantService.setTenant(slug);
+  }
+
+  async logout() {
+    await this.authService.signOut();
+    this.router.navigate(['/auth/login']);
   }
 }

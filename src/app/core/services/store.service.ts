@@ -10,6 +10,14 @@ export interface Store {
   name: string;
   slug: string;
   phone?: string;
+  bio?: string;
+  is_open?: boolean;
+  prep_time?: string;
+  delivery_fee?: number;
+  min_order?: number;
+  pix_key?: string;
+  logo_url?: string;
+  banner_url?: string;
   created_at?: string;
 }
 
@@ -48,16 +56,13 @@ export class StoreService {
 
     return from(query).pipe(
       map(({ data, error }) => {
-        console.log('StoreService: fetchStore data:', data);
         if (error) {
           console.error('StoreService: fetchStore error:', error);
           throw error;
          }
-        // maybeSingle returns null if no rows found, which is what we want
         return data as Store | null;
       }),
       tap(store => {
-          console.log('StoreService: store found:', store);
           this._currentStore.next(store);
       }),
       catchError(err => {
@@ -79,7 +84,7 @@ export class StoreService {
         ...data,
         user_id: user.id
       })
-      .select() // Retorna o objeto criado
+      .select()
       .single();
 
     if (error) throw error;
@@ -87,4 +92,23 @@ export class StoreService {
     this._currentStore.next(store as Store);
     return store;
   }
+
+  // Atualiza a loja
+  async updateStore(data: Partial<Store>) {
+    const currentStore = this._currentStore.value;
+    if (!currentStore) throw new Error('Nenhuma loja selecionada para atualizar');
+
+    const { data: updatedStore, error } = await this.supabase
+      .from('stores')
+      .update(data)
+      .eq('id', currentStore.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    this._currentStore.next(updatedStore as Store);
+    return updatedStore;
+  }
+
 }

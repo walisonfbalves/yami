@@ -1,83 +1,135 @@
-<div class="flex h-screen overflow-hidden bg-background text-text-primary antialiased font-display">
-    <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 border-r border-surface-border bg-surface flex flex-col hidden lg:flex" *ngIf="tenant$ | async as tenant">
-        <div class="p-6 flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center overflow-hidden">
-                <img *ngIf="tenant.logo" [src]="tenant.logo" class="w-full h-full object-cover" [alt]="tenant.name"/>
-                <span *ngIf="!tenant.logo" class="material-symbols-outlined font-bold text-background">store</span>
-            </div>
-            <h1 class="text-2xl font-heading text-white tracking-tighter uppercase font-bold">{{ tenant.name.split(' ')[0] }}</h1>
+<div
+  class="flex h-screen overflow-hidden bg-background text-text-primary antialiased font-display"
+>
+  <!-- Sidebar -->
+  <aside
+    class="w-64 flex-shrink-0 border-r border-surface-border bg-surface flex flex-col hidden lg:flex"
+    *ngIf="tenant$ | async as tenant"
+  >
+    <div class="p-6 flex items-center gap-3">
+      <div
+        class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center overflow-hidden"
+      >
+        <img
+          *ngIf="tenant.logo"
+          [src]="tenant.logo"
+          class="w-full h-full object-cover"
+          [alt]="tenant.name"
+        />
+        <span
+          *ngIf="!tenant.logo"
+          class="material-symbols-outlined font-bold text-background"
+          >store</span
+        >
+      </div>
+      <h1
+        class="text-2xl font-heading text-white tracking-tighter uppercase font-bold"
+      >
+        {{ tenant.name.split(" ")[0] }}
+      </h1>
+    </div>
+    <nav class="flex-1 px-4 space-y-2 mt-4">
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="bg-primary/10 text-primary border-primary/20"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors"
+      >
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="font-medium">Painel</span>
+      </a>
+      <a
+        routerLink="/admin/orders"
+        routerLinkActive="bg-primary/10 text-primary border-primary/20"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors"
+      >
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="font-medium">Pedidos em tempo real</span>
+      </a>
+      <a
+        routerLink="/admin/analytics"
+        routerLinkActive="bg-primary/10 text-primary border-primary/20"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors"
+      >
+        <span class="material-symbols-outlined">analytics</span>
+        <span class="font-medium">Relatórios</span>
+      </a>
+
+      <a
+        routerLink="/admin/menu"
+        routerLinkActive="bg-primary/10 text-primary border-primary/20"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors"
+      >
+        <span class="material-symbols-outlined">restaurant_menu</span>
+        <span class="font-medium">Cardápio</span>
+      </a>
+      <a
+        routerLink="/admin/settings"
+        routerLinkActive="bg-primary/10 text-primary border-primary/20"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors"
+      >
+        <span class="material-symbols-outlined">settings</span>
+        <span class="font-medium">Configurações</span>
+      </a>
+    </nav>
+    <div class="p-4 border-t border-surface-border">
+      <button
+        (click)="logout()"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-500 border border-transparent transition-colors"
+      >
+        <span class="material-symbols-outlined">logout</span>
+        <span class="font-medium">Sair da Conta</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <!-- Top Nav -->
+    <header
+      class="h-20 border-b border-surface-border bg-surface/50 backdrop-blur-md flex items-center justify-between px-8 z-10"
+    >
+      <div class="flex items-center gap-8 flex-1">
+        <div class="max-w-md w-full">
+          <ui-input
+            [control]="$any(searchControl)"
+            placeholder="Buscar pedidos, entregadores ou hubs..."
+            icon="search"
+          >
+          </ui-input>
         </div>
-        <nav class="flex-1 px-4 space-y-2 mt-4">
-            <a routerLink="/admin/dashboard" routerLinkActive="bg-primary/10 text-primary border-primary/20" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-medium">Painel</span>
-            </a>
-            <a routerLink="/admin/orders" routerLinkActive="bg-primary/10 text-primary border-primary/20" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors">
-                <span class="material-symbols-outlined">shopping_cart</span>
-                <span class="font-medium">Pedidos em tempo real</span>
-            </a>
-            <a routerLink="/admin/analytics" routerLinkActive="bg-primary/10 text-primary border-primary/20" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors">
-                <span class="material-symbols-outlined">analytics</span>
-                <span class="font-medium">Relatórios</span>
-            </a>
+      </div>
+      <div class="flex items-center gap-4">
+        <ui-button
+          variant="secondary"
+          icon="notifications"
+          class="!p-2"
+        ></ui-button>
 
-            <a routerLink="/admin/menu" routerLinkActive="bg-primary/10 text-primary border-primary/20" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors">
-                <span class="material-symbols-outlined">restaurant_menu</span>
-                <span class="font-medium">Cardápio</span>
-            </a>
-            <a routerLink="/admin/settings" routerLinkActive="bg-primary/10 text-primary border-primary/20" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 border border-transparent transition-colors">
-                <span class="material-symbols-outlined">settings</span>
-                <span class="font-medium">Configurações</span>
-            </a>
+        <div class="h-8 w-[1px] bg-white/10 mx-2"></div>
 
-        </nav>
-        <div class="p-4 border-t border-surface-border">
-            <div class="bg-surface-hover rounded-xl p-3 border border-surface-border">
-                <label class="text-[10px] text-text-tertiary font-bold uppercase tracking-widest mb-2 block">Trocar Loja</label>
-                <select 
-                    class="w-full bg-background border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary transition-colors cursor-pointer appearance-none"
-                    [value]="tenant.slug"
-                    (change)="switchTenant($any($event.target).value)">
-                    <option *ngFor="let t of availableTenants" [value]="t.slug">{{ t.name }}</option>
-                </select>
-            </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden sm:block">
+            <p class="text-sm font-semibold text-white">Alex Chen</p>
+            <p class="text-xs text-gray-400 font-medium">
+              Diretor de Operações
+            </p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-xl bg-primary/20 p-0.5 border border-primary/30"
+          >
+            <img
+              alt="Profile"
+              class="w-full h-full rounded-[14px] object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7XJMdn_mnAxv30f3dNr2l2sbVV24vnt2NRN7w8xSJrxmphDDMlzwBYPEB8dY4lwRcRRXiR1xQqnLkon5_tGEzfYds3ruizqla0WMZhlwf8nVJja2lKF3ROLXd4oHZZA0S4zL_Lu94OmpwxCSOqudE72k2Wk2t-k0YLAoX0g5WSrqp3p8YVX2ggb48Q3zrfszrQD3kuV3McZt_VZK-Ie22T7iSJ_nHH6xsjOon-_60i8XrmH387aEgD96Ibj63W4qeuBsC0DfqP28"
+            />
+          </div>
         </div>
-    </aside>
+      </div>
+    </header>
 
-    <!-- Main Content Wrapper -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <!-- Top Nav -->
-        <header class="h-20 border-b border-surface-border bg-surface/50 backdrop-blur-md flex items-center justify-between px-8 z-10">
-            <div class="flex items-center gap-8 flex-1">
-                <div class="max-w-md w-full">
-                    <ui-input
-                        [control]="$any(searchControl)"
-                        placeholder="Buscar pedidos, entregadores ou hubs..."
-                        icon="search">
-                    </ui-input>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                 <ui-button variant="secondary" icon="notifications" class="!p-2"></ui-button>
-                
-                <div class="h-8 w-[1px] bg-white/10 mx-2"></div>
-                
-                <div class="flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-semibold text-white">Alex Chen</p>
-                        <p class="text-xs text-gray-400 font-medium">Diretor de Operações</p>
-                    </div>
-                    <div class="w-10 h-10 rounded-xl bg-primary/20 p-0.5 border border-primary/30">
-                        <img alt="Profile" class="w-full h-full rounded-[14px] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7XJMdn_mnAxv30f3dNr2l2sbVV24vnt2NRN7w8xSJrxmphDDMlzwBYPEB8dY4lwRcRRXiR1xQqnLkon5_tGEzfYds3ruizqla0WMZhlwf8nVJja2lKF3ROLXd4oHZZA0S4zL_Lu94OmpwxCSOqudE72k2Wk2t-k0YLAoX0g5WSrqp3p8YVX2ggb48Q3zrfszrQD3kuV3McZt_VZK-Ie22T7iSJ_nHH6xsjOon-_60i8XrmH387aEgD96Ibj63W4qeuBsC0DfqP28">
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Router Outlet for Child Routes (Dashboard, etc) -->
-        <div class="flex-1 overflow-y-auto bg-background">
-            <router-outlet></router-outlet>
-        </div>
-    </main>
+    <!-- Router Outlet for Child Routes (Dashboard, etc) -->
+    <div class="flex-1 overflow-y-auto bg-background">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 </div>

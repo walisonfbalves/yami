@@ -7,8 +7,9 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { TextareaComponent } from '../../../shared/ui/textarea/textarea.component';
 import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 
-import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
+import { StoreService } from '../../../core/services/store.service';
+import { Router } from '@angular/router'; // Keeping Router just in case, but unused based on changes
+import { AuthService } from '../../../core/services/auth.service'; // Keeping for now or removing if unused
 
 @Component({
   selector: 'app-settings',
@@ -28,44 +29,67 @@ import { AuthService } from '../../../core/services/auth.service';
 export class SettingsComponent {
   settingsForm: FormGroup;
   showToast = false;
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+    private storeService: StoreService
   ) {
     this.settingsForm = this.fb.group({
       // Store Identity
-      storeName: ['Yami Backend', Validators.required],
-      storeSlug: ['yami-backend', Validators.required],
-      storeBio: ['O melhor burger da cidade entregue na sua casa!'],
+      name: ['', Validators.required],
+      slug: ['', Validators.required],
+      bio: [''],
+      logo_url: [''],
+      banner_url: [''],
       
       // Operation
-      isOpen: [true],
-      prepTime: ['40-50', Validators.required],
+      is_open: [false],
+      prep_time: ['', Validators.required],
       
       // Finance & Delivery
-      deliveryFee: [5.00, Validators.required],
-      minOrder: [20.00, Validators.required],
-      pixKey: ['00.000.000/0001-00']
+      delivery_fee: [0, Validators.required],
+      min_order: [0, Validators.required],
+      pix_key: ['']
+    });
+
+    // Load initial data
+    this.storeService.currentStore$.subscribe(store => {
+      if (store) {
+        this.settingsForm.patchValue({
+          name: store.name,
+          slug: store.slug,
+          bio: store.bio,
+          logo_url: store.logo_url,
+          banner_url: store.banner_url,
+          is_open: store.is_open,
+          prep_time: store.prep_time,
+          delivery_fee: store.delivery_fee,
+          min_order: store.min_order,
+          pix_key: store.pix_key
+        }, { emitEvent: false }); // Avoid triggering valueChanges if any
+      }
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.settingsForm.valid) {
-      console.log('Settings Saved:', this.settingsForm.value);
-      this.showToast = true;
-      setTimeout(() => this.showToast = false, 3000);
+      this.isLoading = true;
+      try {
+        await this.storeService.updateStore(this.settingsForm.value);
+        this.showToast = true;
+        setTimeout(() => this.showToast = false, 3000);
+      } catch (error) {
+        console.error('Error updating settings:', error);
+        // Handle error (show toast?)
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 
-  async logout() {
-    await this.authService.signOut();
-    this.router.navigate(['/auth/login']);
-  }
-
   // Helper for toggle class
-  get isOpen() { return this.settingsForm.get('isOpen')?.value; }
+  get isOpen() { return this.settingsForm.get('is_open')?.value; }
 
   getControl(name: string): FormControl {
     return this.settingsForm.get(name) as FormControl;
