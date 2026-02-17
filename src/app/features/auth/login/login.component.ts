@@ -37,7 +37,8 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required]], 
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required]],
+      rememberMe: [true]
     });
 
     this.registerForm = this.fb.group({
@@ -86,8 +87,9 @@ export class LoginComponent {
 
     if (this.activeTab === 'login') {
       if (this.loginForm.valid) {
-        const { email, password } = this.loginForm.value;
+        const { email, password, rememberMe } = this.loginForm.value;
         try {
+          this.authService.setPersistence(rememberMe);
           const { error } = await this.authService.signIn(email, password);
 
           if (error) {

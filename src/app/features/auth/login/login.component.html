@@ -123,7 +123,11 @@
         </div>
 
         <div class="flex items-center">
-          <ui-checkbox label="Lembrar de mim por 30 dias" id="remember-me">
+          <ui-checkbox
+            label="Lembrar de mim por 30 dias"
+            id="remember-me"
+            [control]="$any(loginForm.get('rememberMe'))"
+          >
           </ui-checkbox>
         </div>
 

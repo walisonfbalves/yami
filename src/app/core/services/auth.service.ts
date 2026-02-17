@@ -60,6 +60,10 @@ export class AuthService {
     return this.supabaseService.signUp(email, password, data);
   }
 
+  setPersistence(persist: boolean) {
+    this.supabaseService.setPersistence(persist);
+  }
+
   async signOut() {
     return this.supabase.auth.signOut();
   }
