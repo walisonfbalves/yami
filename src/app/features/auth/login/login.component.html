@@ -334,11 +334,14 @@
       </form>
 
       <!-- Footer Text -->
-      <p class="text-center text-sm text-stone-500 dark:text-stone-400 mt-4">
+      <p
+        *ngIf="activeTab === 'login'"
+        class="text-center text-sm text-stone-500 dark:text-stone-400 mt-4"
+      >
         Não tem uma conta?
         <a
-          class="font-bold text-primary hover:text-amber-400 transition-colors"
-          href="#"
+          class="font-bold text-primary hover:text-amber-400 transition-colors cursor-pointer"
+          (click)="toggleTab('register')"
           >Cadastre-se grátis</a
         >
       </p>
