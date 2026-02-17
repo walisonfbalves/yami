@@ -74,18 +74,6 @@ export class OnboardingComponent {
     }
   }
 
-  checkStore() {
-    this.storeService.fetchStore().subscribe(store => {
-      console.log('Manual check store result:', store);
-      if (store) {
-        this.toast.show('Loja encontrada! Redirecionando...', 'success');
-        this.router.navigate(['/admin']);
-      } else {
-        this.toast.show('Nenhuma loja encontrada para este usuário.', 'info');
-      }
-    });
-  }
-
   navigateToAdmin() {
     this.router.navigate(['/admin']);
   }

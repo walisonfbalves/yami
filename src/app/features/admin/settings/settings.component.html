@@ -1,119 +1,216 @@
-<div class="p-8 max-w-4xl mx-auto font-display">
-    
-    <header class="mb-8">
-        <h1 class="text-3xl font-heading font-bold text-white tracking-tight mb-2">Configurações da Loja</h1>
-        <p class="text-gray-400">Gerencie as informações principais do seu estabelecimento.</p>
-    </header>
-
-    <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="space-y-6">
-        
-        <!-- Identidade -->
-        <ui-card>
-            <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
-                <span class="material-symbols-outlined text-amber-500">storefront</span>
-                <h2 class="text-lg font-bold text-white">Identidade</h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 mb-6">
-                
-                <ui-input
-                    label="Nome da Loja"
-                    [control]="getControl('storeName')"
-                    placeholder="Ex: Yami Burger">
-                </ui-input>
-
-                <ui-input
-                    label="Slug (URL)"
-                    [control]="getControl('storeSlug')"
-                    placeholder="yami-backend"
-                    prefix="yami.com/">
-                </ui-input>
-
-                <div class="md:col-span-2">
-                     <ui-textarea
-                        label="Biografia"
-                        [control]="getControl('storeBio')"
-                        placeholder="Uma breve descrição da sua loja..."
-                        [maxLength]="160">
-                     </ui-textarea>
-                </div>
-            </div>
-        </ui-card>
-
-        <!-- Funcionamento -->
-        <ui-card>
-            <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
-                <span class="material-symbols-outlined text-blue-500">schedule</span>
-                <h2 class="text-lg font-bold text-white">Funcionamento</h2>
-            </div>
-
-            <div class="space-y-6">
-                <!-- Status da Loja -->
-                <ui-switch
-                   [label]="isOpen ? 'Loja Aberta' : 'Loja Fechada'"
-                   description="Controle se os clientes podem fazer novos pedidos agora."
-                   [control]="getControl('isOpen')">
-                </ui-switch>
-
-                 <div class="grid md:grid-cols-2 gap-6">
-                     <ui-input
-                        label="Tempo de Preparo"
-                        [control]="getControl('prepTime')"
-                        placeholder="40-50"
-                        suffix="minutos">
-                    </ui-input>
-                 </div>
-            </div>
-        </ui-card>
-
-        <!-- Financeiro -->
-        <ui-card>
-             <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
-                <span class="material-symbols-outlined text-green-500">payments</span>
-                <h2 class="text-lg font-bold text-white">Financeiro & Entrega</h2>
-            </div>
-            
-            <div class="grid md:grid-cols-3 gap-6">
-                 <ui-input
-                    label="Taxa de Entrega"
-                    [control]="getControl('deliveryFee')"
-                    type="number"
-                    prefix="R$">
-                </ui-input>
-
-                 <ui-input
-                    label="Pedido Mínimo"
-                    [control]="getControl('minOrder')"
-                    type="number"
-                    prefix="R$">
-                </ui-input>
-
-                 <ui-input
-                    label="Chave PIX"
-                    [control]="getControl('pixKey')"
-                    placeholder="00.000.000/0001-00">
-                </ui-input>
-            </div>
-        </ui-card>
-
-        <!-- Actions -->
-        <div class="flex justify-end pt-4">
-            <ui-button 
-                type="submit" 
-                variant="primary" 
-                size="lg"
-                [loading]="false"
-                icon="save">
-                Salvar Alterações
-            </ui-button>
-        </div>
-
-    </form>
-
-    <!-- Toast Notification -->
-    <div *ngIf="showToast" class="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in z-50">
-        <span class="material-symbols-outlined">check_circle</span>
-        <span class="font-bold">Alterações salvas com sucesso!</span>
+<div class="p-6 max-w-[1600px] mx-auto font-display animate-fade-in">
+  <!-- Header -->
+  <header
+    class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4"
+  >
+    <div>
+      <h1
+        class="text-3xl font-heading font-bold text-white tracking-tight mb-2"
+      >
+        Configurações da Loja
+      </h1>
+      <p class="text-stone-400">
+        Gerencie a identidade, horários e preferências da sua plataforma.
+      </p>
     </div>
 
+    <!-- Status Indicator Pill -->
+    <div
+      class="flex items-center gap-3 bg-stone-900 border border-stone-800 rounded-full px-4 py-2"
+    >
+      <div
+        class="w-2.5 h-2.5 rounded-full"
+        [ngClass]="
+          isOpen
+            ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
+            : 'bg-red-500'
+        "
+      ></div>
+      <span class="text-sm font-medium text-white">{{
+        isOpen ? "Loja Aberta" : "Loja Fechada"
+      }}</span>
+    </div>
+  </header>
+
+  <form
+    [formGroup]="settingsForm"
+    (ngSubmit)="onSubmit()"
+    class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+  >
+    <!-- Left Column: Identity & Public Info -->
+    <div class="lg:col-span-1 space-y-8">
+      <!-- Store Preview / Identity -->
+      <ui-card>
+        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+          <span class="material-symbols-outlined text-amber-500"
+            >storefront</span
+          >
+          <h2 class="text-lg font-bold text-white">Identidade</h2>
+        </div>
+
+        <div class="space-y-6">
+          <ui-input
+            label="Nome da Loja"
+            [control]="getControl('storeName')"
+            placeholder="Ex: Yami Burger"
+          >
+          </ui-input>
+
+          <ui-textarea
+            label="Biografia"
+            [control]="getControl('storeBio')"
+            placeholder="Uma breve descrição da sua loja..."
+            [maxLength]="160"
+          >
+          </ui-textarea>
+
+          <ui-input
+            label="Slug (URL)"
+            [control]="getControl('storeSlug')"
+            placeholder="yami-backend"
+            prefix="yami.com/"
+            note="Endereço único da sua loja na internet."
+          >
+          </ui-input>
+        </div>
+      </ui-card>
+
+      <!-- Quick Stats (Mocked for now based on Stitch design) -->
+      <ui-card>
+        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+          <span class="material-symbols-outlined text-purple-500"
+            >monitoring</span
+          >
+          <h2 class="text-lg font-bold text-white">Metricas</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div
+            class="bg-stone-950/50 p-4 rounded-lg border border-white/5 text-center"
+          >
+            <div class="text-2xl font-bold text-white mb-1">4.8</div>
+            <div class="text-xs text-stone-500 uppercase tracking-wider">
+              Avaliação
+            </div>
+          </div>
+          <div
+            class="bg-stone-950/50 p-4 rounded-lg border border-white/5 text-center"
+          >
+            <div class="text-2xl font-bold text-white mb-1">12m</div>
+            <div class="text-xs text-stone-500 uppercase tracking-wider">
+              Tempo Médio
+            </div>
+          </div>
+        </div>
+      </ui-card>
+    </div>
+
+    <!-- Right Column: Operations & Settings -->
+    <div class="lg:col-span-2 space-y-8">
+      <!-- Operations -->
+      <ui-card>
+        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+          <span class="material-symbols-outlined text-blue-500">tune</span>
+          <h2 class="text-lg font-bold text-white">Operacional</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Status Switch -->
+          <ui-switch
+            class="md:col-span-2"
+            [label]="'Status de Funcionamento'"
+            [description]="
+              'Controle se sua loja está recebendo pedidos automaticamente.'
+            "
+            [control]="getControl('isOpen')"
+          >
+          </ui-switch>
+
+          <ui-input
+            label="Tempo de Preparo Estimado"
+            [control]="getControl('prepTime')"
+            placeholder="40-50"
+            suffix="minutos"
+          >
+          </ui-input>
+
+          <div
+            class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-200 flex items-start gap-3"
+          >
+            <span class="material-symbols-outlined text-blue-400">info</span>
+            <p>
+              Este tempo é exibido para os clientes antes de finalizarem o
+              pedido.
+            </p>
+          </div>
+        </div>
+      </ui-card>
+
+      <!-- Finance -->
+      <ui-card>
+        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+          <span class="material-symbols-outlined text-emerald-500"
+            >payments</span
+          >
+          <h2 class="text-lg font-bold text-white">Financeiro & Entrega</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <ui-input
+            label="Taxa de Entrega Fixa"
+            [control]="getControl('deliveryFee')"
+            type="number"
+            prefix="R$"
+          >
+          </ui-input>
+
+          <ui-input
+            label="Valor Mínimo do Pedido"
+            [control]="getControl('minOrder')"
+            type="number"
+            prefix="R$"
+          >
+          </ui-input>
+
+          <ui-input
+            class="md:col-span-2"
+            label="Chave PIX (Para Recebimento)"
+            [control]="getControl('pixKey')"
+            placeholder="00.000.000/0001-00"
+          >
+          </ui-input>
+        </div>
+      </ui-card>
+
+      <!-- Actions Footer -->
+      <div class="flex justify-end pt-4 border-t border-white/5 gap-4">
+        <button
+          type="button"
+          (click)="logout()"
+          class="px-6 py-3 rounded-lg font-bold text-red-500 hover:bg-red-500/10 transition-colors"
+        >
+          Sair da Conta
+        </button>
+
+        <ui-button
+          type="submit"
+          variant="primary"
+          size="lg"
+          [loading]="false"
+          icon="save"
+        >
+          Salvar Alterações
+        </ui-button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Toast Notification -->
+  <div
+    *ngIf="showToast"
+    class="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in z-50"
+  >
+    <span class="material-symbols-outlined">check_circle</span>
+    <span class="font-bold">Alterações salvas com sucesso!</span>
+  </div>
 </div>

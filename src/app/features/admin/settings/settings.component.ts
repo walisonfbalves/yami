@@ -7,6 +7,9 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { TextareaComponent } from '../../../shared/ui/textarea/textarea.component';
 import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -26,7 +29,11 @@ export class SettingsComponent {
   settingsForm: FormGroup;
   showToast = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.settingsForm = this.fb.group({
       // Store Identity
       storeName: ['Yami Backend', Validators.required],
@@ -50,6 +57,11 @@ export class SettingsComponent {
       this.showToast = true;
       setTimeout(() => this.showToast = false, 3000);
     }
+  }
+
+  async logout() {
+    await this.authService.signOut();
+    this.router.navigate(['/auth/login']);
   }
 
   // Helper for toggle class

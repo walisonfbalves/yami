@@ -6,7 +6,18 @@ class CustomStorage implements SupportedStorage {
   private storage: Storage;
 
   constructor(persist: boolean = true) {
-    this.storage = persist ? localStorage : sessionStorage;
+    // Tenta detectar onde o token está salvo
+    const hasLocal = Object.keys(localStorage).some(k => k.startsWith('sb-'));
+    const hasSession = Object.keys(sessionStorage).some(k => k.startsWith('sb-'));
+
+    if (hasLocal) {
+      this.storage = localStorage;
+    } else if (hasSession) {
+      this.storage = sessionStorage;
+    } else {
+      // Se não tiver em nenhum, usa a preferência (que por padrão é localStorage)
+      this.storage = persist ? localStorage : sessionStorage;
+    }
   }
 
   getItem(key: string): string | null {
