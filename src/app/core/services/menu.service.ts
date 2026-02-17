@@ -43,19 +43,12 @@ export class MenuService {
   private _products = new BehaviorSubject<Product[]>([]);
   readonly products$ = this._products.asObservable();
 
+  private _loading = new BehaviorSubject<boolean>(true);
+  readonly loading$ = this._loading.asObservable();
+
   constructor() {
-    // Carrega o cardápio quando a loja estiver disponível
-    this.storeService.currentStore$.pipe(
-      switchMap(store => {
-        if (store) {
-          return this.fetchMenu(store.id);
-        } else {
-          this._categories.next([]);
-          this._products.next([]);
-          return of(null);
-        }
-      })
-    ).subscribe();
+    // Constructor logic removed to avoid side-effects.
+    // Components should explicitly call fetchMenu via subscription.
   }
 
   fetchMenu(storeId: string): Observable<MenuData> {
@@ -84,11 +77,13 @@ export class MenuService {
 
         this._categories.next(categories);
         this._products.next(products);
+        this._loading.next(false); // Dados carregados
         
         return { categories, products };
       }),
       catchError(err => {
         console.error('Erro ao buscar cardápio:', err);
+        this._loading.next(false); // Erro também finaliza loading
         return of({ categories: [], products: [] });
       })
     );

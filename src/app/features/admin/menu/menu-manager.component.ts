@@ -11,7 +11,7 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { DialogComponent } from '../../../shared/ui/dialog/dialog.component';
 import { MenuService, Product, Category } from '../../../core/services/menu.service';
 import { StoreService } from '../../../core/services/store.service';
-import { Subscription, Subject, takeUntil, forkJoin } from 'rxjs';
+import { Subscription, Subject, takeUntil, forkJoin, switchMap, of, filter, tap } from 'rxjs';
 
 @Component({
   selector: 'app-menu-manager',
@@ -72,22 +72,33 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
   }
 
   loadData() {
-      this.isLoading = true;
+      // Subscribe to global loading state
+      this.menuService.loading$.pipe(takeUntil(this.destroy$)).subscribe(loading => {
+          this.isLoading = loading;
+      });
       
       this.storeService.currentStore$.pipe(
-        takeUntil(this.destroy$)
-      ).subscribe(store => {
-          if (store) {
-              this.storeId = store.id;
-              // MenuService auto-fetches, but we can verify or just rely on streams
-              this.isLoading = false; // logic simplified
+        takeUntil(this.destroy$),
+        filter(store => !!store), // 1. Só passa se a loja existir
+        tap(store => {
+             if(store) console.log('Loja carregada:', store.id);
+             this.storeId = store?.id || '';
+        }), 
+        switchMap(store => {
+           if (!store) return of({ categories: [], products: [] });
+           // 3. Busca produtos dessa loja
+           return this.menuService.fetchMenu(store.id);
+        }),
+        tap(data => console.log('Dados do menu carregados:', data)) // 4. Debug Final
+      ).subscribe({
+        next: (data: any) => {
+          if (data) {
+             this.categories = data.categories;
+             this.products = data.products;
+             console.log('Produtos atribuídos:', this.products.length);
           }
-      });
-
-      this.menuService.categories$.pipe(takeUntil(this.destroy$)).subscribe(cats => this.categories = cats);
-      this.menuService.products$.pipe(takeUntil(this.destroy$)).subscribe(prods => {
-          this.products = prods;
-          this.isLoading = false;
+        },
+        error: (err) => console.error('Error loading menu:', err)
       });
   }
 
@@ -143,9 +154,13 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
 
       try {
           if (this.editingProduct && this.editingProduct.id) {
-              await this.menuService.updateProduct(this.editingProduct.id, productPayload);
+              const updatedProduct = await this.menuService.updateProduct(this.editingProduct.id, productPayload);
+              // Update local state
+              this.products = this.products.map(p => p.id === updatedProduct.id ? updatedProduct : p);
           } else {
-              await this.menuService.createProduct(productPayload);
+              const newProduct = await this.menuService.createProduct(productPayload);
+              // Add to local state
+              this.products = [...this.products, newProduct];
           }
           this.closeForm();
       } catch (err) {
@@ -163,6 +178,11 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
       const productId = this.itemToDelete.id;
       try {
           await this.menuService.deleteProduct(productId);
+          
+          // UI Instantânea: Remove o item da lista local visualmente
+          this.products = this.products.filter(p => p.id !== productId);
+          console.log('Produto excluído com sucesso (UI atualizada)');
+
           this.cancelDelete();
       } catch (err) {
           console.error('Error deleting product', err);
