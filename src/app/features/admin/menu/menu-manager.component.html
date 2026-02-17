@@ -201,6 +201,7 @@
   <app-product-form
     *ngIf="showForm"
     [product]="editingProduct"
+    [categories]="categories"
     (save)="handleSaveProduct($event)"
     (cancel)="closeForm()"
   >

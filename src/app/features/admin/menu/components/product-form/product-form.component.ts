@@ -88,7 +88,7 @@ import { MenuService } from '../../../../../core/services/menu.service';
                             <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Categoria</label>
                             <select formControlName="category_id" 
                                     class="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
-                                <option *ngFor="let cat of categoriesList" [value]="cat.id">{{ cat.name }}</option>
+                                <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -134,10 +134,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private menuService = inject(MenuService);
 
   productForm: FormGroup;
-  categoriesList: any[] = []; // Should be injected or passed as input
+  // categoriesList removed in favor of @Input() categories
   isUploading = false;
   imageError = false;
   isDragging = false;
+
+  @Input() categories: any[] = []; // Input for categories
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
@@ -151,16 +153,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
   }
 
   ngOnInit() {
-      // Fetch categories for the select dropdown
-      // For now, assuming we have a valid storeId available or we pass categories as input
-      // Let's rely on parent passing categories ideally, but for quick fix, fetching here:
-      const storeId = '639d6759-3315-420a-86c3-16298517220b'; 
-      this.menuService.getCategories(storeId).subscribe(cats => {
-          this.categoriesList = cats;
-          if (cats.length > 0 && !this.productForm.get('category_id')?.value) {
-              this.productForm.patchValue({ category_id: cats[0].id });
-          }
-      });
+      if (this.categories.length > 0 && !this.productForm.get('category_id')?.value) {
+          this.productForm.patchValue({ category_id: this.categories[0].id });
+      }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

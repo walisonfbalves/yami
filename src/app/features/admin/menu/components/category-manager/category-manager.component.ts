@@ -96,9 +96,9 @@ export class CategoryManagerComponent {
   private dialogService = inject(DialogService);
   private menuService = inject(MenuService);
 
-  addCategory() {
+  async addCategory() {
     const name = this.newCategoryName.trim();
-    if (!name || !this.storeId) return;
+    if (!name) return;
 
     // Case insensitive duplicate check
     if (this.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
@@ -107,44 +107,34 @@ export class CategoryManagerComponent {
     }
 
     this.isLoading = true;
-    const newCategory: Category = {
-        store_id: this.storeId,
-        name: name,
-        sort_order: this.categories.length + 1
-    };
-
-    this.menuService.createCategory(newCategory).subscribe({
-        next: () => {
-            this.newCategoryName = '';
-            this.update.emit();
-            this.isLoading = false;
-        },
-        error: (err) => {
-            console.error('Error creating category', err);
-            this.dialogService.alert('Erro', 'Não foi possível criar a categoria.');
-            this.isLoading = false;
-        }
-    });
+    try {
+        await this.menuService.createCategory(name);
+        this.newCategoryName = '';
+        this.update.emit();
+    } catch (err) {
+        console.error('Error creating category', err);
+        this.dialogService.alert('Erro', 'Não foi possível criar a categoria.');
+    } finally {
+        this.isLoading = false;
+    }
   }
 
-  removeCategory(category: Category) {
+  async removeCategory(category: Category) {
     if (!category.id) return;
     
     // Check if category has products? Supabase might enforce FK, but good to warn.
     // For now, simple delete.
     
     this.isLoading = true;
-    this.menuService.deleteCategory(category.id).subscribe({
-        next: () => {
-            this.update.emit();
-            this.isLoading = false;
-        },
-        error: (err) => {
-             console.error('Error deleting category', err);
-             this.dialogService.alert('Erro', 'Não foi possível excluir a categoria.');
-             this.isLoading = false;
-        }
-    });
+    try {
+        await this.menuService.deleteCategory(category.id);
+        this.update.emit();
+    } catch (err) {
+         console.error('Error deleting category', err);
+         this.dialogService.alert('Erro', 'Não foi possível excluir a categoria.');
+    } finally {
+         this.isLoading = false;
+    }
   }
 
   onClose() {

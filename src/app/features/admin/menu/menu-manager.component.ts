@@ -10,6 +10,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { DialogComponent } from '../../../shared/ui/dialog/dialog.component';
 import { MenuService, Product, Category } from '../../../core/services/menu.service';
+import { StoreService } from '../../../core/services/store.service';
 import { Subscription, Subject, takeUntil, forkJoin } from 'rxjs';
 
 @Component({
@@ -35,13 +36,11 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   selectedCategory: Category | 'Todos' = 'Todos';
 
+  private storeService = inject(StoreService); // Inject StoreService
   private menuService = inject(MenuService);
-  // private authService = inject(AuthService); // Assuming we can get storeId from auth or another state
-  // For now, hardcoding or fetching storeId needs to be handled. 
-  // Ideally, storeId comes from the logged-in user's store.
-  // Let's assume we have a way to get the current store UUID.
-  // TODO: Get real store ID.
-  storeId = '639d6759-3315-420a-86c3-16298517220b'; // Replace with actual store ID logic
+  // private authService = inject(AuthService); 
+  
+  storeId = ''; 
 
   searchTerm = '';
   searchControl = new FormControl('');
@@ -74,20 +73,21 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
 
   loadData() {
       this.isLoading = true;
-      // Fetch categories and products in parallel or sequentially
-      forkJoin({
-          categories: this.menuService.getCategories(this.storeId),
-          products: this.menuService.getProducts(this.storeId)
-      }).subscribe({
-          next: ({ categories, products }) => {
-              this.categories = categories;
-              this.products = products;
-              this.isLoading = false;
-          },
-          error: (err) => {
-              console.error('Error loading menu data', err);
-              this.isLoading = false;
+      
+      this.storeService.currentStore$.pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(store => {
+          if (store) {
+              this.storeId = store.id;
+              // MenuService auto-fetches, but we can verify or just rely on streams
+              this.isLoading = false; // logic simplified
           }
+      });
+
+      this.menuService.categories$.pipe(takeUntil(this.destroy$)).subscribe(cats => this.categories = cats);
+      this.menuService.products$.pipe(takeUntil(this.destroy$)).subscribe(prods => {
+          this.products = prods;
+          this.isLoading = false;
       });
   }
 
@@ -109,20 +109,20 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
       });
   }
 
-  toggleAvailability(product: Product) {
+  async toggleAvailability(product: Product) {
       if (!product.id) return;
       
       const newStatus = !product.is_available;
       // Optimistic update
       product.is_available = newStatus;
 
-      this.menuService.updateProduct(product.id, { is_available: newStatus }).subscribe({
-          error: () => {
-              // Revert on error
-              product.is_available = !newStatus;
-              console.error('Failed to update availability');
-          }
-      });
+      try {
+          await this.menuService.updateProduct(product.id, { is_available: newStatus });
+      } catch (error) {
+           // Revert on error
+           product.is_available = !newStatus;
+           console.error('Failed to update availability', error);
+      }
   }
 
   openForm(product: Product | null = null) {
@@ -135,33 +135,21 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
     this.editingProduct = null;
   }
 
-  handleSaveProduct(productData: any) { // productData from form might need mapping
-      // The ProductFormComponent needs to handle the logic of calling create/update or passing data back.
-      // If passing data back:
-      const productPayload: Product = {
+  async handleSaveProduct(productData: any) {
+      const productPayload: any = {
           ...productData,
           store_id: this.storeId
       };
 
-      if (this.editingProduct && this.editingProduct.id) {
-          this.menuService.updateProduct(this.editingProduct.id, productPayload).subscribe({
-              next: (updatedProduct) => {
-                  const index = this.products.findIndex(p => p.id === updatedProduct.id);
-                  if (index !== -1) {
-                      this.products[index] = updatedProduct;
-                  }
-                  this.closeForm();
-              },
-              error: (err) => console.error('Error updating product', err)
-          });
-      } else {
-          this.menuService.createProduct(productPayload).subscribe({
-              next: (newProduct) => {
-                  this.products.push(newProduct);
-                  this.closeForm();
-              },
-              error: (err) => console.error('Error creating product', err)
-          });
+      try {
+          if (this.editingProduct && this.editingProduct.id) {
+              await this.menuService.updateProduct(this.editingProduct.id, productPayload);
+          } else {
+              await this.menuService.createProduct(productPayload);
+          }
+          this.closeForm();
+      } catch (err) {
+          console.error('Error saving product', err);
       }
   }
 
@@ -170,16 +158,15 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
     this.showDeleteModal = true;
   }
 
-  executeDelete() {
+  async executeDelete() {
     if (this.itemToDelete && this.itemToDelete.id) {
       const productId = this.itemToDelete.id;
-      this.menuService.deleteProduct(productId).subscribe({
-          next: () => {
-              this.products = this.products.filter(p => p.id !== productId);
-              this.cancelDelete();
-          },
-          error: (err) => console.error('Error deleting product', err)
-      });
+      try {
+          await this.menuService.deleteProduct(productId);
+          this.cancelDelete();
+      } catch (err) {
+          console.error('Error deleting product', err);
+      }
     } else {
         this.cancelDelete();
     }
