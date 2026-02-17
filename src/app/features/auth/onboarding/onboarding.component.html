@@ -1,20 +1,23 @@
 <div
   class="min-h-screen bg-stone-950 flex flex-col items-center justify-center p-4"
 >
-  <div class="w-full max-w-md space-y-8 animate-fade-in-up">
-    <!-- Header -->
-    <div class="text-center space-y-2">
-      <div class="flex justify-center mb-6">
-        <span class="material-symbols-outlined text-4xl text-amber-500"
-          >storefront</span
-        >
-      </div>
-      <h1 class="text-3xl font-black text-white tracking-tight">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <span class="material-symbols-outlined text-primary text-5xl mb-4"
+        >storefront</span
+      >
+      <h1 class="text-3xl font-heading font-bold text-white mb-2">
         Crie seu Restaurante
       </h1>
       <p class="text-stone-400">
         Configure sua loja para começar a receber pedidos.
       </p>
+      <button
+        (click)="checkStore()"
+        class="mt-4 text-xs text-stone-500 underline"
+      >
+        Debug: Verificar Loja Existente
+      </button>
     </div>
 
     <!-- Form -->

@@ -43,20 +43,23 @@ export class StoreService {
     const query = this.supabase
       .from('stores')
       .select('*')
-      .single();
+      .limit(1)
+      .maybeSingle();
 
     return from(query).pipe(
       map(({ data, error }) => {
+        console.log('StoreService: fetchStore data:', data);
         if (error) {
-          // Se não encontrar (código PGRST116), retorna null sem erro
-          if (error.code === 'PGRST116') {
-            return null;
-          }
+          console.error('StoreService: fetchStore error:', error);
           throw error;
-        }
-        return data as Store;
+         }
+        // maybeSingle returns null if no rows found, which is what we want
+        return data as Store | null;
       }),
-      tap(store => this._currentStore.next(store)),
+      tap(store => {
+          console.log('StoreService: store found:', store);
+          this._currentStore.next(store);
+      }),
       catchError(err => {
         console.error('Erro ao buscar loja:', err);
         this._currentStore.next(null);

@@ -48,7 +48,10 @@ export class OnboardingComponent {
   }
 
   async onSubmit() {
-    if (this.storeForm.invalid) return;
+    if (this.storeForm.invalid) {
+      this.storeForm.markAllAsTouched();
+      return;
+    }
 
     this.isLoading = true;
     const { name, slug, phone } = this.storeForm.value;
@@ -56,18 +59,31 @@ export class OnboardingComponent {
     try {
       await this.storeService.createStore({ name, slug, phone });
       this.toast.show('Restaurante criado com sucesso!', 'success');
-      this.showSuccessModal = true;
+      // this.showSuccessModal = true; // Use router for now as per previous logic
+      this.router.navigate(['/admin']);
     } catch (error: any) {
       console.error(error);
       if (error.code === '23505') { // Erro de unicidade (slug duplicado)
-          this.toast.show('Este link já está em uso. Tente outro.', 'error');
-          this.storeForm.get('slug')?.setErrors({ unique: true });
+         this.toast.show('Este link já está em uso. Tente outro.', 'error');
+         this.storeForm.get('slug')?.setErrors({ unique: true });
       } else {
-          this.toast.show('Erro ao criar restaurante. Tente novamente.', 'error');
+         this.toast.show('Erro ao criar restaurante. Tente novamente.', 'error');
       }
     } finally {
       this.isLoading = false;
     }
+  }
+
+  checkStore() {
+    this.storeService.fetchStore().subscribe(store => {
+      console.log('Manual check store result:', store);
+      if (store) {
+        this.toast.show('Loja encontrada! Redirecionando...', 'success');
+        this.router.navigate(['/admin']);
+      } else {
+        this.toast.show('Nenhuma loja encontrada para este usuário.', 'info');
+      }
+    });
   }
 
   navigateToAdmin() {
