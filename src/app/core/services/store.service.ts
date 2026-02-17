@@ -111,4 +111,49 @@ export class StoreService {
     return updatedStore;
   }
 
+  // --- Image Upload ---
+
+  async uploadLogo(file: File | Blob): Promise<string> {
+    const store = this._currentStore.value;
+    if (!store) throw new Error('Loja não encontrada');
+
+    const fileName = `${store.id}/logo-${Date.now()}.webp`;
+
+    const { error: uploadError } = await this.supabase.storage
+      .from('store-images')
+      .upload(fileName, file, {
+        upsert: true,
+        contentType: 'image/webp'
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = this.supabase.storage
+      .from('store-images')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
+  }
+
+  async uploadCover(file: File | Blob): Promise<string> {
+    const store = this._currentStore.value;
+    if (!store) throw new Error('Loja não encontrada');
+
+    const fileName = `${store.id}/cover-${Date.now()}.webp`;
+
+    const { error: uploadError } = await this.supabase.storage
+      .from('store-images')
+      .upload(fileName, file, {
+        upsert: true,
+        contentType: 'image/webp'
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = this.supabase.storage
+      .from('store-images')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
+  }
 }

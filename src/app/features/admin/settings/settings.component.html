@@ -47,9 +47,28 @@
         [noPadding]="true"
       >
         <!-- Banner Area -->
+        <!-- Banner Area -->
         <div
           class="h-32 w-full bg-stone-700/50 relative group cursor-pointer hover:bg-stone-700 transition-colors border-b border-white/5"
+          (click)="coverInput.click()"
         >
+          <input
+            #coverInput
+            type="file"
+            class="hidden"
+            accept="image/*"
+            (change)="onCoverSelected($event)"
+          />
+
+          <div
+            *ngIf="isLoadingCover"
+            class="absolute inset-0 flex items-center justify-center bg-stone-900/50 z-20"
+          >
+            <span class="material-symbols-outlined animate-spin text-amber-500"
+              >progress_activity</span
+            >
+          </div>
+
           <img
             *ngIf="getControl('cover_url').value"
             [src]="getControl('cover_url').value"
@@ -71,7 +90,26 @@
           <div class="relative -mt-12 mb-6 self-start z-20">
             <div
               class="w-24 h-24 rounded-full bg-stone-800 border-4 border-stone-800 overflow-hidden relative group cursor-pointer shadow-lg"
+              (click)="logoInput.click()"
             >
+              <input
+                #logoInput
+                type="file"
+                class="hidden"
+                accept="image/*"
+                (change)="onLogoSelected($event)"
+              />
+
+              <div
+                *ngIf="isLoadingLogo"
+                class="absolute inset-0 flex items-center justify-center bg-stone-900/50 z-20"
+              >
+                <span
+                  class="material-symbols-outlined animate-spin text-amber-500"
+                  >progress_activity</span
+                >
+              </div>
+
               <img
                 *ngIf="getControl('logo_url').value"
                 [src]="getControl('logo_url').value"
@@ -79,7 +117,9 @@
               />
               <div
                 class="absolute inset-0 bg-stone-700/50 flex items-center justify-center text-stone-500 hover:bg-stone-700 transition-colors"
-                [class.opacity-0]="getControl('logo_url').value"
+                [class.opacity-0]="
+                  getControl('logo_url').value && !isLoadingLogo
+                "
                 [class.group-hover:opacity-100]="getControl('logo_url').value"
               >
                 <span class="material-symbols-outlined">add_a_photo</span>

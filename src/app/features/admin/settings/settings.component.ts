@@ -95,4 +95,74 @@ export class SettingsComponent {
   getControl(name: string): FormControl {
     return this.settingsForm.get(name) as FormControl;
   }
+
+  // Image Upload Handlers
+  isLoadingLogo = false;
+  isLoadingCover = false;
+
+  async onLogoSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.isLoadingLogo = true;
+    try {
+      // 1. Compress
+      const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file));
+      
+      // 2. Upload
+      const publicUrl = await this.storeService.uploadLogo(compressedBlob);
+
+      // 3. Update Form & Preview
+      this.getControl('logo_url').setValue(publicUrl);
+      this.getControl('logo_url').markAsDirty();
+      
+      this.showToastMessage('Logo atualizada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao fazer upload do logo:', error);
+      this.showToastMessage('Erro ao fazer upload do logo.', true);
+    } finally {
+      this.isLoadingLogo = false;
+    }
+  }
+
+  async onCoverSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.isLoadingCover = true;
+    try {
+      // 1. Compress
+      const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file));
+      
+      // 2. Upload
+      const publicUrl = await this.storeService.uploadCover(compressedBlob);
+
+      // 3. Update Form & Preview
+      this.getControl('cover_url').setValue(publicUrl);
+      this.getControl('cover_url').markAsDirty();
+
+      this.showToastMessage('Capa atualizada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao fazer upload da capa:', error);
+      this.showToastMessage('Erro ao fazer upload da capa.', true);
+    } finally {
+      this.isLoadingCover = false;
+    }
+  }
+
+  showToastMessage(message: string, isError = false) {
+    // Reuse existing toast logic or create a better one. 
+    // For now, simpler adjustment to existing showToast
+    this.showToast = true;
+    // Ideally we bind the message to the template. 
+    // Since template has hardcoded message, we might want to update it to be dynamic, 
+    // but for now let's just trigger the success state.
+    // If error, we might want to log it or show a different toast.
+    if (isError) {
+        alert(message); // Fallback for error
+        this.showToast = false;
+    } else {
+        setTimeout(() => this.showToast = false, 3000);
+    }
+  }
 }
