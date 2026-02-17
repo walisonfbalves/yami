@@ -123,7 +123,7 @@
             [description]="
               'Controle se sua loja está recebendo pedidos automaticamente.'
             "
-            [control]="getControl('isOpen')"
+            [control]="getControl('is_open')"
           >
           </ui-switch>
 
@@ -161,7 +161,7 @@
         <div class="grid md:grid-cols-2 gap-6">
           <ui-input
             label="Taxa de Entrega Fixa"
-            [control]="getControl('deliveryFee')"
+            [control]="getControl('delivery_fee')"
             type="number"
             prefix="R$"
           >
@@ -169,7 +169,7 @@
 
           <ui-input
             label="Valor Mínimo do Pedido"
-            [control]="getControl('minOrder')"
+            [control]="getControl('min_order')"
             type="number"
             prefix="R$"
           >
@@ -178,7 +178,7 @@
           <ui-input
             class="md:col-span-2"
             label="Chave PIX (Para Recebimento)"
-            [control]="getControl('pixKey')"
+            [control]="getControl('pix_key')"
             placeholder="00.000.000/0001-00"
           >
           </ui-input>
