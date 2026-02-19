@@ -1,27 +1,22 @@
 export interface Product {
   id: string;
+  store_id: string;
+  category_id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  imageUrl: string;
-  categoryId: string;
+  image_url?: string;
+  is_available: boolean;
+  sort_order: number;
+  created_at?: string;
 }
 
 export interface Category {
   id: string;
+  store_id: string;
   name: string;
-}
-
-export interface Restaurant {
-  name: string;
-  bannerUrl: string;
-  logoUrl: string;
-}
-
-export interface MenuData {
-  restaurant: Restaurant;
-  categories: Category[];
-  products: Product[];
+  sort_order: number;
+  created_at?: string;
 }
 
 export interface CartItem extends Product {

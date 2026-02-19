@@ -1,134 +1,249 @@
 <div class="min-h-screen pb-20">
-
   <!-- Skeleton Loading State -->
   <div *ngIf="isLoading" class="min-h-screen pb-20 fade-in">
-    
     <!-- Header Skeleton -->
     <div class="relative h-48 md:h-64 bg-stone-800 animate-pulse">
-        <div class="absolute bottom-0 left-0 w-full p-4 transform translate-y-1/2 flex justify-center">
-             <div class="bg-surface p-2 rounded-full border-4 border-background shadow-xl">
-               <yami-skeleton class="w-24 h-24 rounded-full" className="block"></yami-skeleton>
-             </div>
+      <div
+        class="absolute bottom-0 left-0 w-full p-4 transform translate-y-1/2 flex justify-center"
+      >
+        <div
+          class="bg-surface p-2 rounded-full border-4 border-background shadow-xl"
+        >
+          <yami-skeleton
+            class="w-24 h-24 rounded-full"
+            className="block"
+          ></yami-skeleton>
         </div>
+      </div>
     </div>
 
     <!-- Info Skeleton -->
     <div class="mt-16 px-4 flex flex-col items-center space-y-3">
-        <yami-skeleton width="200px" height="2rem" className="block"></yami-skeleton> <!-- Restaurant Name -->
-        <div class="flex gap-2">
-            <yami-skeleton width="80px" height="1.5rem" className="block"></yami-skeleton>
-            <yami-skeleton width="120px" height="1.5rem" className="block"></yami-skeleton>
-        </div>
+      <yami-skeleton
+        width="200px"
+        height="2rem"
+        className="block"
+      ></yami-skeleton>
+      <!-- Restaurant Name -->
+      <div class="flex gap-2">
+        <yami-skeleton
+          width="80px"
+          height="1.5rem"
+          className="block"
+        ></yami-skeleton>
+        <yami-skeleton
+          width="120px"
+          height="1.5rem"
+          className="block"
+        ></yami-skeleton>
+      </div>
     </div>
 
     <!-- Categories Skeleton -->
-    <div class="sticky top-0 z-10 bg-background/95 backdrop-blur py-4 mt-6 border-b border-surface-active">
-        <div class="flex overflow-x-auto gap-2 px-4 no-scrollbar hide-scrollbar">
-            <yami-skeleton *ngFor="let i of [1,2,3,4,5]" width="100px" height="36px" className="rounded-full"></yami-skeleton>
-        </div>
+    <div
+      class="sticky top-0 z-10 bg-background/95 backdrop-blur py-4 mt-6 border-b border-surface-active"
+    >
+      <div class="flex overflow-x-auto gap-2 px-4 no-scrollbar hide-scrollbar">
+        <yami-skeleton
+          *ngFor="let i of [1, 2, 3, 4, 5]"
+          width="100px"
+          height="36px"
+          className="rounded-full"
+        ></yami-skeleton>
+      </div>
     </div>
 
     <!-- Menu List Skeleton -->
     <div class="container mx-auto max-w-2xl px-4 mt-6 space-y-8">
-        <!-- Category Group 1 -->
-        <div class="space-y-4">
-            <yami-skeleton width="150px" height="2rem" className="block mb-4"></yami-skeleton> <!-- Category Title -->
-            
-            <!-- Product Cards -->
-            <div *ngFor="let i of [1,2,3]" class="flex gap-4 p-4 bg-surface border border-stone-800 rounded-xl">
-                <!-- Image -->
-                <yami-skeleton class="shrink-0 w-20 h-20 rounded-lg" className="block"></yami-skeleton>
-                
-                <!-- Content -->
-                <div class="flex flex-col flex-1 justify-between">
-                    <div class="space-y-2">
-                        <yami-skeleton width="60%" height="1.25rem" className="block"></yami-skeleton> <!-- Title -->
-                        <yami-skeleton width="90%" height="0.875rem" className="block"></yami-skeleton> <!-- Desc -->
-                    </div>
-                    
-                    <!-- Price & Action -->
-                    <div class="flex items-center justify-between mt-3">
-                        <yami-skeleton width="40%" height="1.25rem" className="block"></yami-skeleton> <!-- Price -->
-                        <yami-skeleton width="32px" height="32px" className="rounded-full"></yami-skeleton> <!-- Add Button -->
-                    </div>
-                </div>
-            </div>
-        </div>
+      <!-- Category Group 1 -->
+      <div class="space-y-4">
+        <yami-skeleton
+          width="150px"
+          height="2rem"
+          className="block mb-4"
+        ></yami-skeleton>
+        <!-- Category Title -->
 
-         <!-- Category Group 2 -->
-         <div class="space-y-4">
-            <yami-skeleton width="120px" height="2rem" className="block mb-4"></yami-skeleton> <!-- Category Title -->
-            <div *ngFor="let i of [1,2]" class="flex gap-4 p-4 bg-surface border border-stone-800 rounded-xl">
-                <yami-skeleton class="shrink-0 w-20 h-20 rounded-lg" className="block"></yami-skeleton>
-                <div class="flex flex-col flex-1 justify-between">
-                    <div class="space-y-2">
-                        <yami-skeleton width="50%" height="1.25rem" className="block"></yami-skeleton>
-                        <yami-skeleton width="80%" height="0.875rem" className="block"></yami-skeleton>
-                    </div>
-                    <div class="flex items-center justify-between mt-3">
-                        <yami-skeleton width="30%" height="1.25rem" className="block"></yami-skeleton>
-                        <yami-skeleton width="32px" height="32px" className="rounded-full"></yami-skeleton>
-                    </div>
-                </div>
+        <!-- Product Cards -->
+        <div
+          *ngFor="let i of [1, 2, 3]"
+          class="flex gap-4 p-4 bg-surface border border-stone-800 rounded-xl"
+        >
+          <!-- Image -->
+          <yami-skeleton
+            class="shrink-0 w-20 h-20 rounded-lg"
+            className="block"
+          ></yami-skeleton>
+
+          <!-- Content -->
+          <div class="flex flex-col flex-1 justify-between">
+            <div class="space-y-2">
+              <yami-skeleton
+                width="60%"
+                height="1.25rem"
+                className="block"
+              ></yami-skeleton>
+              <!-- Title -->
+              <yami-skeleton
+                width="90%"
+                height="0.875rem"
+                className="block"
+              ></yami-skeleton>
+              <!-- Desc -->
             </div>
+
+            <!-- Price & Action -->
+            <div class="flex items-center justify-between mt-3">
+              <yami-skeleton
+                width="40%"
+                height="1.25rem"
+                className="block"
+              ></yami-skeleton>
+              <!-- Price -->
+              <yami-skeleton
+                width="32px"
+                height="32px"
+                className="rounded-full"
+              ></yami-skeleton>
+              <!-- Add Button -->
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Category Group 2 -->
+      <div class="space-y-4">
+        <yami-skeleton
+          width="120px"
+          height="2rem"
+          className="block mb-4"
+        ></yami-skeleton>
+        <!-- Category Title -->
+        <div
+          *ngFor="let i of [1, 2]"
+          class="flex gap-4 p-4 bg-surface border border-stone-800 rounded-xl"
+        >
+          <yami-skeleton
+            class="shrink-0 w-20 h-20 rounded-lg"
+            className="block"
+          ></yami-skeleton>
+          <div class="flex flex-col flex-1 justify-between">
+            <div class="space-y-2">
+              <yami-skeleton
+                width="50%"
+                height="1.25rem"
+                className="block"
+              ></yami-skeleton>
+              <yami-skeleton
+                width="80%"
+                height="0.875rem"
+                className="block"
+              ></yami-skeleton>
+            </div>
+            <div class="flex items-center justify-between mt-3">
+              <yami-skeleton
+                width="30%"
+                height="1.25rem"
+                className="block"
+              ></yami-skeleton>
+              <yami-skeleton
+                width="32px"
+                height="32px"
+                className="rounded-full"
+              ></yami-skeleton>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
   </div>
 
   <!-- Actual Content -->
-  <ng-container *ngIf="!isLoading && menuData as data">
-    
+  <ng-container *ngIf="!isLoading">
     <!-- Header / Banner -->
     <header class="relative h-48 md:h-64 bg-surface-hover">
-      <img [src]="data.restaurant.bannerUrl" class="w-full h-full object-cover opacity-60" alt="Banner">
-      <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
-      
-      <div class="absolute bottom-0 left-0 w-full p-4 transform translate-y-1/2 flex justify-center">
-           <div class="bg-surface p-2 rounded-full border-4 border-background shadow-xl">
-             <img [src]="data.restaurant.logoUrl" class="w-24 h-24 rounded-full object-cover bg-surface-hover" alt="Logo">
-           </div>
+      <img
+        [src]="storeBanner"
+        class="w-full h-full object-cover opacity-60"
+        alt="Banner"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-background to-transparent"
+      ></div>
+
+      <div
+        class="absolute bottom-0 left-0 w-full p-4 transform translate-y-1/2 flex justify-center"
+      >
+        <div
+          class="bg-surface p-2 rounded-full border-4 border-background shadow-xl"
+        >
+          <img
+            [src]="storeLogo"
+            class="w-24 h-24 rounded-full object-cover bg-surface-hover"
+            alt="Logo"
+          />
+        </div>
       </div>
     </header>
-  
+
     <!-- Restaurant Info -->
     <div class="mt-16 text-center px-4">
-      <h1 class="font-heading text-3xl font-bold text-text-primary">{{ data.restaurant.name }}</h1>
+      <h1 class="font-heading text-3xl font-bold text-text-primary">
+        {{ storeName }}
+      </h1>
       <div class="flex justify-center gap-2 mt-2">
-          <ui-badge>Aberto</ui-badge>
-          <span class="text-text-secondary text-sm flex items-center">⭐ 4.8 (1.2k avaliações)</span>
+        <ui-badge>Aberto</ui-badge>
+        <span class="text-text-secondary text-sm flex items-center"
+          >⭐ 4.8 (1.2k avaliações)</span
+        >
       </div>
     </div>
-  
+
     <!-- Categories Nav -->
-    <div class="sticky top-0 z-10 bg-background/95 backdrop-blur py-4 mt-6 border-b border-surface-border">
+    <div
+      class="sticky top-0 z-10 bg-background/95 backdrop-blur py-4 mt-6 border-b border-surface-border"
+    >
       <div class="flex overflow-x-auto gap-2 px-4 no-scrollbar hide-scrollbar">
-        <button *ngFor="let cat of data.categories" 
-                (click)="scrollToCategory(cat.id)"
-                class="px-4 py-2 rounded-full border border-surface-border bg-surface text-text-secondary whitespace-nowrap hover:border-primary hover:text-primary transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+        <button
+          *ngFor="let cat of menuData.categories"
+          (click)="scrollToCategory(cat.id)"
+          class="px-4 py-2 rounded-full border border-surface-border bg-surface text-text-secondary whitespace-nowrap hover:border-primary hover:text-primary transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+        >
           {{ cat.name }}
         </button>
       </div>
     </div>
-  
+
     <!-- Menu List -->
     <div class="container mx-auto max-w-2xl px-4 mt-6 space-y-8">
-      <div *ngFor="let cat of data.categories" [id]="'category-' + cat.id" class="scroll-mt-24">
-          <h2 class="font-heading text-2xl font-semibold mb-4 text-primary">{{ cat.name }}</h2>
-          
-          <div class="grid gap-4">
-             <ng-container *ngFor="let product of getProductsByCategory(data.products, cat.id)">
-                <yami-product-card [product]="product"></yami-product-card>
-             </ng-container>
-          </div>
+      <div
+        *ngFor="let cat of menuData.categories"
+        [id]="'category-' + cat.id"
+        class="scroll-mt-24"
+      >
+        <h2 class="font-heading text-2xl font-semibold mb-4 text-primary">
+          {{ cat.name }}
+        </h2>
+
+        <div class="grid gap-4">
+          <ng-container
+            *ngFor="
+              let product of getProductsByCategory(menuData.products, cat.id)
+            "
+          >
+            <yami-product-card [product]="product"></yami-product-card>
+          </ng-container>
+        </div>
       </div>
     </div>
-  
+
     <!-- Cart FAB -->
     <yami-cart-fab (openCart)="isCartOpen = true"></yami-cart-fab>
-    
-    <!-- Cart Modal -->
-    <yami-cart-modal *ngIf="isCartOpen" (close)="isCartOpen = false"></yami-cart-modal>
 
+    <!-- Cart Modal -->
+    <yami-cart-modal
+      *ngIf="isCartOpen"
+      (close)="isCartOpen = false"
+    ></yami-cart-modal>
   </ng-container>
 </div>

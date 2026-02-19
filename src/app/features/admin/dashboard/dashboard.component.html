@@ -1,187 +1,251 @@
-<div class="p-8 space-y-8">
-  <!-- Header Section -->
-  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-    <div>
-      <h2 class="text-4xl font-heading font-bold text-white tracking-tight uppercase">
-        Visão Geral Operacional
-      </h2>
-      <p class="text-gray-500 mt-1 font-medium">
-        Status em tempo real para a região de Planaltina de Goiás
-      </p>
+<ng-container *ngIf="!isLoading() && !error() && metrics(); else skeleton">
+  <div class="p-8 space-y-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h2
+          class="text-4xl font-heading font-bold text-white tracking-tight uppercase"
+        >
+          Visao Geral Operacional
+        </h2>
+        <p class="text-gray-500 mt-1 font-medium">Status em tempo real</p>
+      </div>
     </div>
-    <div class="flex items-center gap-3">
-      <ui-button variant="secondary" icon="calendar_today">
-        Últimas 24 Horas
-        <span class="material-symbols-outlined text-[20px] ml-1">keyboard_arrow_down</span>
-      </ui-button>
-    </div>
-  </div>
 
-  <!-- Stats Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Total Orders -->
-    <ui-metric-card
-      title="Total de Pedidos"
-      value="1,284"
-      icon="receipt_long"
-      trend="12%"
-      variant="orders">
-      <span class="text-emerald-500 font-bold">+144</span> vs. ontem
-    </ui-metric-card>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <ui-metric-card
+        title="Total de Pedidos"
+        [value]="totalOrdersLabel()"
+        icon="receipt_long"
+        [trend]="ordersTrend()"
+        variant="orders"
+      >
+        <span [class]="ordersDeltaClass()">{{ ordersDeltaLabel() }}</span> vs.
+        ontem
+      </ui-metric-card>
 
-    <!-- Revenue -->
-    <ui-metric-card
-      title="Receita Hoje"
-      value="$24,502.00"
-      icon="payments"
-      trend="8.4%"
-      variant="finance">
-      Ticket Médio: <span class="text-white font-bold">$19.08</span>
-    </ui-metric-card>
+      <ui-metric-card
+        title="Receita Hoje"
+        [value]="totalRevenueLabel()"
+        icon="payments"
+        [trend]="revenueTrend()"
+        variant="finance"
+      >
+        Ticket Medio:
+        <span class="text-white font-bold">{{ avgTicketLabel() }}</span>
+      </ui-metric-card>
 
-    <!-- Today's Performance -->
-    <ui-card className="group transition-all hover:border-emerald-500/30 h-full">
+      <ui-card
+        className="group transition-all hover:border-emerald-500/30 h-full"
+      >
         <div class="flex items-center justify-between mb-4">
-            <h4 class="text-lg font-heading font-bold text-white uppercase">
-              Desempenho
-            </h4>
-             <span class="material-symbols-outlined text-gray-500">speed</span>
+          <h4 class="text-lg font-heading font-bold text-white uppercase">
+            Desempenho
+          </h4>
+          <span class="material-symbols-outlined text-gray-500">speed</span>
         </div>
-        
         <div class="flex flex-row items-center justify-between gap-4 h-full">
-          <!-- Stat 1 -->
           <div class="flex items-center gap-3">
             <div class="relative w-12 h-12 flex items-center justify-center">
-              <svg class="w-full h-full -rotate-90">
-                <circle cx="24" cy="24" fill="none" r="20" stroke="#2d2a27" stroke-width="4"></circle>
-                <circle cx="24" cy="24" fill="none" r="20" stroke="#f59f0a" stroke-dasharray="125" stroke-dashoffset="10" stroke-linecap="round" stroke-width="4"></circle>
+              <svg class="w-full h-full" style="transform: rotate(-90deg)">
+                <circle
+                  cx="24"
+                  cy="24"
+                  fill="none"
+                  r="20"
+                  stroke="#2d2a27"
+                  stroke-width="4"
+                ></circle>
+                <circle
+                  cx="24"
+                  cy="24"
+                  fill="none"
+                  r="20"
+                  stroke="#f59f0a"
+                  [attr.stroke-dasharray]="125"
+                  [attr.stroke-dashoffset]="onTimeOffset()"
+                  stroke-linecap="round"
+                  stroke-width="4"
+                ></circle>
               </svg>
-              <span class="absolute text-[10px] font-bold text-white">92%</span>
+              <span class="absolute text-[10px] font-bold text-white">{{
+                onTimeRateLabel()
+              }}</span>
             </div>
             <div>
-              <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Prazo</p>
-              <p class="text-sm text-gray-300 font-semibold">95%</p>
+              <p
+                class="text-[10px] text-gray-500 font-bold uppercase tracking-wider"
+              >
+                Prazo
+              </p>
+              <p class="text-sm text-gray-300 font-semibold">
+                {{ onTimeRateLabel() }}
+              </p>
             </div>
           </div>
-          
-           <!-- Divider -->
           <div class="w-px h-8 bg-stone-800"></div>
-
-          <!-- Stat 2 -->
           <div class="flex items-center gap-3">
-             <div class="relative w-12 h-12 flex items-center justify-center">
-              <svg class="w-full h-full -rotate-90">
-                  <circle cx="24" cy="24" fill="none" r="20" stroke="#2d2a27" stroke-width="4"></circle>
-                  <circle cx="24" cy="24" fill="none" r="20" stroke="#f59f0a" stroke-dasharray="125" stroke-dashoffset="30" stroke-linecap="round" stroke-width="4"></circle>
+            <div class="relative w-12 h-12 flex items-center justify-center">
+              <svg class="w-full h-full" style="transform: rotate(-90deg)">
+                <circle
+                  cx="24"
+                  cy="24"
+                  fill="none"
+                  r="20"
+                  stroke="#2d2a27"
+                  stroke-width="4"
+                ></circle>
+                <circle
+                  cx="24"
+                  cy="24"
+                  fill="none"
+                  r="20"
+                  stroke="#f59f0a"
+                  [attr.stroke-dasharray]="125"
+                  [attr.stroke-dashoffset]="prepOffset()"
+                  stroke-linecap="round"
+                  stroke-width="4"
+                ></circle>
               </svg>
-              <span class="absolute text-[10px] font-bold text-white">12m</span>
+              <span class="absolute text-[10px] font-bold text-white">{{
+                avgPrepTimeLabel()
+              }}</span>
             </div>
             <div>
-              <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Prep.</p>
-              <p class="text-sm text-gray-300 font-semibold">10m</p>
+              <p
+                class="text-[10px] text-gray-500 font-bold uppercase tracking-wider"
+              >
+                Prep.
+              </p>
+              <p class="text-sm text-gray-300 font-semibold">
+                {{ avgPrepTimeLabel() }}
+              </p>
             </div>
           </div>
         </div>
-    </ui-card>
-  </div>
+      </ui-card>
+    </div>
 
-  <!-- Main Chart Area (Full Width) -->
-  <div class="w-full">
-    <ui-card>
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h4 class="text-xl font-heading font-bold text-white uppercase">
-            Histórico Pedidos
-          </h4>
-          <p class="text-sm text-gray-500 font-medium">
-            Volume de pedidos ao longo do dia
-          </p>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-            <span
-              class="text-xs font-medium text-gray-400 uppercase tracking-wider"
-              >Hoje</span
-            >
+    <div class="w-full">
+      <ui-card>
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h4 class="text-xl font-heading font-bold text-white uppercase">
+              Historico de Pedidos
+            </h4>
+            <p class="text-sm text-gray-500 font-medium">
+              Volume de pedidos ao longo do dia
+            </p>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-gray-600"></span>
-            <span
-              class="text-xs font-medium text-gray-400 uppercase tracking-wider"
-              >Ontem</span
-            >
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span
+                class="text-xs font-medium text-gray-400 uppercase tracking-wider"
+                >Hoje</span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-gray-600"></span>
+              <span
+                class="text-xs font-medium text-gray-400 uppercase tracking-wider"
+                >Ontem</span
+              >
+            </div>
           </div>
         </div>
-      </div>
-      <div class="relative h-96 w-full mt-4">
-        <!-- Chart SVG -->
-        <svg
-          class="w-full h-full"
-          preserveAspectRatio="none"
-          viewBox="0 0 1000 300"
-        >
-          <!-- Yesterday Line -->
-          <polyline
-            fill="none"
-            points="0,250 100,230 200,260 300,210 400,180 500,190 600,140 700,160 800,110 900,130 1000,90"
-            stroke="#4b5563"
-            stroke-dasharray="5,5"
-            stroke-width="2"
-          ></polyline>
-          <!-- Today Area Gradient -->
-          <defs>
-            <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stop-color="#f59f0a" stop-opacity="0.3"></stop>
-              <stop offset="100%" stop-color="#f59f0a" stop-opacity="0"></stop>
-            </linearGradient>
-          </defs>
-          <path
-            d="M0,280 L0,220 L100,200 L200,240 L300,180 L400,140 L500,160 L600,100 L700,130 L800,70 L900,90 L1000,40 L1000,280 Z"
-            fill="url(#chartGradient)"
-          ></path>
-          <polyline
-            fill="none"
-            points="0,220 100,200 200,240 300,180 400,140 500,160 600,100 700,130 800,70 900,90 1000,40"
-            stroke="#f59f0a"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="4"
-          ></polyline>
-          <!-- Highlight Point -->
-          <circle
-            cx="800"
-            cy="70"
-            fill="#0c0a09"
-            r="6"
-            stroke="#f59f0a"
-            stroke-width="3"
-          ></circle>
-        </svg>
-        <!-- Tooltip -->
-        <div
-          class="absolute top-[30px] left-[780px] bg-stone-900 px-3 py-2 rounded shadow-2xl border border-amber-500/30 text-center"
-        >
-          <p
-            class="text-[10px] text-gray-400 font-bold uppercase tracking-widest"
+        <div class="relative h-96 w-full mt-4">
+          <svg
+            class="w-full h-full"
+            preserveAspectRatio="none"
+            viewBox="0 0 1000 300"
           >
-            Horário de Pico
-          </p>
-          <p class="text-sm font-bold text-white">20:00 - 184 Pedidos</p>
+            <defs>
+              <linearGradient id="cg" x1="0" x2="0" y1="0" y2="1">
+                <stop
+                  offset="0%"
+                  stop-color="#f59f0a"
+                  stop-opacity="0.3"
+                ></stop>
+                <stop
+                  offset="100%"
+                  stop-color="#f59f0a"
+                  stop-opacity="0"
+                ></stop>
+              </linearGradient>
+            </defs>
+            <polyline
+              fill="none"
+              [attr.points]="yesterdayPolyline()"
+              stroke="#4b5563"
+              stroke-dasharray="5,5"
+              stroke-width="2"
+            ></polyline>
+            <path [attr.d]="todayAreaPath()" fill="url(#cg)"></path>
+            <polyline
+              fill="none"
+              [attr.points]="todayPolyline()"
+              stroke="#f59f0a"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="4"
+            ></polyline>
+            <circle
+              [attr.cx]="peakTooltipXPct() * 10"
+              [attr.cy]="peakTooltipY()"
+              fill="#0c0a09"
+              r="6"
+              stroke="#f59f0a"
+              stroke-width="3"
+              *ngIf="peakHour()"
+            ></circle>
+          </svg>
+          <div
+            class="absolute bg-stone-900 px-3 py-2 rounded shadow-2xl border border-amber-500/30 text-center"
+            [style.left]="peakTooltipXPct() + '%'"
+            [style.bottom]="100 - peakTooltipYPct() + '%'"
+            style="transform: translateX(-50%) translateY(calc(-100% - 12px))"
+            *ngIf="peakHour()"
+          >
+            <p
+              class="text-[10px] text-gray-400 font-bold uppercase tracking-widest"
+            >
+              Horario de Pico
+            </p>
+            <p class="text-sm font-bold text-white">{{ peakLabel() }}</p>
+          </div>
+          <div
+            class="flex justify-between mt-6 text-[11px] text-gray-500 font-bold uppercase tracking-widest"
+          >
+            <span>00:00</span>
+            <span>04:00</span>
+            <span>08:00</span>
+            <span>12:00</span>
+            <span>16:00</span>
+            <span>20:00</span>
+            <span>23:59</span>
+          </div>
         </div>
-        <!-- Axis -->
-        <div
-          class="flex justify-between mt-6 text-[11px] text-gray-500 font-bold uppercase tracking-widest"
-        >
-          <span>00:00</span>
-          <span>04:00</span>
-          <span>08:00</span>
-          <span>12:00</span>
-          <span>16:00</span>
-          <span>20:00</span>
-          <span>23:59</span>
-        </div>
-      </div>
-    </ui-card>
+      </ui-card>
+    </div>
   </div>
-</div>
+</ng-container>
+
+<ng-template #skeleton>
+  <div class="p-8 space-y-8">
+    <div *ngIf="isLoading()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="animate-pulse bg-stone-800 rounded-2xl h-32"></div>
+        <div class="animate-pulse bg-stone-800 rounded-2xl h-32"></div>
+        <div class="animate-pulse bg-stone-800 rounded-2xl h-32"></div>
+      </div>
+      <div class="animate-pulse bg-stone-800 rounded-2xl h-96 w-full"></div>
+    </div>
+    <div
+      *ngIf="error()"
+      class="flex items-center gap-3 p-4 bg-red-900/20 border border-red-500/30 rounded-2xl text-red-400"
+    >
+      <span class="material-symbols-outlined">error</span>
+      <p class="font-medium">{{ error() }}</p>
+    </div>
+  </div>
+</ng-template>
