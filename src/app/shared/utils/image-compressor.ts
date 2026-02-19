@@ -1,4 +1,4 @@
-export async function compressImage(file: File): Promise<Blob> {
+export async function compressImage(file: File, maxWidth = 800, maxHeight = 800): Promise<Blob> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -16,20 +16,18 @@ export async function compressImage(file: File): Promise<Blob> {
                     return;
                 }
                 
-                const MAX_WIDTH = 800;
-                const MAX_HEIGHT = 800;
                 let width = img.width;
                 let height = img.height;
                 
                 if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
+                    if (width > maxWidth) {
+                        height *= maxWidth / width;
+                        width = maxWidth;
                     }
                 } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
+                    if (height > maxHeight) {
+                        width *= maxHeight / height;
+                        height = maxHeight;
                     }
                 }
                 

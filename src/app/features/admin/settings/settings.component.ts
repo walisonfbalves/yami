@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
@@ -8,8 +8,8 @@ import { TextareaComponent } from '../../../shared/ui/textarea/textarea.componen
 import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 
 import { StoreService } from '../../../core/services/store.service';
-import { Router } from '@angular/router'; // Keeping Router just in case, but unused based on changes
-import { AuthService } from '../../../core/services/auth.service'; // Keeping for now or removing if unused
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-settings',
@@ -34,7 +34,8 @@ export class SettingsComponent {
 
   constructor(
     private fb: FormBuilder,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private cdr: ChangeDetectorRef
   ) {
     this.settingsForm = this.fb.group({
       // Store Identity
@@ -69,6 +70,7 @@ export class SettingsComponent {
           min_order_value: store.min_order_value,
           pix_key: store.pix_key
         }, { emitEvent: false }); // Avoid triggering valueChanges if any
+        this.cdr.markForCheck();
       }
     });
   }
@@ -79,12 +81,16 @@ export class SettingsComponent {
       try {
         await this.storeService.updateStore(this.settingsForm.value);
         this.showToast = true;
-        setTimeout(() => this.showToast = false, 3000);
+        setTimeout(() => {
+            this.showToast = false;
+            this.cdr.markForCheck();
+        }, 3000);
       } catch (error) {
         console.error('Error updating settings:', error);
         // Handle error (show toast?)
       } finally {
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     }
   }
@@ -105,9 +111,10 @@ export class SettingsComponent {
     if (!file) return;
 
     this.isLoadingLogo = true;
+    this.cdr.markForCheck(); // Ensure spinner shows
     try {
-      // 1. Compress
-      const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file));
+      // 1. Compress (Logo: 300x300 is enough)
+      const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file, 300, 300));
       
       // 2. Upload
       const publicUrl = await this.storeService.uploadLogo(compressedBlob);
@@ -122,6 +129,7 @@ export class SettingsComponent {
       this.showToastMessage('Erro ao fazer upload do logo.', true);
     } finally {
       this.isLoadingLogo = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -130,9 +138,10 @@ export class SettingsComponent {
     if (!file) return;
 
     this.isLoadingCover = true;
+    this.cdr.markForCheck(); // Ensure spinner shows
     try {
-      // 1. Compress
-      const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file));
+      // 1. Compress (Cover: 1280x720 is good balance)
+      const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file, 1280, 720));
       
       // 2. Upload
       const publicUrl = await this.storeService.uploadCover(compressedBlob);
@@ -147,6 +156,7 @@ export class SettingsComponent {
       this.showToastMessage('Erro ao fazer upload da capa.', true);
     } finally {
       this.isLoadingCover = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -154,6 +164,8 @@ export class SettingsComponent {
     // Reuse existing toast logic or create a better one. 
     // For now, simpler adjustment to existing showToast
     this.showToast = true;
+    this.cdr.markForCheck();
+
     // Ideally we bind the message to the template. 
     // Since template has hardcoded message, we might want to update it to be dynamic, 
     // but for now let's just trigger the success state.
@@ -161,8 +173,12 @@ export class SettingsComponent {
     if (isError) {
         alert(message); // Fallback for error
         this.showToast = false;
+        this.cdr.markForCheck();
     } else {
-        setTimeout(() => this.showToast = false, 3000);
+        setTimeout(() => {
+            this.showToast = false;
+            this.cdr.markForCheck();
+        }, 3000);
     }
   }
 }
