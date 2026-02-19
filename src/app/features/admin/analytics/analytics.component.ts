@@ -154,10 +154,17 @@ export class AnalyticsComponent implements OnInit {
     this.isLoading = true;
     this.selectedPeriod = period;
     
-    this.analyticsService.getAnalyticsData(period).subscribe(data => {
-      this.analyticsData = data;
-      this.updateChart(data);
-      this.isLoading = false;
+    this.analyticsService.getAnalyticsData(period).subscribe({
+      next: (data) => {
+        this.analyticsData = data;
+        this.updateChart(data);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Erro ao carregar dados. Verifique se o script SQL foi executado.';
+        this.isLoading = false;
+        console.error(err);
+      }
     });
   }
 

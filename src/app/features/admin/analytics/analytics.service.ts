@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, from, of, switchMap, map, catchError } from 'rxjs';
+import { SupabaseService } from '../../../core/services/supabase.service';
+import { StoreService } from '../../../core/services/store.service';
+import { inject } from '@angular/core';
 
 export interface AnalyticsData {
   period: string;
@@ -23,88 +25,83 @@ export interface AnalyticsData {
   providedIn: 'root'
 })
 export class AnalyticsService {
+  private supabase = inject(SupabaseService).supabaseClient;
+  private storeService = inject(StoreService);
 
   constructor() { }
 
   getAnalyticsData(period: '7d' | '30d' | 'month' | 'all'): Observable<AnalyticsData> {
-    // Mock data based on period
-    let data: AnalyticsData;
+    const { startDate, endDate } = this.getDateRange(period);
+
+    return this.storeService.currentStore$.pipe(
+      switchMap(store => {
+        if (!store) throw new Error('Loja não encontrada');
+
+        return from(this.supabase.rpc('get_sales_report', {
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+          store_id_param: store.id
+        }));
+      }),
+      map(({ data, error }) => {
+        if (error) throw error;
+        return this.mapRpcToAnalytics(data, period);
+      }),
+      catchError(err => {
+        console.error('Erro ao buscar analytics:', err);
+        throw err;
+      })
+    );
+  }
+
+  private getDateRange(period: string): { startDate: Date, endDate: Date } {
+    const end = new Date();
+    const start = new Date();
 
     switch (period) {
-      case '7d':
-        data = {
-          period: 'Últimos 7 Dias',
-          totalRevenue: 12500.00,
-          totalOrders: 345,
-          avgTicket: 36.23,
-          cancelRate: 1.8,
-          revenueChart: {
-            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-            data: [1200, 1500, 1100, 1800, 2500, 2900, 1500]
-          },
-          topProducts: [
-            { rank: 1, name: 'X-Bacon', quantity: 120, revenue: 3600 },
-            { rank: 2, name: 'Coca-Cola Zero', quantity: 98, revenue: 588 },
-            { rank: 3, name: 'Batata Rústica', quantity: 85, revenue: 1275 }
-          ],
-          prepTime: { current: 14, target: 10, unit: 'min' },
-          customerSatisfaction: { score: 4.8, target: 5.0 },
-          hourlyVolume: {
-            hours: ['10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h'],
-            values: [12, 25, 60, 55, 30, 25, 20, 35, 70, 95, 110, 85, 40]
-          },
-          popularCategories: {
-            labels: ['Burgers', 'Bebidas', 'Acompanhamen.'],
-            values: [42, 28, 30]
-          },
-          customerGrowth: { total: 128, percentage: 12.5, trend: 'up' },
-          recentReports: [
-            { name: 'Vendas Semanais', period: '01/02 - 07/02', generatedAt: 'Hoje, 09:00', format: 'PDF' },
-            { name: 'Performance Entregadores', period: 'Jan 2026', generatedAt: 'Ontem, 18:30', format: 'CSV' },
-             { name: 'Transações Financeiras', period: 'Fev 2026', generatedAt: '05/02, 14:15', format: 'CSV' }
-          ]
-        };
-        break;
-      case '30d':
-      default:
-        data = {
-          period: 'Últimos 30 Dias',
-          totalRevenue: 45200.00,
-          totalOrders: 1250,
-          avgTicket: 36.16,
-          cancelRate: 2.4,
-          revenueChart: {
-            labels: Array.from({length: 30}, (_, i) => `Dia ${i+1}`),
-            data: Array.from({length: 30}, () => Math.floor(Math.random() * 2000) + 1000)
-          },
-          topProducts: [
-            { rank: 1, name: 'X-Bacon Especial', quantity: 450, revenue: 13500 },
-            { rank: 2, name: 'Combo Família', quantity: 320, revenue: 15680 },
-            { rank: 3, name: 'Coca-Cola 2L', quantity: 280, revenue: 2800 },
-            { rank: 4, name: 'Batata Frita G', quantity: 210, revenue: 4200 },
-            { rank: 5, name: 'Pizza Calabresa', quantity: 180, revenue: 9000 }
-          ],
-          prepTime: { current: 28, target: 25, unit: 'min' },
-          customerSatisfaction: { score: 4.8, target: 5.0 },
-          hourlyVolume: {
-            hours: ['10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h'],
-            values: [40, 85, 150, 140, 90, 80, 70, 110, 220, 280, 310, 240, 120]
-          },
-          popularCategories: {
-            labels: ['Burgers', 'Pizzas', 'Bebidas', 'Sobremesas'],
-            values: [45, 30, 20, 5]
-          },
-          customerGrowth: { total: 420, percentage: 15.2, trend: 'up' },
-          recentReports: [
-            { name: 'Fechamento Mensal', period: 'Jan 2026', generatedAt: '01/02, 08:00', format: 'PDF' },
-            { name: 'Vendas por Categoria', period: 'Jan 2026', generatedAt: '01/02, 08:05', format: 'CSV' },
-            { name: 'Cancelamentos', period: 'Jan 2026', generatedAt: '02/02, 10:00', format: 'PDF' }
-          ]
-        };
-        break;
-
+      case '7d': start.setDate(end.getDate() - 7); break;
+      case '30d': start.setDate(end.getDate() - 30); break;
+      case 'month': start.setDate(1); break; // First day of current month
+      case 'all': start.setFullYear(2020); break; // Far past
     }
+    return { startDate: start, endDate: end };
+  }
 
-    return of(data).pipe(delay(800)); // Simulate API delay
+  private mapRpcToAnalytics(rpcData: any, period: string): AnalyticsData {
+    const kpis = rpcData.kpis || {};
+    const history = rpcData.sales_history || [];
+    const categories = rpcData.category_sales || [];
+    const ops = rpcData.operational_kpis || {};
+
+    return {
+      period: this.getPeriodLabel(period),
+      totalRevenue: kpis.total_revenue || 0,
+      totalOrders: kpis.total_orders || 0,
+      avgTicket: kpis.avg_ticket || 0,
+      cancelRate: 0, // Not implemented in RPC yet
+      revenueChart: {
+        labels: history.map((h: any) => h.day), // Format date if needed
+        data: history.map((h: any) => h.revenue)
+      },
+      topProducts: [], // Not in RPC yet, optional
+      prepTime: { current: ops.avg_prep_time || 0, target: 20, unit: 'min' },
+      customerSatisfaction: { score: ops.avg_rating || 0, target: 5.0 },
+      hourlyVolume: { hours: [], values: [] }, // Not in RPC yet
+      popularCategories: {
+        labels: categories.map((c: any) => c.category_name || c.category),
+        values: categories.map((c: any) => c.total_sales) // Should be percentage? Component expects values.
+      },
+      customerGrowth: { total: kpis.new_customers || 0, percentage: 0, trend: 'up' }, // Percentage not calculated
+      recentReports: []
+    };
+  }
+
+  private getPeriodLabel(period: string): string {
+    switch (period) {
+      case '7d': return 'Últimos 7 Dias';
+      case '30d': return 'Últimos 30 Dias';
+      case 'month': return 'Este Mês';
+      default: return 'Geral';
+    }
   }
 }
