@@ -1,339 +1,581 @@
-    <div class="h-full flex flex-col font-display bg-background overflow-hidden">
-        <header class="h-20 border-b border-surface-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-md z-10 shrink-0">
-            <h1 class="text-2xl font-heading font-bold text-white tracking-tight flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary">shopping_cart</span>
-                Pedidos em tempo real
-            </h1>
-            
-            <!-- Center: Category Filters -->
-            <div class="flex items-center bg-stone-900/50 p-1 rounded-xl gap-1 overflow-x-auto custom-scrollbar max-w-lg">
-                <button 
-                    *ngFor="let cat of categories" 
-                    (click)="selectCategory(cat)"
-                    class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap"
-                    [ngClass]="selectedCategory === cat ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    {{ cat }}
-                </button>
-            </div>
+<div class="h-full flex flex-col font-display bg-background overflow-hidden">
+  <header
+    class="h-20 border-b border-surface-border flex items-center justify-between px-8 bg-surface/50 backdrop-blur-md z-10 shrink-0"
+  >
+    <h1
+      class="text-2xl font-heading font-bold text-white tracking-tight flex items-center gap-3"
+    >
+      <span class="material-symbols-outlined text-primary">shopping_cart</span>
+      Pedidos em tempo real
+    </h1>
 
-            <div class="flex items-center gap-4">
-                 <!-- View Mode Toggle -->
-                 <div class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1">
-                    <ui-button 
-                        [variant]="viewMode === 'kanban' ? 'primary' : 'ghost'" 
-                        size="sm"
-                        (click)="toggleView('kanban')" 
-                        icon="view_week">
-                    </ui-button>
-                    <ui-button 
-                        [variant]="viewMode === 'grid' ? 'primary' : 'ghost'" 
-                        size="sm"
-                        (click)="toggleView('grid')" 
-                        icon="grid_view">
-                    </ui-button>
-                 </div>
-
-                 <div class="px-4 py-2 rounded-xl bg-surface border border-surface-border text-sm text-text-secondary">
-                    <span class="text-text-primary font-bold">{{ getTotalActiveOrders() }}</span> Pedidos Ativos
-                 </div>
-            </div>
-        </header>
-
-        <!-- KANBAN VIEW -->
-        <div *ngIf="viewMode === 'kanban'" class="flex-1 w-full grid grid-cols-5 gap-4 overflow-y-hidden p-8 custom-scrollbar h-full" cdkDropListGroup>
-            <!-- 1. Novos -->
-            <div class="flex flex-col h-full bg-surface/30 rounded-2xl border border-surface-border overflow-hidden">
-                <div class="p-4 border-b border-white/5 bg-yellow-500/10 flex items-center justify-between">
-                    <h2 class="font-bold text-yellow-500 uppercase tracking-wider text-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">notifications_active</span>
-                        Novos
-                    </h2>
-                    <span class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ pendingOrders.length }}</span>
-                </div>
-                <div 
-                    cdkDropList
-                    [cdkDropListData]="pendingOrders"
-                    (cdkDropListDropped)="drop($event, 'PENDING')"
-                    class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
-                    
-                    <ui-card *ngFor="let order of pendingOrders" cdkDrag (click)="openOrderDetails(order)" [noPadding]="false" className="mb-0 cursor-grab active:cursor-grabbing hover:border-yellow-500/30 group animate-fade-in shadow-lg">
-                        <div *cdkDragPlaceholder class="opacity-0"></div>
-                        
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
-                            <ui-badge 
-                                [variant]="getTimeBadgeVariant(order.createdAt)" 
-                                [label]="getElapsedTime(order.createdAt)"
-                                class="text-[10px]">
-                            </ui-badge>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 mb-4">
-                            <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
-                            <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
-                        </div>
-
-                        <ul class="space-y-1 mb-4 select-none pointer-events-none">
-                            <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
-                                <span class="w-1 h-1 rounded-full bg-yellow-500 mt-1.5 shrink-0"></span>
-                                {{ item }}
-                            </li>
-                        </ul>
-
-                        <div class="flex items-center justify-between pt-3 border-t border-white/5">
-                            <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
-                        </div>
-                    </ui-card>
-                </div>
-            </div>
-
-            <!-- 2. Em Preparo -->
-            <div class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
-                <div class="p-4 border-b border-white/5 bg-orange-500/10 flex items-center justify-between">
-                     <h2 class="font-bold text-orange-500 uppercase tracking-wider text-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">local_fire_department</span>
-                        Em Preparo
-                    </h2>
-                    <span class="bg-orange-500/20 text-orange-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ preparingOrders.length }}</span>
-                </div>
-                <div 
-                    cdkDropList
-                    [cdkDropListData]="preparingOrders"
-                    (cdkDropListDropped)="drop($event, 'PREPARING')"
-                    class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
-                    
-                     <ui-card *ngFor="let order of preparingOrders" cdkDrag (click)="openOrderDetails(order)" [noPadding]="false" className="mb-0 cursor-grab active:cursor-grabbing hover:border-orange-500/30 group animate-fade-in shadow-lg">
-                        <div *cdkDragPlaceholder class="opacity-0"></div>
-
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
-                            <ui-badge 
-                                [variant]="getTimeBadgeVariant(order.createdAt)" 
-                                [label]="getElapsedTime(order.createdAt)"
-                                class="text-[10px]">
-                            </ui-badge>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 mb-4">
-                            <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
-                            <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
-                        </div>
-
-                        <ul class="space-y-1 mb-4 select-none pointer-events-none">
-                            <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
-                                <span class="w-1 h-1 rounded-full bg-orange-500 mt-1.5 shrink-0"></span>
-                                {{ item }}
-                            </li>
-                        </ul>
-
-                        <div class="flex items-center justify-between pt-3 border-t border-white/5">
-                            <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
-                        </div>
-                    </ui-card>
-                </div>
-            </div>
-
-            <!-- 3. Pronto / Aguardando -->
-            <div class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
-                <div class="p-4 border-b border-white/5 bg-blue-500/10 flex items-center justify-between">
-                     <h2 class="font-bold text-blue-500 uppercase tracking-wider text-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">two_wheeler</span>
-                        Pronto
-                    </h2>
-                    <span class="bg-blue-500/20 text-blue-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ readyOrders.length }}</span>
-                </div>
-                <div 
-                    cdkDropList
-                    [cdkDropListData]="readyOrders"
-                    (cdkDropListDropped)="drop($event, 'READY')"
-                    class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
-                    
-                    <ui-card *ngFor="let order of readyOrders" cdkDrag (click)="openOrderDetails(order)" [noPadding]="false" className="mb-0 cursor-grab active:cursor-grabbing hover:border-blue-500/30 group animate-fade-in shadow-lg">
-                        <div *cdkDragPlaceholder class="opacity-0"></div>
-
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
-                            <ui-badge 
-                                [variant]="getTimeBadgeVariant(order.createdAt)" 
-                                [label]="getElapsedTime(order.createdAt)"
-                                class="text-[10px]">
-                            </ui-badge>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 mb-4">
-                            <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
-                            <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
-                        </div>
-
-                        <ul class="space-y-1 mb-4 select-none pointer-events-none">
-                            <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
-                                <span class="w-1 h-1 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
-                                {{ item }}
-                            </li>
-                        </ul>
-
-                        <div class="flex items-center justify-between pt-3 border-t border-white/5">
-                            <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
-                        </div>
-                    </ui-card>
-                </div>
-            </div>
-
-            <!-- 4. Saiu para Entrega -->
-            <div class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden">
-                <div class="p-4 border-b border-white/5 bg-green-500/10 flex items-center justify-between">
-                     <h2 class="font-bold text-green-500 uppercase tracking-wider text-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">rocket_launch</span>
-                        Em Rota
-                    </h2>
-                    <span class="bg-green-500/20 text-green-500 text-xs font-bold px-2 py-0.5 rounded-full">{{ outForDeliveryOrders.length }}</span>
-                </div>
-                <div 
-                    cdkDropList
-                    [cdkDropListData]="outForDeliveryOrders"
-                    (cdkDropListDropped)="drop($event, 'OUT_FOR_DELIVERY')"
-                    class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
-                    
-                    <ui-card *ngFor="let order of outForDeliveryOrders" cdkDrag (click)="openOrderDetails(order)" [noPadding]="false" className="mb-0 cursor-grab active:cursor-grabbing hover:border-green-500/30 group animate-fade-in shadow-lg">
-                        <div *cdkDragPlaceholder class="opacity-0"></div>
-
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
-                            <ui-badge 
-                                [variant]="getTimeBadgeVariant(order.createdAt)" 
-                                [label]="getElapsedTime(order.createdAt)"
-                                class="text-[10px]">
-                            </ui-badge>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 mb-4">
-                            <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
-                            <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
-                        </div>
-
-                        <ul class="space-y-1 mb-4 select-none pointer-events-none">
-                            <li *ngFor="let item of order.items" class="text-xs text-gray-400 flex items-start gap-1">
-                                <span class="w-1 h-1 rounded-full bg-green-500 mt-1.5 shrink-0"></span>
-                                {{ item }}
-                            </li>
-                        </ul>
-
-                        <div class="flex items-center justify-between pt-3 border-t border-white/5">
-                            <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
-                        </div>
-                    </ui-card>
-                </div>
-            </div>
-
-            <!-- 5. Entregues -->
-            <div class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden opacity-75 hover:opacity-100 transition-opacity">
-                <div class="p-4 border-b border-white/5 bg-stone-500/10 flex items-center justify-between">
-                     <h2 class="font-bold text-stone-400 uppercase tracking-wider text-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">history</span>
-                        Entregues
-                    </h2>
-                    <span class="bg-stone-500/20 text-stone-400 text-xs font-bold px-2 py-0.5 rounded-full">{{ historyOrders.length }}</span>
-                </div>
-                <div 
-                    cdkDropList
-                    [cdkDropListData]="historyOrders"
-                    (cdkDropListDropped)="drop($event, 'DELIVERED')"
-                    class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]">
-                    
-                     <ui-card *ngFor="let order of historyOrders" cdkDrag (click)="openOrderDetails(order)" [noPadding]="false" className="mb-0 cursor-grab active:cursor-grabbing hover:border-stone-500/30 group animate-fade-in shadow-lg grayscale hover:grayscale-0">
-                        <div *cdkDragPlaceholder class="opacity-0"></div>
-                        
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
-                            <ui-badge 
-                                variant="neutral" 
-                                label="Concluído"
-                                class="text-[10px]">
-                            </ui-badge>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 mb-4">
-                            <img [src]="order.customerAvatar" class="w-8 h-8 rounded-full object-cover border border-white/10 select-none pointer-events-none" alt="Avatar">
-                            <span class="text-sm font-bold text-white">{{ order.customerName }}</span>
-                        </div>
-                         <div class="flex items-center justify-between pt-3 border-t border-white/5">
-                            <span class="font-bold text-white">{{ order.total | currency:'BRL' }}</span>
-                            <span class="text-xs text-stone-500">Há {{ getElapsedTime(order.createdAt) }}</span>
-                        </div>
-                    </ui-card>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- GRID VIEW (KDS) -->
-        <div *ngIf="viewMode === 'grid'" class="flex-1 w-full bg-black/40 overflow-y-auto custom-scrollbar p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                <ui-card *ngFor="let order of kdsOrders" [noPadding]="true" className="relative shadow-xl h-full flex flex-col">
-                     <!-- Dynamic Header -->
-                     <div class="h-10 px-4 flex items-center justify-between" [ngClass]="getKdsColorInfo(order).bg">
-                        <div class="flex items-center gap-2">
-                             <span class="font-bold text-sm tracking-wide" [ngClass]="getKdsColorInfo(order).text">#{{ order.id }}</span>
-                        </div>
-                        <span class="font-bold text-xs uppercase tracking-wider" [ngClass]="getKdsColorInfo(order).text">{{ getKdsColorInfo(order).label }}</span>
-                     </div>
-
-                     <!-- Body -->
-                     <div class="p-4 flex-1 flex flex-col relative">
-                        <!-- Timer -->
-                        <div class="absolute top-4 right-4 font-mono text-4xl font-bold tracking-tighter"
-                             [ngClass]="getKdsColorInfo(order).btnBg === 'bg-red-600' ? 'text-red-500' : 'text-gray-200'">
-                            {{ getElapsedTime(order.createdAt).replace('há ', '').replace(' min', '') }}:00
-                        </div>
-
-                        <div class="mb-6 mt-1">
-                             <h3 class="text-lg font-bold text-white">Mesa 12</h3>
-                             <span class="text-gray-500 text-xs font-bold uppercase">{{ order.customerName }}</span>
-                        </div>
-
-                        <!-- Items List -->
-                        <div class="space-y-2 mb-4">
-                            <div *ngFor="let item of order.items" class="flex items-start gap-2 text-sm text-gray-300">
-                                <span class="bg-orange-500/20 text-orange-500 font-bold px-1.5 rounded text-xs mt-0.5">1x</span>
-                                <span class="leading-tight">{{ item.substring(item.indexOf('x') + 1).trim() }}</span>
-                            </div>
-                        </div>
-
-                     </div>
-
-                     <!-- Footer Action -->
-                     <button 
-                        (click)="advanceOrderStatus(order)"
-                        class="w-full h-12 flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:brightness-110 transition-all active:brightness-95"
-                        [ngClass]="getKdsColorInfo(order).btnBg + ' ' + getKdsColorInfo(order).text">
-                         {{ getKdsColorInfo(order).btnText }}
-                     </button>
-                </ui-card>
-            </div>
-            
-            <!-- Empty State for Grid -->
-            <div *ngIf="kdsOrders.length === 0" class="flex flex-col items-center justify-center h-full text-gray-500">
-                <span class="material-symbols-outlined text-6xl mb-4 text-stone-700">inventory_2</span>
-                <p class="text-lg font-medium">Nenhum pedido na cozinha</p>
-            </div>
-        </div>
+    <!-- Center: Category Filters -->
+    <div
+      class="flex items-center bg-stone-900/50 p-1 rounded-xl gap-1 overflow-x-auto custom-scrollbar max-w-lg"
+    >
+      <button
+        *ngFor="let cat of categories"
+        (click)="selectCategory(cat)"
+        class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+        [ngClass]="
+          selectedCategory === cat
+            ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
+            : 'text-gray-400 hover:text-white hover:bg-white/5'
+        "
+      >
+        {{ cat }}
+      </button>
     </div>
 
-    <!-- Order Details Modal -->
-    <app-order-details-modal 
-        *ngIf="selectedOrder" 
-        [order]="selectedOrder" 
-        (close)="closeOrderDetails()"
-        (cancelOrder)="onCancelOrder($event)">
-    </app-order-details-modal>
+    <div class="flex items-center gap-4">
+      <!-- View Mode Toggle -->
+      <div
+        class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1"
+      >
+        <ui-button
+          [variant]="viewMode === 'kanban' ? 'primary' : 'ghost'"
+          size="sm"
+          (click)="toggleView('kanban')"
+          icon="view_week"
+        >
+        </ui-button>
+        <ui-button
+          [variant]="viewMode === 'grid' ? 'primary' : 'ghost'"
+          size="sm"
+          (click)="toggleView('grid')"
+          icon="grid_view"
+        >
+        </ui-button>
+      </div>
 
-    <ui-dialog
-        [isOpen]="showCancelModal"
-        title="Cancelar Pedido"
-        [message]="'Tem certeza que deseja cancelar o pedido #' + (orderToCancel?.id || '') + '? Esta ação não pode ser desfeita.'"
-        variant="danger"
-        confirmText="Cancelar Pedido"
-        cancelText="Voltar"
-        (confirm)="executeCancelOrder()"
-        (cancel)="cancelCancelOrder()">
-    </ui-dialog>
+      <div
+        class="px-4 py-2 rounded-xl bg-surface border border-surface-border text-sm text-text-secondary"
+      >
+        <span class="text-text-primary font-bold">{{
+          getTotalActiveOrders()
+        }}</span>
+        Pedidos Ativos
+      </div>
+    </div>
+  </header>
+
+  <!-- KANBAN VIEW -->
+  <div
+    *ngIf="viewMode === 'kanban'"
+    class="flex-1 w-full grid grid-cols-5 gap-4 overflow-y-hidden p-8 custom-scrollbar h-full"
+    cdkDropListGroup
+  >
+    <!-- 1. Novos -->
+    <div
+      class="flex flex-col h-full bg-surface/30 rounded-2xl border border-surface-border overflow-hidden"
+    >
+      <div
+        class="p-4 border-b border-white/5 bg-yellow-500/10 flex items-center justify-between"
+      >
+        <h2
+          class="font-bold text-yellow-500 uppercase tracking-wider text-sm flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg"
+            >notifications_active</span
+          >
+          Novos
+        </h2>
+        <span
+          class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-0.5 rounded-full"
+          >{{ pendingOrders.length }}</span
+        >
+      </div>
+      <div
+        cdkDropList
+        [cdkDropListData]="pendingOrders"
+        (cdkDropListDropped)="drop($event, 'PENDING')"
+        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]"
+      >
+        <ui-card
+          *ngFor="let order of pendingOrders"
+          cdkDrag
+          (click)="openOrderDetails(order)"
+          [noPadding]="false"
+          className="mb-0 cursor-grab active:cursor-grabbing hover:border-yellow-500/30 group animate-fade-in shadow-lg"
+        >
+          <div *cdkDragPlaceholder class="opacity-0"></div>
+
+          <div class="flex justify-between items-start mb-3">
+            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+            <ui-badge
+              [variant]="getTimeBadgeVariant(order.created_at)"
+              [label]="getElapsedTime(order.created_at)"
+              class="text-[10px]"
+            >
+            </ui-badge>
+          </div>
+
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-8 h-8 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center shrink-0"
+            >
+              <span class="text-xs font-bold text-primary">{{
+                order.customer_name?.charAt(0) || "C"
+              }}</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              order.customer_name || "Cliente"
+            }}</span>
+          </div>
+
+          <ul class="space-y-1 mb-4 select-none pointer-events-none">
+            <li
+              *ngFor="let item of order.items"
+              class="text-xs text-gray-400 flex items-start gap-1"
+            >
+              <span
+                class="w-1 h-1 rounded-full bg-yellow-500 mt-1.5 shrink-0"
+              ></span>
+              <span class="font-bold text-yellow-500"
+                >{{ item.quantity }}x</span
+              >
+              {{ item.product?.name }}
+            </li>
+          </ul>
+
+          <div
+            class="flex items-center justify-between pt-3 border-t border-white/5"
+          >
+            <span class="font-bold text-white">{{
+              order.total_amount | currency: "BRL"
+            }}</span>
+          </div>
+        </ui-card>
+      </div>
+    </div>
+
+    <!-- 2. Em Preparo -->
+    <div
+      class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden"
+    >
+      <div
+        class="p-4 border-b border-white/5 bg-orange-500/10 flex items-center justify-between"
+      >
+        <h2
+          class="font-bold text-orange-500 uppercase tracking-wider text-sm flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg"
+            >local_fire_department</span
+          >
+          Em Preparo
+        </h2>
+        <span
+          class="bg-orange-500/20 text-orange-500 text-xs font-bold px-2 py-0.5 rounded-full"
+          >{{ preparingOrders.length }}</span
+        >
+      </div>
+      <div
+        cdkDropList
+        [cdkDropListData]="preparingOrders"
+        (cdkDropListDropped)="drop($event, 'PREPARING')"
+        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]"
+      >
+        <ui-card
+          *ngFor="let order of preparingOrders"
+          cdkDrag
+          (click)="openOrderDetails(order)"
+          [noPadding]="false"
+          className="mb-0 cursor-grab active:cursor-grabbing hover:border-orange-500/30 group animate-fade-in shadow-lg"
+        >
+          <div *cdkDragPlaceholder class="opacity-0"></div>
+
+          <div class="flex justify-between items-start mb-3">
+            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+            <ui-badge
+              [variant]="getTimeBadgeVariant(order.created_at)"
+              [label]="getElapsedTime(order.created_at)"
+              class="text-[10px]"
+            >
+            </ui-badge>
+          </div>
+
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-8 h-8 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center shrink-0"
+            >
+              <span class="text-xs font-bold text-primary">{{
+                order.customer_name?.charAt(0) || "C"
+              }}</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              order.customer_name || "Cliente"
+            }}</span>
+          </div>
+
+          <ul class="space-y-1 mb-4 select-none pointer-events-none">
+            <li
+              *ngFor="let item of order.items"
+              class="text-xs text-gray-400 flex items-start gap-1"
+            >
+              <span
+                class="w-1 h-1 rounded-full bg-orange-500 mt-1.5 shrink-0"
+              ></span>
+              <span class="font-bold text-orange-500"
+                >{{ item.quantity }}x</span
+              >
+              {{ item.product?.name }}
+            </li>
+          </ul>
+
+          <div
+            class="flex items-center justify-between pt-3 border-t border-white/5"
+          >
+            <span class="font-bold text-white">{{
+              order.total_amount | currency: "BRL"
+            }}</span>
+          </div>
+        </ui-card>
+      </div>
+    </div>
+
+    <!-- 3. Pronto / Aguardando -->
+    <div
+      class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden"
+    >
+      <div
+        class="p-4 border-b border-white/5 bg-blue-500/10 flex items-center justify-between"
+      >
+        <h2
+          class="font-bold text-blue-500 uppercase tracking-wider text-sm flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg">two_wheeler</span>
+          Pronto
+        </h2>
+        <span
+          class="bg-blue-500/20 text-blue-500 text-xs font-bold px-2 py-0.5 rounded-full"
+          >{{ readyOrders.length }}</span
+        >
+      </div>
+      <div
+        cdkDropList
+        [cdkDropListData]="readyOrders"
+        (cdkDropListDropped)="drop($event, 'READY')"
+        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]"
+      >
+        <ui-card
+          *ngFor="let order of readyOrders"
+          cdkDrag
+          (click)="openOrderDetails(order)"
+          [noPadding]="false"
+          className="mb-0 cursor-grab active:cursor-grabbing hover:border-blue-500/30 group animate-fade-in shadow-lg"
+        >
+          <div *cdkDragPlaceholder class="opacity-0"></div>
+
+          <div class="flex justify-between items-start mb-3">
+            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+            <ui-badge
+              [variant]="getTimeBadgeVariant(order.created_at)"
+              [label]="getElapsedTime(order.created_at)"
+              class="text-[10px]"
+            >
+            </ui-badge>
+          </div>
+
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-8 h-8 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center shrink-0"
+            >
+              <span class="text-xs font-bold text-primary">{{
+                order.customer_name?.charAt(0) || "C"
+              }}</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              order.customer_name || "Cliente"
+            }}</span>
+          </div>
+
+          <ul class="space-y-1 mb-4 select-none pointer-events-none">
+            <li
+              *ngFor="let item of order.items"
+              class="text-xs text-gray-400 flex items-start gap-1"
+            >
+              <span
+                class="w-1 h-1 rounded-full bg-blue-500 mt-1.5 shrink-0"
+              ></span>
+              <span class="font-bold text-blue-500">{{ item.quantity }}x</span>
+              {{ item.product?.name }}
+            </li>
+          </ul>
+
+          <div
+            class="flex items-center justify-between pt-3 border-t border-white/5"
+          >
+            <span class="font-bold text-white">{{
+              order.total_amount | currency: "BRL"
+            }}</span>
+          </div>
+        </ui-card>
+      </div>
+    </div>
+
+    <!-- 4. Saiu para Entrega -->
+    <div
+      class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden"
+    >
+      <div
+        class="p-4 border-b border-white/5 bg-green-500/10 flex items-center justify-between"
+      >
+        <h2
+          class="font-bold text-green-500 uppercase tracking-wider text-sm flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg">rocket_launch</span>
+          Em Rota
+        </h2>
+        <span
+          class="bg-green-500/20 text-green-500 text-xs font-bold px-2 py-0.5 rounded-full"
+          >{{ outForDeliveryOrders.length }}</span
+        >
+      </div>
+      <div
+        cdkDropList
+        [cdkDropListData]="outForDeliveryOrders"
+        (cdkDropListDropped)="drop($event, 'OUT_FOR_DELIVERY')"
+        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]"
+      >
+        <ui-card
+          *ngFor="let order of outForDeliveryOrders"
+          cdkDrag
+          (click)="openOrderDetails(order)"
+          [noPadding]="false"
+          className="mb-0 cursor-grab active:cursor-grabbing hover:border-green-500/30 group animate-fade-in shadow-lg"
+        >
+          <div *cdkDragPlaceholder class="opacity-0"></div>
+
+          <div class="flex justify-between items-start mb-3">
+            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+            <ui-badge
+              [variant]="getTimeBadgeVariant(order.created_at)"
+              [label]="getElapsedTime(order.created_at)"
+              class="text-[10px]"
+            >
+            </ui-badge>
+          </div>
+
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-8 h-8 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center shrink-0"
+            >
+              <span class="text-xs font-bold text-primary">{{
+                order.customer_name?.charAt(0) || "C"
+              }}</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              order.customer_name || "Cliente"
+            }}</span>
+          </div>
+
+          <ul class="space-y-1 mb-4 select-none pointer-events-none">
+            <li
+              *ngFor="let item of order.items"
+              class="text-xs text-gray-400 flex items-start gap-1"
+            >
+              <span
+                class="w-1 h-1 rounded-full bg-green-500 mt-1.5 shrink-0"
+              ></span>
+              <span class="font-bold text-green-500">{{ item.quantity }}x</span>
+              {{ item.product?.name }}
+            </li>
+          </ul>
+
+          <div
+            class="flex items-center justify-between pt-3 border-t border-white/5"
+          >
+            <span class="font-bold text-white">{{
+              order.total_amount | currency: "BRL"
+            }}</span>
+          </div>
+        </ui-card>
+      </div>
+    </div>
+
+    <!-- 5. Entregues -->
+    <div
+      class="flex flex-col h-full bg-surface-dark/30 rounded-2xl border border-white/5 overflow-hidden opacity-75 hover:opacity-100 transition-opacity"
+    >
+      <div
+        class="p-4 border-b border-white/5 bg-stone-500/10 flex items-center justify-between"
+      >
+        <h2
+          class="font-bold text-stone-400 uppercase tracking-wider text-sm flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg">history</span>
+          Entregues
+        </h2>
+        <span
+          class="bg-stone-500/20 text-stone-400 text-xs font-bold px-2 py-0.5 rounded-full"
+          >{{ historyOrders.length }}</span
+        >
+      </div>
+      <div
+        cdkDropList
+        [cdkDropListData]="historyOrders"
+        (cdkDropListDropped)="drop($event, 'DELIVERED')"
+        class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-[100px]"
+      >
+        <ui-card
+          *ngFor="let order of historyOrders"
+          cdkDrag
+          (click)="openOrderDetails(order)"
+          [noPadding]="false"
+          className="mb-0 cursor-grab active:cursor-grabbing hover:border-stone-500/30 group animate-fade-in shadow-lg grayscale hover:grayscale-0"
+        >
+          <div *cdkDragPlaceholder class="opacity-0"></div>
+
+          <div class="flex justify-between items-start mb-3">
+            <span class="text-xs font-bold text-gray-500">#{{ order.id }}</span>
+            <ui-badge variant="neutral" label="Concluído" class="text-[10px]">
+            </ui-badge>
+          </div>
+
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-8 h-8 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center shrink-0"
+            >
+              <span class="text-xs font-bold text-primary">{{
+                order.customer_name?.charAt(0) || "C"
+              }}</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              order.customer_name || "Cliente"
+            }}</span>
+          </div>
+          <div
+            class="flex items-center justify-between pt-3 border-t border-white/5"
+          >
+            <span class="font-bold text-white">{{
+              order.total_amount | currency: "BRL"
+            }}</span>
+            <span class="text-xs text-stone-500"
+              >Há {{ getElapsedTime(order.created_at) }}</span
+            >
+          </div>
+        </ui-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID VIEW (KDS) -->
+  <div
+    *ngIf="viewMode === 'grid'"
+    class="flex-1 w-full bg-black/40 overflow-y-auto custom-scrollbar p-8"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <ui-card
+        *ngFor="let order of kdsOrders"
+        [noPadding]="true"
+        className="relative shadow-xl h-full flex flex-col"
+      >
+        <!-- Dynamic Header -->
+        <div
+          class="h-10 px-4 flex items-center justify-between"
+          [ngClass]="getKdsColorInfo(order).bg"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="font-bold text-sm tracking-wide"
+              [ngClass]="getKdsColorInfo(order).text"
+              >#{{ order.id }}</span
+            >
+          </div>
+          <span
+            class="font-bold text-xs uppercase tracking-wider"
+            [ngClass]="getKdsColorInfo(order).text"
+            >{{ getKdsColorInfo(order).label }}</span
+          >
+        </div>
+
+        <!-- Body -->
+        <div class="p-4 flex-1 flex flex-col relative">
+          <!-- Timer -->
+          <div
+            class="absolute top-4 right-4 font-mono text-4xl font-bold tracking-tighter"
+            [ngClass]="
+              getKdsColorInfo(order).btnBg === 'bg-red-600'
+                ? 'text-red-500'
+                : 'text-gray-200'
+            "
+          >
+            {{
+              getElapsedTime(order.created_at)
+                .replace("há ", "")
+                .replace(" min", "")
+            }}
+          </div>
+
+          <div class="mb-6 mt-1">
+            <h3 class="text-lg font-bold text-white">Mesa 12</h3>
+            <span class="text-gray-500 text-xs font-bold uppercase">{{
+              order.customer_name
+            }}</span>
+          </div>
+
+          <!-- Items List -->
+          <div class="space-y-2 mb-4">
+            <div
+              *ngFor="let item of order.items"
+              class="flex items-start gap-2 text-sm text-gray-300"
+            >
+              <span
+                class="bg-orange-500/20 text-orange-500 font-bold px-1.5 rounded text-xs mt-0.5"
+                >{{ item.quantity }}x</span
+              >
+              <span class="leading-tight">{{ item.product?.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Action -->
+        <button
+          (click)="advanceOrderStatus(order)"
+          class="w-full h-12 flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:brightness-110 transition-all active:brightness-95"
+          [ngClass]="
+            getKdsColorInfo(order).btnBg + ' ' + getKdsColorInfo(order).text
+          "
+        >
+          {{ getKdsColorInfo(order).btnText }}
+        </button>
+      </ui-card>
+    </div>
+
+    <!-- Empty State for Grid -->
+    <div
+      *ngIf="kdsOrders.length === 0"
+      class="flex flex-col items-center justify-center h-full text-gray-500"
+    >
+      <span class="material-symbols-outlined text-6xl mb-4 text-stone-700"
+        >inventory_2</span
+      >
+      <p class="text-lg font-medium">Nenhum pedido na cozinha</p>
+    </div>
+  </div>
+</div>
+
+<!-- Order Details Modal -->
+<app-order-details-modal
+  *ngIf="selectedOrder"
+  [order]="selectedOrder"
+  (close)="closeOrderDetails()"
+  (cancelOrder)="onCancelOrder($event)"
+>
+</app-order-details-modal>
+
+<ui-dialog
+  [isOpen]="showCancelModal"
+  title="Cancelar Pedido"
+  [message]="
+    'Tem certeza que deseja cancelar o pedido #' +
+    (orderToCancel?.id || '') +
+    '? Esta ação não pode ser desfeita.'
+  "
+  variant="danger"
+  confirmText="Cancelar Pedido"
+  cancelText="Voltar"
+  (confirm)="executeCancelOrder()"
+  (cancel)="cancelCancelOrder()"
+>
+</ui-dialog>

@@ -1,82 +1,125 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/60 animate-fade-in" (click)="onClose()">
-    
-    <!-- Modal Content -->
-    <div class="w-full max-w-lg bg-[#1c1917] rounded-2xl border border-white/10 shadow-2xl overflow-hidden font-display" (click)="$event.stopPropagation()">
-        
-        <!-- Header -->
-        <div class="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-surface-dark/50">
-            <div class="flex items-center gap-3">
-                <span class="text-lg font-bold text-white">Pedido #{{ order.id }}</span>
-                <span class="px-2 py-1 border rounded-lg text-xs font-bold" [ngClass]="statusColors[order.status] || 'bg-white/5 border-white/10 text-gray-400'">
-                    {{ statusLabels[order.status] || order.status }}
-                </span>
-            </div>
-            <button (click)="onClose()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/5 text-gray-400 hover:text-white transition-colors">
-                <span class="material-symbols-outlined text-xl">close</span>
-            </button>
-        </div>
-
-        <!-- Body -->
-        <div class="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar">
-            
-            <!-- Customer Info -->
-            <div class="flex items-center gap-4 mb-6">
-                <img [src]="order.customerAvatar" class="w-12 h-12 rounded-full border border-white/10" alt="Avatar">
-                <div>
-                    <h3 class="font-bold text-white text-lg">{{ order.customerName }}</h3>
-                    <p class="text-sm text-gray-400">Cliente Recorrente • 12 pedidos</p>
-                </div>
-            </div>
-
-            <!-- Items List -->
-            <div class="bg-surface-dark border border-white/5 rounded-xl p-4 mb-6">
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Itens do Pedido</h4>
-                <ul class="space-y-3">
-                    <li *ngFor="let item of order.items" class="flex justify-between items-start text-sm">
-                        <div class="flex gap-3">
-                            <span class="w-5 h-5 rounded flex items-center justify-center bg-white/5 text-xs font-bold text-white">1</span>
-                            <span class="text-gray-300">{{ item }}</span>
-                        </div>
-                        <!-- Mock price per item since we only have strings -->
-                        <span class="text-gray-500">R$ --,--</span>
-                    </li>
-                </ul>
-                <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Total</span>
-                    <span class="text-xl font-bold text-amber-500">{{ order.total | currency:'BRL' }}</span>
-                </div>
-            </div>
-
-            <!-- Observations -->
-            <div class="mb-2">
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                    Observações da Cozinha
-                </label>
-                <textarea 
-                    [(ngModel)]="observations"
-                    rows="3" 
-                    class="w-full bg-surface-dark border border-white/10 rounded-xl p-3 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
-                    placeholder="Ex: Sem cebola, caprichar no molho...">
-                </textarea>
-            </div>
-
-        </div>
-
-        <!-- Footer / Actions -->
-        <div class="p-4 border-t border-white/5 bg-surface-dark/30 flex justify-between items-center">
-            <button 
-                (click)="onCancel()"
-                class="px-4 py-2 rounded-xl text-red-500 hover:bg-red-500/10 font-bold text-sm transition-colors flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">block</span>
-                Cancelar Pedido
-            </button>
-            
-            <button 
-                (click)="onClose()"
-                class="px-6 py-2 rounded-xl bg-primary text-black font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-primary/20">
-                Salvar & Fechar
-            </button>
-        </div>
-
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/60 animate-fade-in"
+  (click)="onClose()"
+>
+  <!-- Modal Content -->
+  <div
+    class="w-full max-w-lg bg-[#1c1917] rounded-2xl border border-white/10 shadow-2xl overflow-hidden font-display"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div
+      class="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-surface-dark/50"
+    >
+      <div class="flex items-center gap-3">
+        <span class="text-lg font-bold text-white">Pedido #{{ order.id }}</span>
+        <span
+          class="px-2 py-1 border rounded-lg text-xs font-bold"
+          [ngClass]="
+            statusColors[order.status] ||
+            'bg-white/5 border-white/10 text-gray-400'
+          "
+        >
+          {{ statusLabels[order.status] || order.status }}
+        </span>
+      </div>
+      <button
+        (click)="onClose()"
+        class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/5 text-gray-400 hover:text-white transition-colors"
+      >
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
     </div>
+
+    <!-- Body -->
+    <div class="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar">
+      <!-- Customer Info -->
+      <div class="flex items-center gap-4 mb-6">
+        <div
+          class="w-12 h-12 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center"
+        >
+          <span class="text-xl font-bold text-primary">{{
+            order.customer_name?.charAt(0) || "C"
+          }}</span>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-lg">
+            {{ order.customer_name || "Cliente" }}
+          </h3>
+          <p class="text-sm text-gray-400">Pedido via App</p>
+        </div>
+      </div>
+
+      <!-- Items List -->
+      <div class="bg-surface-dark border border-white/5 rounded-xl p-4 mb-6">
+        <h4
+          class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3"
+        >
+          Itens do Pedido
+        </h4>
+        <ul class="space-y-3">
+          <li
+            *ngFor="let item of order.items"
+            class="flex justify-between items-start text-sm"
+          >
+            <div class="flex gap-3">
+              <span
+                class="w-5 h-5 rounded flex items-center justify-center bg-white/5 text-xs font-bold text-white"
+              >
+                {{ item.quantity }}
+              </span>
+              <span class="text-gray-300">{{ item.product?.name }}</span>
+            </div>
+            <span class="text-gray-500">{{
+              item.total_price | currency: "BRL"
+            }}</span>
+          </li>
+        </ul>
+        <div
+          class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center"
+        >
+          <span class="text-gray-400 text-sm">Total</span>
+          <span class="text-xl font-bold text-amber-500">{{
+            order.total_amount | currency: "BRL"
+          }}</span>
+        </div>
+      </div>
+
+      <!-- Observations -->
+      <div class="mb-2">
+        <label
+          class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+        >
+          Observações da Cozinha
+        </label>
+        <textarea
+          [(ngModel)]="observations"
+          rows="3"
+          class="w-full bg-surface-dark border border-white/10 rounded-xl p-3 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+          placeholder="Ex: Sem cebola, caprichar no molho..."
+        >
+        </textarea>
+      </div>
+    </div>
+
+    <!-- Footer / Actions -->
+    <div
+      class="p-4 border-t border-white/5 bg-surface-dark/30 flex justify-between items-center"
+    >
+      <button
+        (click)="onCancel()"
+        class="px-4 py-2 rounded-xl text-red-500 hover:bg-red-500/10 font-bold text-sm transition-colors flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined text-lg">block</span>
+        Cancelar Pedido
+      </button>
+
+      <button
+        (click)="onClose()"
+        class="px-6 py-2 rounded-xl bg-primary text-black font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+      >
+        Salvar & Fechar
+      </button>
+    </div>
+  </div>
 </div>
