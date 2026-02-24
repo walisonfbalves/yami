@@ -1,12 +1,11 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { CurrencyMaskDirective } from '../../directives/currency-mask.directive';
 
 @Component({
   selector: 'ui-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CurrencyMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div class="w-full">
         <label *ngIf="label" class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
@@ -25,13 +24,24 @@ import { CurrencyMaskDirective } from '../../directives/currency-mask.directive'
                 <span class="material-symbols-outlined text-xl">{{ icon }}</span>
             </div>
 
-            <input
+            <!-- Regular Input -->
+            <input *ngIf="prefix !== 'R$'"
                 [type]="currentType"
                 [formControl]="control"
                 [placeholder]="placeholder"
                 [attr.min]="type === 'number' ? '0' : null"
                 (keydown)="onKeydown($event)"
-                [currencyMask]="prefix === 'R$'"
+                class="flex-1 w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
+            />
+
+            <!-- Currency Input (Left-to-Right Free Style) -->
+            <input *ngIf="prefix === 'R$'"
+                type="text"
+                [value]="currencyDisplayValue"
+                (input)="onCurrencyInput($event)"
+                (focus)="onCurrencyFocus()"
+                (blur)="onCurrencyBlur()"
+                [placeholder]="placeholder"
                 class="flex-1 w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
             />
 
@@ -70,6 +80,8 @@ export class InputComponent {
   @Output() iconRightClick = new EventEmitter<void>();
 
   visible = false;
+  isCurrencyFocused = false;
+  currentCurrencyStr = '';
 
   get currentType(): string {
     if (this.type === 'password') {
@@ -98,4 +110,67 @@ export class InputComponent {
       this.iconRightClick.emit();
     }
   }
+
+  get currencyDisplayValue(): string {
+    const value = this.control.value;
+    if (value === null || value === undefined || value === '') return '';
+    
+    // Se está sendo editado ativamente, mostra a string crua suja exatamente como o user digitou
+    if (this.isCurrencyFocused) {
+      return this.currentCurrencyStr;
+    }
+
+    // Se saiu do foco, renderiza formatação bonita 1.000,00
+    const num = parseFloat(value);
+    if (isNaN(num)) return '';
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  onCurrencyInput(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    let value = inputElement.value;
+
+    // Lógica Left-To-Right 
+    // Remove tudo que não for dígito e vírgula
+    value = value.replace(/[^0-9,]/g, '');
+    
+    const parts = value.split(',');
+    // Previne mais de uma virgula
+    if (parts.length > 2) {
+      value = parts[0] + ',' + parts.slice(1).join('');
+    }
+    // Previne mais de duas casas decimais após a virgula
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + ',' + parts[1].substring(0, 2);
+    }
+
+    this.currentCurrencyStr = value;
+    inputElement.value = value;
+    
+    // Converte virgula p/ dot pro mundo float da Controller
+    const floatValue = parseFloat(value.replace(',', '.'));
+    this.control.setValue(isNaN(floatValue) ? null : floatValue, { emitEvent: false });
+  }
+
+  onCurrencyFocus() {
+    this.isCurrencyFocused = true;
+    const value = this.control.value;
+    if (value !== null && value !== undefined && value !== '') {
+      // Fornece a representação crua p/ edição (Ex: 12.30 vira '12,3') sem zeros desnecessários p/ não atrapalhar
+      this.currentCurrencyStr = value.toString().replace('.', ',');
+    } else {
+      this.currentCurrencyStr = '';
+    }
+  }
+
+  onCurrencyBlur() {
+    this.isCurrencyFocused = false;
+    this.control.markAsTouched();
+    
+    // Limpar state sujo
+    if (this.control.value === null || this.control.value === undefined) {
+      this.currentCurrencyStr = '';
+    }
+  }
 }
+
