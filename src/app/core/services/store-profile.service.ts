@@ -97,15 +97,23 @@ export class StoreProfileService {
   }
 
   async uploadStoreImage(file: File | Blob, type: 'logo' | 'cover'): Promise<string> {
-    const current = this._currentStore();
-    if (!current) throw new Error('No active store');
+    const store = this._currentStore();
+    if (!store) throw new Error('No active store');
 
-    const fileName = `${current.id}/${type}-${Date.now()}.webp`;
-    const bucket = 'store-assets'; // Changed to store_assets as requested
+    const fileName = `${store.id}/${type}-${Date.now()}.webp`;
+    const bucket = 'store-assets';
+
+    // Conversão de segurança Blob -> File para garantir suporte no Supabase
+    let uploadFile: File | Blob = file;
+    if (file instanceof Blob && !(file instanceof File)) {
+       uploadFile = new File([file], fileName, { type: 'image/webp' });
+    }
+
+    console.log('Objeto para upload é um Blob/File válido?', uploadFile instanceof Blob, uploadFile);
 
     const { error: uploadError } = await this.supabase.storage
       .from(bucket)
-      .upload(fileName, file, {
+      .upload(fileName, uploadFile, {
         upsert: true,
         contentType: 'image/webp',
         cacheControl: '3600'
@@ -128,7 +136,7 @@ export class StoreProfileService {
     const { error: dbError } = await this.supabase
         .from('stores')
         .update({ [fieldToUpdate]: publicUrl })
-        .eq('id', current.id);
+        .eq('id', store.id);
 
     if (dbError) throw dbError;
 
