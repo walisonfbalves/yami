@@ -1,6 +1,8 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef, OnInit, OnDestroy, ChangeDetectorRef, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime, tap, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'ui-input',
@@ -12,7 +14,10 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
             {{ label }}
         </label>
         
-        <div class="relative flex items-stretch bg-background-dark border border-white/10 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all overflow-hidden group">
+        <div class="relative flex items-stretch bg-background-dark border border-white/10 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all overflow-hidden group"
+             [class.!border-red-500]="isErrorVisible()"
+             [class.focus-within:!border-red-500]="isErrorVisible()"
+             [class.focus-within:!ring-red-500]="isErrorVisible()">
             
             <!-- Prefix -->
             <div *ngIf="prefix" class="bg-white/5 px-3 py-3 uppercase text-gray-500 font-bold border-r border-white/10 text-sm flex items-center justify-center">
@@ -31,6 +36,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
                 [placeholder]="placeholder"
                 [attr.min]="type === 'number' ? '0' : null"
                 (keydown)="onKeydown($event)"
+                (input)="hideErrorSignal()"
                 class="flex-1 w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
             />
 
@@ -38,7 +44,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
             <input *ngIf="prefix === 'R$'"
                 type="text"
                 [value]="currencyDisplayValue"
-                (input)="onCurrencyInput($event)"
+                (input)="onCurrencyInput($event); hideErrorSignal()"
                 (focus)="onCurrencyFocus()"
                 (blur)="onCurrencyBlur()"
                 [placeholder]="placeholder"
@@ -62,12 +68,13 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
                 {{ suffix }}
             </div>
         </div>
+        <p *ngIf="isErrorVisible() && errorMessage" class="text-red-500 text-xs mt-1 font-bold">{{ errorMessage }}</p>
     </div>
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputComponent {
+export class InputComponent implements OnInit, OnDestroy {
   @Input() label: string = '';
   @Input() control: FormControl = new FormControl();
   @Input() type: 'text' | 'number' | 'email' | 'password' = 'text';
@@ -76,8 +83,42 @@ export class InputComponent {
   @Input() suffix: string = '';
   @Input() icon: string = ''; // Left icon
   @Input() iconRight: string = ''; // Right icon (custom)
+  @Input() errorMessage: string = '';
   
   @Output() iconRightClick = new EventEmitter<void>();
+
+  // A abordagem reativa pura com Signals
+  isErrorVisible = signal(false);
+  sub?: Subscription;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    if (this.control) {
+      this.sub = this.control.valueChanges.pipe(
+        // Sempre que digitar, desliga a mensagem instantaneamente
+        tap(() => this.isErrorVisible.set(false)),
+        // Exige 1.5s de silêncio
+        debounceTime(1500),
+        distinctUntilChanged()
+      ).subscribe(() => {
+        // Valida DEPOIS do silêncio
+        const shouldShow = this.control.invalid && this.control.dirty;
+        this.isErrorVisible.set(shouldShow);
+      });
+    }
+  }
+
+  // Backup em caso do (input) natural da tag HTML for mais rápido que o event loop do FormContorl
+  hideErrorSignal() {
+    if (this.isErrorVisible()) {
+      this.isErrorVisible.set(false);
+    }
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+  }
 
   visible = false;
   isCurrencyFocused = false;

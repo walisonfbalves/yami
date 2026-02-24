@@ -274,9 +274,18 @@
             >
             <ui-input
               [control]="getControl('pix_key')"
-              placeholder="00.000.000/0001-00"
+              placeholder="CPF, CNPJ, E-mail, Celular ou Aleatória"
             >
             </ui-input>
+            <p
+              *ngIf="
+                getControl('pix_key').invalid && getControl('pix_key').dirty
+              "
+              class="text-red-500 text-xs mt-1 font-bold"
+            >
+              Formato PIX inválido (Use CPF, CNPJ, E-mail, Celular ou
+              Aleatória).
+            </p>
           </div>
         </div>
       </ui-card>

@@ -10,6 +10,7 @@ import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 import { StoreProfileService } from '../../../core/services/store-profile.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { pixKeyValidator } from '../../../shared/utils/pix.validator';
 
 @Component({
   selector: 'app-settings',
@@ -55,7 +56,7 @@ export class SettingsComponent {
       // Finance & Delivery
       delivery_fee: [0],
       min_order_value: [0],
-      pix_key: ['']
+      pix_key: ['', [pixKeyValidator()]]
     });
 
     // Load initial data
