@@ -12,10 +12,10 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
             {{ label }}
         </label>
         
-        <div class="relative flex items-center bg-background-dark border border-white/10 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all overflow-hidden group">
+        <div class="relative flex items-stretch bg-background-dark border border-white/10 rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all overflow-hidden group">
             
             <!-- Prefix -->
-            <div *ngIf="prefix" class="bg-white/5 px-3 uppercase text-gray-500 font-bold border-r border-white/10 text-sm h-full flex items-center">
+            <div *ngIf="prefix" class="bg-white/5 px-3 py-3 uppercase text-gray-500 font-bold border-r border-white/10 text-sm flex items-center justify-center">
                 {{ prefix }}
             </div>
             
@@ -28,7 +28,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
                 [type]="currentType"
                 [formControl]="control"
                 [placeholder]="placeholder"
-                class="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
+                class="flex-1 w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
             />
 
             <!-- Icon Right / Action -->
@@ -44,7 +44,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
             </button>
 
             <!-- Suffix -->
-            <div *ngIf="suffix" class="bg-white/5 px-3 py-3 text-gray-500 font-bold border-l border-white/10 text-sm">
+            <div *ngIf="suffix" class="bg-white/5 px-3 py-3 text-gray-500 font-bold border-l border-white/10 text-sm flex items-center justify-center">
                 {{ suffix }}
             </div>
         </div>
