@@ -70,10 +70,21 @@
           </div>
 
           <img
-            *ngIf="storeService.storeCover()"
-            [src]="storeService.storeCover()"
+            *ngIf="coverPreview"
+            [src]="coverPreview"
             class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
           />
+
+          <!-- Remove Cover Button -->
+          <button
+            *ngIf="coverPreview"
+            type="button"
+            (click)="removeCover($event)"
+            class="absolute top-4 right-4 z-30 bg-stone-900/80 text-stone-300 p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center shadow-lg backdrop-blur-sm opacity-0 group-hover:opacity-100"
+            title="Remover Capa"
+          >
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
           <div
             class="absolute inset-0 flex flex-col items-center justify-center text-stone-500 gap-2 z-10"
           >
@@ -86,10 +97,9 @@
         </div>
 
         <div class="px-6 pb-6 flex-1 flex flex-col">
-          <!-- Logo - Overlapping Banner -->
-          <div class="relative -mt-12 mb-6 self-start z-20">
+          <div class="relative w-max -mt-12 mb-6 self-start z-20 group">
             <div
-              class="w-24 h-24 rounded-full bg-stone-800 border-4 border-stone-800 overflow-hidden relative group cursor-pointer shadow-lg"
+              class="w-24 h-24 rounded-full bg-stone-800 border-4 border-stone-800 overflow-hidden relative cursor-pointer shadow-lg"
               (click)="logoInput.click()"
             >
               <input
@@ -111,10 +121,11 @@
               </div>
 
               <img
-                *ngIf="storeService.storeLogo()"
-                [src]="storeService.storeLogo()"
+                *ngIf="logoPreview"
+                [src]="logoPreview"
                 class="w-full h-full object-cover"
               />
+
               <div
                 class="absolute inset-0 bg-stone-700/50 flex items-center justify-center text-stone-500 hover:bg-stone-700 transition-colors"
                 [class.opacity-0]="
@@ -125,6 +136,17 @@
                 <span class="material-symbols-outlined">add_a_photo</span>
               </div>
             </div>
+
+            <!-- Remove Logo Button -->
+            <button
+              *ngIf="logoPreview"
+              type="button"
+              (click)="removeLogo($event)"
+              class="absolute bottom-1 -right-2 z-30 bg-stone-900 border border-stone-700 text-stone-300 p-1.5 rounded-full hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors flex items-center justify-center shadow-lg transform translate-x-1/4 translate-y-1/4 opacity-0 group-hover:opacity-100"
+              title="Remover Logo"
+            >
+              <span class="material-symbols-outlined text-xs">delete</span>
+            </button>
           </div>
 
           <!-- Header Text -->
@@ -201,20 +223,10 @@
             >
             <ui-input
               [control]="getControl('prep_time')"
-              placeholder="40-50"
+              placeholder="40"
               suffix="minutos"
             >
             </ui-input>
-            <!-- Tooltip Icon absolute positioned near label or inside input area context -->
-            <div
-              class="absolute top-8 right-0"
-              title="Este tempo é exibido para os clientes antes de finalizarem o pedido."
-            >
-              <span
-                class="material-symbols-outlined text-stone-500 text-sm cursor-help hover:text-stone-300 transition-colors"
-                >info</span
-              >
-            </div>
           </div>
         </div>
       </ui-card>
@@ -278,7 +290,7 @@
           [loading]="isLoading"
           icon="save"
         >
-          Salvar Alterações
+          Salvar alterações
         </ui-button>
       </div>
     </div>
@@ -286,10 +298,13 @@
 
   <!-- Toast Notification -->
   <div
-    *ngIf="showToast"
-    class="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in z-50"
+    *ngIf="toast.show"
+    [ngClass]="toast.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'"
+    class="fixed top-8 left-1/2 -translate-x-1/2 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in z-50"
   >
-    <span class="material-symbols-outlined">check_circle</span>
-    <span class="font-bold">Alterações salvas com sucesso!</span>
+    <span class="material-symbols-outlined">{{
+      toast.type === "success" ? "check_circle" : "error"
+    }}</span>
+    <span class="font-bold">{{ toast.message }}</span>
   </div>
 </div>

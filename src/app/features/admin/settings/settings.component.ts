@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
@@ -29,8 +29,11 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class SettingsComponent {
   settingsForm: FormGroup;
-  showToast = false;
+  toast = { show: false, message: '', type: 'success' as 'success' | 'error' };
   isLoading = false;
+
+  logoPreview: string | null = null;
+  coverPreview: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -39,19 +42,19 @@ export class SettingsComponent {
   ) {
     this.settingsForm = this.fb.group({
       // Store Identity
-      name: ['', Validators.required],
-      slug: ['', Validators.required],
+      name: [''],
+      slug: [''],
       description: [''],
       logo_url: [''],
       cover_url: [''],
       
       // Operation
       is_open: [false],
-      prep_time: ['', Validators.required],
+      prep_time: [''],
       
       // Finance & Delivery
-      delivery_fee: [0, Validators.required],
-      min_order_value: [0, Validators.required],
+      delivery_fee: [0],
+      min_order_value: [0],
       pix_key: ['']
     });
 
@@ -61,6 +64,9 @@ export class SettingsComponent {
     effect(() => {
       const store = this.storeService.currentStore();
       if (store) {
+        this.logoPreview = store.logo_url || null;
+        this.coverPreview = store.cover_url || null;
+        
         this.settingsForm.patchValue({
           name: store.name,
           slug: store.slug,
@@ -83,11 +89,7 @@ export class SettingsComponent {
       this.isLoading = true;
       try {
         await this.storeService.updateStoreProfile(this.settingsForm.value);
-        this.showToast = true;
-        setTimeout(() => {
-            this.showToast = false;
-            this.cdr.markForCheck();
-        }, 3000);
+        this.showToastMessage('Alterações salvas com sucesso!');
       } catch (error) {
         console.error('Error updating settings:', error);
         // Handle error (show toast?)
@@ -95,6 +97,9 @@ export class SettingsComponent {
         this.isLoading = false;
         this.cdr.markForCheck();
       }
+    } else {
+      console.error('Formulário inválido', this.settingsForm.value, this.settingsForm.errors);
+      this.showToastMessage('Preencha todos os campos obrigatórios.', true);
     }
   }
 
@@ -123,10 +128,11 @@ export class SettingsComponent {
       const publicUrl = await this.storeService.uploadStoreImage(compressedBlob, 'logo');
 
       // 3. Update Form & Preview
+      this.logoPreview = publicUrl;
       this.getControl('logo_url').setValue(publicUrl);
       this.getControl('logo_url').markAsDirty();
       
-      this.showToastMessage('Logo atualizada com sucesso!');
+      this.showToastMessage('Logo enviada, salve para aplicar!');
     } catch (error) {
       console.error('Erro ao fazer upload do logo:', error);
       this.showToastMessage('Erro ao fazer upload do logo.', true);
@@ -150,10 +156,11 @@ export class SettingsComponent {
       const publicUrl = await this.storeService.uploadStoreImage(compressedBlob, 'cover');
 
       // 3. Update Form & Preview
+      this.coverPreview = publicUrl;
       this.getControl('cover_url').setValue(publicUrl);
       this.getControl('cover_url').markAsDirty();
 
-      this.showToastMessage('Capa atualizada com sucesso!');
+      this.showToastMessage('Capa enviada, salve para aplicar!');
     } catch (error) {
       console.error('Erro ao fazer upload da capa:', error);
       this.showToastMessage('Erro ao fazer upload da capa.', true);
@@ -163,25 +170,32 @@ export class SettingsComponent {
     }
   }
 
+  removeLogo(event: Event) {
+    event.stopPropagation();
+    this.logoPreview = null;
+    this.getControl('logo_url').setValue(null);
+    this.getControl('logo_url').markAsDirty();
+    this.showToastMessage('Logo removido. Salve as alterações.');
+  }
+
+  removeCover(event: Event) {
+    event.stopPropagation();
+    this.coverPreview = null;
+    this.getControl('cover_url').setValue(null);
+    this.getControl('cover_url').markAsDirty();
+    this.showToastMessage('Capa removida. Salve as alterações.');
+  }
   showToastMessage(message: string, isError = false) {
-    // Reuse existing toast logic or create a better one. 
-    // For now, simpler adjustment to existing showToast
-    this.showToast = true;
+    this.toast = {
+      show: true,
+      message,
+      type: isError ? 'error' : 'success'
+    };
     this.cdr.markForCheck();
 
-    // Ideally we bind the message to the template. 
-    // Since template has hardcoded message, we might want to update it to be dynamic, 
-    // but for now let's just trigger the success state.
-    // If error, we might want to log it or show a different toast.
-    if (isError) {
-        alert(message); // Fallback for error
-        this.showToast = false;
-        this.cdr.markForCheck();
-    } else {
-        setTimeout(() => {
-            this.showToast = false;
-            this.cdr.markForCheck();
-        }, 3000);
-    }
+    setTimeout(() => {
+      this.toast.show = false;
+      this.cdr.markForCheck();
+    }, 3000);
   }
 }

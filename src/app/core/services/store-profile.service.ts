@@ -78,9 +78,14 @@ export class StoreProfileService {
     // Optimistic Update
     this._currentStore.update(store => store ? { ...store, ...data } : null);
 
+    // Garantir envio das URls de capa e logo presentes no form
+    const updatePayload: Partial<Store> = { ...data };
+    if (data.logo_url !== undefined) updatePayload.logo_url = data.logo_url;
+    if (data.cover_url !== undefined) updatePayload.cover_url = data.cover_url;
+
     const { data: updated, error } = await this.supabase
       .from('stores')
-      .update(data)
+      .update(updatePayload)
       .eq('id', current.id)
       .select()
       .single();
@@ -128,27 +133,6 @@ export class StoreProfileService {
       .from(bucket)
       .getPublicUrl(fileName);
 
-    const publicUrl = data.publicUrl;
-
-    // Update DB
-    const fieldToUpdate = type === 'logo' ? 'logo_url' : 'cover_url';
-    
-    const { error: dbError } = await this.supabase
-        .from('stores')
-        .update({ [fieldToUpdate]: publicUrl })
-        .eq('id', store.id);
-
-    if (dbError) throw dbError;
-
-    // Update Signal (Optimistic/Immediate)
-    this._currentStore.update(store => {
-        if (!store) return null;
-        return {
-            ...store,
-            [fieldToUpdate]: publicUrl
-        };
-    });
-
-    return publicUrl;
+    return data.publicUrl;
   }
 }
