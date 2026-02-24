@@ -18,7 +18,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
                 [maxLength]="maxLength"
                 [formControl]="control"
                 [placeholder]="placeholder"
-                class="w-full bg-transparent border-none outline-none text-white px-3 py-3 placeholder-gray-600 font-medium resize-none"
+                class="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium resize-none"
             ></textarea>
         </div>
         

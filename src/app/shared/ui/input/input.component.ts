@@ -28,7 +28,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
                 [type]="currentType"
                 [formControl]="control"
                 [placeholder]="placeholder"
-                class="w-full bg-transparent border-none outline-none text-white px-3 py-3 placeholder-gray-600 font-medium"
+                class="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
             />
 
             <!-- Icon Right / Action -->
