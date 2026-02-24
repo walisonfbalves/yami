@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { CurrencyMaskDirective } from '../../directives/currency-mask.directive';
 
 @Component({
   selector: 'ui-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CurrencyMaskDirective],
   template: `
     <div class="w-full">
         <label *ngIf="label" class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
@@ -28,6 +29,9 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
                 [type]="currentType"
                 [formControl]="control"
                 [placeholder]="placeholder"
+                [attr.min]="type === 'number' ? '0' : null"
+                (keydown)="onKeydown($event)"
+                [currencyMask]="prefix === 'R$'"
                 class="flex-1 w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-white px-3 py-3 placeholder-gray-600 font-medium"
             />
 
@@ -71,7 +75,20 @@ export class InputComponent {
     if (this.type === 'password') {
       return this.visible ? 'text' : 'password';
     }
+    // Se for moeda, transformar em text para a máscara atuar formatando com vírgula livremente.
+    if (this.prefix === 'R$') {
+      return 'text';
+    }
     return this.type;
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    if (this.type === 'number') {
+      const invalidChars = ['-', '+', 'e', 'E'];
+      if (invalidChars.includes(event.key)) {
+        event.preventDefault();
+      }
+    }
   }
 
   handleRightIconClick() {
