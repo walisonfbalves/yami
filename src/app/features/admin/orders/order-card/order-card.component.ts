@@ -56,7 +56,7 @@ import { BadgeComponent } from '@shared/ui/badge/badge.component';
         </div>
       </div>
       
-      <!-- Time Elapsed (Mocked for now) -->
+      <!-- Time Elapsed -->
       <div class="mt-2 text-xs text-text-secondary font-medium flex items-center gap-1">
         <span class="material-symbols-outlined text-[14px]">schedule</span>
         Há {{ getTimeElapsed(order.created_at) }}
@@ -69,13 +69,13 @@ export class OrderCardComponent {
   @Input() order!: Order;
   @Output() updateStatus = new EventEmitter<Order['status']>();
 
-  getBadgeVariant(status: string): 'success' | 'warning' | 'error' | 'info' | 'default' {
+  getBadgeVariant(status: string): 'success' | 'warning' | 'danger' | 'primary' | 'neutral' {
     switch (status) {
       case 'pending': return 'warning';
-      case 'preparing': return 'info';
+      case 'preparing': return 'primary';
       case 'ready': return 'success';
-      case 'delivering': return 'info';
-      default: return 'default';
+      case 'delivering': return 'primary';
+      default: return 'neutral';
     }
   }
 

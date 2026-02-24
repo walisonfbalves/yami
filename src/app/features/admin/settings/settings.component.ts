@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
@@ -7,7 +7,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { TextareaComponent } from '../../../shared/ui/textarea/textarea.component';
 import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 
-import { StoreService } from '../../../core/services/store.service';
+import { StoreProfileService } from '../../../core/services/store-profile.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -34,7 +34,7 @@ export class SettingsComponent {
 
   constructor(
     private fb: FormBuilder,
-    private storeService: StoreService,
+    public storeService: StoreProfileService,
     private cdr: ChangeDetectorRef
   ) {
     this.settingsForm = this.fb.group({
@@ -56,7 +56,10 @@ export class SettingsComponent {
     });
 
     // Load initial data
-    this.storeService.currentStore$.subscribe(store => {
+    // Load initial data
+    // Effect or manual subscription to signal
+    effect(() => {
+      const store = this.storeService.currentStore();
       if (store) {
         this.settingsForm.patchValue({
           name: store.name,
@@ -69,7 +72,7 @@ export class SettingsComponent {
           delivery_fee: store.delivery_fee,
           min_order_value: store.min_order_value,
           pix_key: store.pix_key
-        }, { emitEvent: false }); // Avoid triggering valueChanges if any
+        }, { emitEvent: false });
         this.cdr.markForCheck();
       }
     });
@@ -79,7 +82,7 @@ export class SettingsComponent {
     if (this.settingsForm.valid) {
       this.isLoading = true;
       try {
-        await this.storeService.updateStore(this.settingsForm.value);
+        await this.storeService.updateStoreProfile(this.settingsForm.value);
         this.showToast = true;
         setTimeout(() => {
             this.showToast = false;
@@ -117,7 +120,7 @@ export class SettingsComponent {
       const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file, 300, 300));
       
       // 2. Upload
-      const publicUrl = await this.storeService.uploadLogo(compressedBlob);
+      const publicUrl = await this.storeService.uploadStoreImage(compressedBlob, 'logo');
 
       // 3. Update Form & Preview
       this.getControl('logo_url').setValue(publicUrl);
@@ -144,7 +147,7 @@ export class SettingsComponent {
       const compressedBlob = await import('../../../shared/utils/image-compressor').then(m => m.compressImage(file, 1280, 720));
       
       // 2. Upload
-      const publicUrl = await this.storeService.uploadCover(compressedBlob);
+      const publicUrl = await this.storeService.uploadStoreImage(compressedBlob, 'cover');
 
       // 3. Update Form & Preview
       this.getControl('cover_url').setValue(publicUrl);

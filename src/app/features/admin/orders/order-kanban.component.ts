@@ -49,9 +49,6 @@ export class OrderKanbanComponent implements OnInit, OnDestroy {
         this.preparingOrders = orders.filter(o => o.status === 'preparing');
         this.readyOrders = orders.filter(o => o.status === 'ready');
         this.outForDeliveryOrders = orders.filter(o => o.status === 'delivering');
-        // History orders (delivered/cancelled) are generally removed from active list in service,
-        // but if we want to show recent delivered ones, we might need a separate stream or logic.
-        // For now, let's keep history empty or implement a separate fetch if needed.
         this.historyOrders = orders.filter(o => o.status === 'delivered');
       })
     );
@@ -76,7 +73,6 @@ export class OrderKanbanComponent implements OnInit, OnDestroy {
         ...this.readyOrders
     ];
 
-    // Mock Category Filtering (Real implementation would need category on items)
     if (this.selectedCategory !== 'Todas') {
          // orders = orders.filter(...)
     }
@@ -139,7 +135,6 @@ export class OrderKanbanComponent implements OnInit, OnDestroy {
     } else {
       const movedOrder = event.previousContainer.data[event.previousIndex];
       
-      // Optimistic update visual
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
@@ -147,12 +142,10 @@ export class OrderKanbanComponent implements OnInit, OnDestroy {
         event.currentIndex,
       );
 
-      // Call service
       this.orderService.updateOrderStatus(movedOrder.id, newStatus);
     }
   }
 
-  // --- Modal Handlers ---
   openOrderDetails(order: Order) {
       this.selectedOrder = order;
   }
@@ -169,7 +162,6 @@ export class OrderKanbanComponent implements OnInit, OnDestroy {
   executeCancelOrder() {
       if (this.orderToCancel) {
           this.orderService.updateOrderStatus(this.orderToCancel.id, 'cancelled');
-          // Optimistic remove handled by service subscription
       }
       this.cancelCancelOrder();
       this.closeOrderDetails();

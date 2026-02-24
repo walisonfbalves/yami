@@ -70,8 +70,8 @@
           </div>
 
           <img
-            *ngIf="getControl('cover_url').value"
-            [src]="getControl('cover_url').value"
+            *ngIf="storeService.storeCover()"
+            [src]="storeService.storeCover()"
             class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
           />
           <div
@@ -111,8 +111,8 @@
               </div>
 
               <img
-                *ngIf="getControl('logo_url').value"
-                [src]="getControl('logo_url').value"
+                *ngIf="storeService.storeLogo()"
+                [src]="storeService.storeLogo()"
                 class="w-full h-full object-cover"
               />
               <div

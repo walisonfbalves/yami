@@ -38,8 +38,6 @@ export class OrderDetailsModalComponent {
   constructor() {}
 
   ngOnInit() {
-      // Mock existing observations if any
-      this.observations = 'Sem cebola, por favor.';
   }
 
   onClose() {
@@ -50,7 +48,4 @@ export class OrderDetailsModalComponent {
       this.cancelOrder.emit(this.order);
   }
 
-  // Helper to calculate subtotal (mock logic as we only have string items)
-  // In a real app, items would be objects with prices.
-  // For now, we rely on order.total
 }

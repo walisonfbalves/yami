@@ -4,20 +4,19 @@
   <!-- Sidebar -->
   <aside
     class="w-64 flex-shrink-0 border-r border-surface-border bg-surface flex flex-col hidden lg:flex"
-    *ngIf="tenant$ | async as tenant"
   >
     <div class="p-6 flex items-center gap-3">
       <div
         class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center overflow-hidden"
       >
         <img
-          *ngIf="tenant.logo"
-          [src]="tenant.logo"
+          *ngIf="storeLogo()"
+          [src]="storeLogo()"
           class="w-full h-full object-cover"
-          [alt]="tenant.name"
+          [alt]="storeName()"
         />
         <span
-          *ngIf="!tenant.logo"
+          *ngIf="!storeLogo()"
           class="material-symbols-outlined font-bold text-background"
           >store</span
         >
@@ -25,7 +24,7 @@
       <h1
         class="text-2xl font-heading text-white tracking-tighter uppercase font-bold"
       >
-        {{ tenant.name.split(" ")[0] }}
+        {{ storeName() }}
       </h1>
     </div>
     <nav class="flex-1 px-4 space-y-2 mt-4">

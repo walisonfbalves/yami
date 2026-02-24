@@ -6,6 +6,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TenantService, TenantConfig } from '../../../core/services/tenant.service';
+import { StoreProfileService } from '../../../core/services/store-profile.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -19,6 +20,11 @@ export class AdminLayoutComponent {
   private tenantService = inject(TenantService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  public storeProfileService = inject(StoreProfileService);
+  
+  // Expose signals directly
+  storeName = this.storeProfileService.storeName;
+  storeLogo = this.storeProfileService.storeLogo;
   
   tenant$ = this.tenantService.tenant$;
   availableTenants = this.tenantService.availableTenants;
