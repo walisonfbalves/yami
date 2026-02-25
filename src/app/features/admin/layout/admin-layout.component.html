@@ -27,24 +27,42 @@
         >
           {{ storeName() }}
         </h1>
-        <div class="flex items-center gap-1.5 mt-1">
-          <span
-            class="w-2 h-2 rounded-full"
-            [ngClass]="
-              storeProfileService.currentStore()?.is_open
-                ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
-                : 'bg-red-500'
-            "
-          ></span>
-          <span
-            class="text-[10px] font-bold uppercase tracking-widest text-stone-400"
-          >
-            {{
-              storeProfileService.currentStore()?.is_open
-                ? "Loja aberta"
-                : "Loja fechada"
-            }}
-          </span>
+        <div class="flex items-center gap-2 mt-1">
+          <div class="flex items-center gap-1.5">
+            <span
+              class="w-2 h-2 rounded-full"
+              [ngClass]="
+                storeProfileService.currentStore()?.is_open
+                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                  : 'bg-red-500'
+              "
+            ></span>
+            <span
+              class="text-[10px] font-bold uppercase tracking-widest text-stone-400"
+            >
+              {{
+                storeProfileService.currentStore()?.is_open
+                  ? "Loja aberta"
+                  : "Loja fechada"
+              }}
+            </span>
+          </div>
+          <div class="mt-0.5">
+            <span
+              class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border"
+              [ngClass]="
+                storeProfileService.currentStore()?.plan_type === 'pro'
+                  ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                  : 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+              "
+            >
+              {{
+                storeProfileService.currentStore()?.plan_type === "pro"
+                  ? "PRO"
+                  : "TESTE"
+              }}
+            </span>
+          </div>
         </div>
       </div>
     </div>

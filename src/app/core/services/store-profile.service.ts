@@ -20,6 +20,8 @@ export interface Store {
   logo_url?: string;
   cover_url?: string;
   created_at?: string;
+  plan_type?: 'teste' | 'pro';
+  trial_ends_at?: string;
 }
 
 @Injectable({

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
@@ -17,6 +17,7 @@ import { pixKeyValidator } from '../../../shared/utils/pix.validator';
   standalone: true,
   imports: [
     CommonModule, 
+    DatePipe,
     ReactiveFormsModule,
     CardComponent,
     ButtonComponent,
