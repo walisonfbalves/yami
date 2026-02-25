@@ -40,7 +40,9 @@
             class="text-[10px] font-bold uppercase tracking-widest text-stone-400"
           >
             {{
-              storeProfileService.currentStore()?.is_open ? "Online" : "Fechado"
+              storeProfileService.currentStore()?.is_open
+                ? "Loja aberta"
+                : "Loja fechada"
             }}
           </span>
         </div>
