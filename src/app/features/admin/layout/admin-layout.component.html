@@ -21,11 +21,30 @@
           >store</span
         >
       </div>
-      <h1
-        class="text-2xl font-heading text-white tracking-tighter uppercase font-bold"
-      >
-        {{ storeName() }}
-      </h1>
+      <div class="flex flex-col">
+        <h1
+          class="text-2xl font-heading text-white tracking-tighter uppercase font-bold"
+        >
+          {{ storeName() }}
+        </h1>
+        <div class="flex items-center gap-1.5 mt-1">
+          <span
+            class="w-2 h-2 rounded-full"
+            [ngClass]="
+              storeProfileService.currentStore()?.is_open
+                ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                : 'bg-red-500'
+            "
+          ></span>
+          <span
+            class="text-[10px] font-bold uppercase tracking-widest text-stone-400"
+          >
+            {{
+              storeProfileService.currentStore()?.is_open ? "Online" : "Fechado"
+            }}
+          </span>
+        </div>
+      </div>
     </div>
     <nav class="flex-1 px-4 space-y-2 mt-4">
       <a
