@@ -1,163 +1,256 @@
-<div id="analytics-report" class="p-8 space-y-8 bg-stone-950 min-h-screen font-display">
+<div
+  id="analytics-report"
+  class="p-8 space-y-8 bg-stone-950 min-h-screen font-display"
+>
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h2
+        class="text-4xl font-heading font-bold text-white tracking-tight uppercase"
+      >
+        Análises & Relatórios
+      </h2>
+      <p class="text-gray-500 mt-1 font-medium">
+        Visão detalhada de performance e operações
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div
+        class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1"
+        data-html2canvas-ignore="true"
+      >
+        <ui-button
+          variant="ghost"
+          size="sm"
+          [class.bg-white_10]="selectedPeriod === '7d'"
+          (click)="loadData('7d')"
+        >
+          7 Dias
+        </ui-button>
+        <ui-button
+          variant="ghost"
+          size="sm"
+          [class.bg-white_10]="selectedPeriod === '30d'"
+          (click)="loadData('30d')"
+        >
+          30 Dias
+        </ui-button>
+        <ui-button
+          variant="ghost"
+          size="sm"
+          [class.bg-white_10]="selectedPeriod === 'month'"
+          (click)="loadData('month')"
+        >
+          Este Mês
+        </ui-button>
+      </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-            <h2 class="text-4xl font-heading font-bold text-white tracking-tight uppercase">Análises & Relatórios</h2>
-            <p class="text-gray-500 mt-1 font-medium">Visão detalhada de performance e operações</p>
+      <ui-button
+        variant="primary"
+        icon="table_view"
+        (click)="downloadExcel()"
+        data-html2canvas-ignore="true"
+      >
+        BAIXAR RELATÓRIO EXCEL
+      </ui-button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"
+    ></div>
+  </div>
+
+  <div
+    *ngIf="error"
+    class="bg-red-500/10 border border-red-500/20 p-4 rounded-lg text-red-500 text-center"
+  >
+    {{ error }}
+    <button (click)="loadData(selectedPeriod)" class="ml-4 underline font-bold">
+      Tentar novamente
+    </button>
+  </div>
+
+  <ng-container *ngIf="!isLoading && analyticsData">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <ui-metric-card
+        title="Faturamento Total"
+        [value]="analyticsData.totalRevenue | currency: 'BRL'"
+        icon="payments"
+        [trend]="analyticsData.period"
+        variant="finance"
+      >
+        <span class="text-stone-400 text-xs">Receita bruta no período</span>
+      </ui-metric-card>
+
+      <ui-metric-card
+        title="Total de Pedidos"
+        [value]="analyticsData.totalOrders.toString()"
+        icon="shopping_bag"
+        [trend]="analyticsData.period"
+        variant="orders"
+      >
+        <span class="text-stone-400 text-xs"
+          >Pedidos concluídos no período</span
+        >
+      </ui-metric-card>
+
+      <ui-metric-card
+        title="Ticket Médio"
+        [value]="analyticsData.avgTicket | currency: 'BRL'"
+        icon="receipt_long"
+        [trend]="analyticsData.period"
+        variant="finance"
+      >
+        <span class="text-stone-400 text-xs"
+          >Baseado em {{ analyticsData.totalOrders }} pedidos</span
+        >
+      </ui-metric-card>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <ui-card className="lg:col-span-2 flex flex-col min-h-[400px] h-full">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h4 class="text-xl font-heading font-bold text-white uppercase">
+              Histórico de Receita
+            </h4>
+            <p class="text-sm text-gray-500 font-medium">
+              Evolução diária no período
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+            <span
+              class="text-xs font-medium text-gray-400 uppercase tracking-wider"
+              >Receita</span
+            >
+          </div>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex-1 relative w-full h-full">
+          <canvas
+            baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="'bar'"
+          >
+          </canvas>
+        </div>
+      </ui-card>
 
-             <div class="flex items-center bg-stone-900 border border-stone-800 rounded-lg p-1" data-html2canvas-ignore="true">
-                <ui-button 
-                    variant="ghost" 
-                    size="sm" 
-                    [class.bg-white_10]="selectedPeriod === '7d'" 
-                    (click)="loadData('7d')">
-                    7 Dias
-                </ui-button>
-                <ui-button 
-                    variant="ghost" 
-                    size="sm" 
-                    [class.bg-white_10]="selectedPeriod === '30d'" 
-                    (click)="loadData('30d')">
-                    30 Dias
-                </ui-button>
-                <ui-button 
-                    variant="ghost" 
-                    size="sm" 
-                    [class.bg-white_10]="selectedPeriod === 'month'" 
-                    (click)="loadData('month')">
-                    Este Mês
-                </ui-button>
+      <ui-card className="flex flex-col min-h-[400px] h-full">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h4 class="text-xl font-heading font-bold text-white uppercase">
+              Top 5 Mais Vendidos
+            </h4>
+            <p class="text-sm text-gray-500 font-medium">Giro de Estoque</p>
+          </div>
+          <span class="material-symbols-outlined text-amber-500"
+            >trending_up</span
+          >
+        </div>
+        <div class="flex-1 flex flex-col justify-center space-y-1">
+          <div
+            *ngFor="let product of analyticsData.topProducts; let last = last"
+            class="flex items-center justify-between py-3"
+            [ngClass]="{ 'border-b border-white/5': !last }"
+          >
+            <div class="flex items-center gap-3">
+              <span
+                class="text-xs font-black w-5"
+                [ngClass]="
+                  product.rank === 1 ? 'text-amber-500' : 'text-stone-400'
+                "
+                >{{ product.rank }}º</span
+              >
+              <span class="text-sm font-medium text-white">{{
+                product.name
+              }}</span>
             </div>
-
-            <ui-button 
-                variant="primary" 
-                icon="table_view" 
-                (click)="downloadExcel()" 
-                data-html2canvas-ignore="true">
-                BAIXAR RELATÓRIO EXCEL
-            </ui-button>
+            <span
+              class="text-sm font-bold"
+              [ngClass]="
+                product.rank <= 3 ? 'text-emerald-400' : 'text-amber-400'
+              "
+              >{{ product.quantity }} un</span
+            >
+          </div>
+          <div
+            *ngIf="analyticsData.topProducts.length === 0"
+            class="text-center text-stone-500 text-sm py-8"
+          >
+            Nenhum produto vendido no período.
+          </div>
         </div>
+      </ui-card>
     </div>
 
-    <div *ngIf="isLoading" class="flex justify-center items-center h-64">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+    <div>
+      <ui-card className="flex flex-col h-full justify-center">
+        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+          <span class="material-symbols-outlined text-emerald-500"
+            >point_of_sale</span
+          >
+          <div>
+            <h4 class="text-base font-heading font-bold text-white uppercase">
+              Fechamento de Caixa
+            </h4>
+            <p class="text-xs text-gray-500 font-medium">
+              Resumo por forma de pagamento
+            </p>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-emerald-400 text-xl"
+                >pix</span
+              >
+              <span class="text-sm font-medium text-stone-300">PIX</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              analyticsData.paymentBreakdown.pix | currency: "BRL"
+            }}</span>
+          </div>
+          <div class="h-px bg-white/5"></div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-blue-400 text-xl"
+                >credit_card</span
+              >
+              <span class="text-sm font-medium text-stone-300">Cartão</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              analyticsData.paymentBreakdown.cartao | currency: "BRL"
+            }}</span>
+          </div>
+          <div class="h-px bg-white/5"></div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-amber-400 text-xl"
+                >payments</span
+              >
+              <span class="text-sm font-medium text-stone-300">Dinheiro</span>
+            </div>
+            <span class="text-sm font-bold text-white">{{
+              analyticsData.paymentBreakdown.dinheiro | currency: "BRL"
+            }}</span>
+          </div>
+          <div class="h-px bg-white/5"></div>
+          <div class="flex items-center justify-between pt-1">
+            <span
+              class="text-xs font-bold text-stone-400 uppercase tracking-wider"
+              >Total</span
+            >
+            <span class="text-base font-black text-amber-400">{{
+              analyticsData.paymentBreakdown.pix +
+                analyticsData.paymentBreakdown.cartao +
+                analyticsData.paymentBreakdown.dinheiro | currency: "BRL"
+            }}</span>
+          </div>
+        </div>
+      </ui-card>
     </div>
-
-    <div *ngIf="error" class="bg-red-500/10 border border-red-500/20 p-4 rounded-lg text-red-500 text-center">
-        {{ error }}
-        <button (click)="loadData(selectedPeriod)" class="ml-4 underline font-bold">Tentar novamente</button>
-    </div>
-
-    <ng-container *ngIf="!isLoading && analyticsData">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <ui-metric-card
-                title="Faturamento Total"
-                [value]="analyticsData.totalRevenue | currency:'BRL'"
-                icon="payments"
-                trend="12.5%"
-                variant="finance">
-                <span class="text-emerald-500 font-bold">+R$ 1.250</span> vs. anterior
-            </ui-metric-card>
-
-             <ui-metric-card
-                title="Total de Pedidos"
-                [value]="analyticsData.totalOrders.toString()"
-                icon="shopping_bag"
-                trend="5.2%"
-                variant="orders">
-                <span class="text-emerald-500 font-bold">+12</span> vs. anterior
-            </ui-metric-card>
-
-             <ui-metric-card
-                title="Ticket Médio"
-                [value]="analyticsData.avgTicket | currency:'BRL'"
-                icon="receipt_long"
-                trend="0%"
-                variant="finance">
-                 <span class="text-gray-400 font-bold">Estável</span> vs. anterior
-            </ui-metric-card>
-
-            <ui-metric-card
-                title="Novos Clientes"
-                [value]="analyticsData.customerGrowth.total.toString()"
-                icon="group_add"
-                [trend]="analyticsData.customerGrowth.percentage + '%'"
-                variant="people">
-                 <span class="text-emerald-500 font-bold">+{{ analyticsData.customerGrowth.percentage }}%</span> mês atual
-            </ui-metric-card>
-        </div>
-
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <ui-card className="lg:col-span-2 flex flex-col min-h-[400px] h-full">
-                <div class="flex items-center justify-between mb-8">
-                    <div>
-                        <h4 class="text-xl font-heading font-bold text-white uppercase">Histórico de Receita</h4>
-                        <p class="text-sm text-gray-500 font-medium">Evolução diária no período</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Receita</span>
-                    </div>
-                </div>
-                <div class="flex-1 relative w-full h-full">
-                     <canvas baseChart
-                        [data]="barChartData"
-                        [options]="barChartOptions"
-                        [type]="'bar'">
-                    </canvas>
-                </div>
-            </ui-card>
-
-            <ui-card className="flex flex-col min-h-[400px] h-full">
-                <div class="flex items-center justify-between mb-8">
-                    <div>
-                        <h4 class="text-xl font-heading font-bold text-white uppercase">Categorias</h4>
-                        <p class="text-sm text-gray-500 font-medium">% de Vendas</p>
-                    </div>
-                </div>
-                <div class="flex-1 relative w-full h-full flex items-center justify-center">
-                    <canvas baseChart
-                        [data]="categoryChartData"
-                        [options]="categoryChartOptions"
-                        [type]="'doughnut'">
-                    </canvas>
-                </div>
-            </ui-card>
-        </div>
-
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-             <ui-metric-card
-                title="Tempo Médio de Preparo"
-                [value]="analyticsData.prepTime.current + ' ' + analyticsData.prepTime.unit"
-                icon="timer"
-                [trend]="analyticsData.prepTime.current <= analyticsData.prepTime.target ? 'Dentro da Meta' : 'Atenção'"
-                variant="performance">
-                 <span class="text-gray-400">Meta:</span> <strong class="text-white">{{ analyticsData.prepTime.target }} {{ analyticsData.prepTime.unit }}</strong>
-            </ui-metric-card>
-
-             <ui-metric-card
-                title="Satisfação do Cliente"
-                [value]="analyticsData.customerSatisfaction.score.toString()"
-                icon="sentiment_satisfied"
-                trend="Excelente"
-                variant="finance">
-                 <div class="flex items-center gap-1 text-xs text-amber-500">
-                     <span class="material-symbols-outlined text-[16px]">star</span>
-                     <span class="material-symbols-outlined text-[16px]">star</span>
-                     <span class="material-symbols-outlined text-[16px]">star</span>
-                     <span class="material-symbols-outlined text-[16px]">star</span>
-                     <span class="material-symbols-outlined text-[16px]">star_half</span>
-                </div>
-            </ui-metric-card>
-        </div>
-    </ng-container>
+  </ng-container>
 </div>
-

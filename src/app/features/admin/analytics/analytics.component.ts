@@ -14,7 +14,7 @@ Chart.register(...registerables);
   selector: 'app-analytics',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     NgChartsModule,
     CardComponent,
     ButtonComponent,
@@ -24,7 +24,7 @@ Chart.register(...registerables);
   styleUrls: ['./analytics.component.css']
 })
 export class AnalyticsComponent implements OnInit {
-  
+
   analyticsData: AnalyticsData | null = null;
   isLoading = true;
   error: string | null = null;
@@ -34,7 +34,7 @@ export class AnalyticsComponent implements OnInit {
     labels: [],
     datasets: [{ data: [], label: 'Receita (R$)' }]
   };
-  
+
   public barChartOptions: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -55,15 +55,25 @@ export class AnalyticsComponent implements OnInit {
     scales: {
       x: {
         grid: { color: '#292524', display: false },
-        ticks: { color: '#9ca3af', font: { size: 10, weight: 'bold' } },
+        ticks: {
+          color: '#9ca3af',
+          font: { size: 10, weight: 'bold' },
+          maxRotation: 0,
+          callback: function(value: any) {
+            const label = (this as any).getLabelForValue(value);
+            if (!label) return value;
+            const parts = label.split('-');
+            return parts.length === 3 ? `${parts[2]}/${parts[1]}` : label;
+          }
+        },
         border: { display: false }
       },
       y: {
         grid: { color: '#292524' },
-        ticks: { 
-          color: '#6b7280', 
+        ticks: {
+          color: '#6b7280',
           font: { size: 10, weight: 'bold' },
-          callback: (value) => `R$ ${value}` 
+          callback: (value) => `R$ ${value}`
         },
         border: { display: false }
       }
@@ -116,31 +126,6 @@ export class AnalyticsComponent implements OnInit {
     }
   };
 
-  public categoryChartData: ChartConfiguration<'doughnut'>['data'] = {
-    labels: [],
-    datasets: []
-  };
-
-  public categoryChartOptions: ChartOptions<'doughnut'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '70%', 
-    plugins: {
-      legend: { 
-        display: true, 
-        position: 'right',
-        labels: { color: '#a8a29e', usePointStyle: true, pointStyle: 'circle', font: { size: 11 } }
-      },
-      tooltip: {
-        backgroundColor: '#1c1917',
-        bodyColor: '#fff',
-        callbacks: {
-           label: (context) => ` ${context.label}: ${context.raw}%`
-        }
-      }
-    }
-  };
-
   constructor(
     private analyticsService: AnalyticsService,
     private excelService: ExcelService
@@ -153,57 +138,41 @@ export class AnalyticsComponent implements OnInit {
   loadData(period: '7d' | '30d' | 'month' | 'all') {
     this.isLoading = true;
     this.selectedPeriod = period;
-    
+
     this.analyticsService.getAnalyticsData(period).subscribe({
       next: (data) => {
         this.analyticsData = data;
-        this.updateChart(data);
+        this.updateCharts(data);
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'Erro ao carregar dados. Verifique se o script SQL foi executado.';
+        this.error = 'Erro ao carregar dados. Tente novamente.';
         this.isLoading = false;
         console.error(err);
       }
     });
   }
 
-  updateChart(data: AnalyticsData) {
+  private updateCharts(data: AnalyticsData) {
     this.barChartData = {
       labels: data.revenueChart.labels,
-      datasets: [
-        { 
-          data: data.revenueChart.data, 
-          label: 'Receita',
-          backgroundColor: '#f59e0b',
-          hoverBackgroundColor: '#fbbf24'
-        }
-      ]
+      datasets: [{
+        data: data.revenueChart.data,
+        label: 'Receita',
+        backgroundColor: '#f59e0b',
+        hoverBackgroundColor: '#fbbf24'
+      }]
     };
 
     this.hourlyChartData = {
       labels: data.hourlyVolume.hours,
-      datasets: [
-        {
-          data: data.hourlyVolume.values,
-          label: 'Pedidos',
-          backgroundColor: '#d97706',
-          hoverBackgroundColor: '#f59e0b',
-          barThickness: 12
-        }
-      ]
-    };
-
-    this.categoryChartData = {
-      labels: data.popularCategories.labels,
-      datasets: [
-        {
-          data: data.popularCategories.values,
-          backgroundColor: ['#f59e0b', '#d97706', '#92400e'], 
-          hoverBackgroundColor: ['#fbbf24', '#f59e0b', '#b45309'],
-          borderWidth: 0
-        }
-      ]
+      datasets: [{
+        data: data.hourlyVolume.values,
+        label: 'Pedidos',
+        backgroundColor: '#d97706',
+        hoverBackgroundColor: '#f59e0b',
+        barThickness: 12
+      }]
     };
   }
 
