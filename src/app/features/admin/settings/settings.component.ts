@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, effect } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, effect, afterNextRender, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
@@ -8,7 +8,7 @@ import { TextareaComponent } from '../../../shared/ui/textarea/textarea.componen
 import { SwitchComponent } from '../../../shared/ui/switch/switch.component';
 
 import { StoreProfileService } from '../../../core/services/store-profile.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { pixKeyValidator } from '../../../shared/utils/pix.validator';
 
@@ -17,7 +17,6 @@ import { pixKeyValidator } from '../../../shared/utils/pix.validator';
   standalone: true,
   imports: [
     CommonModule, 
-    DatePipe,
     ReactiveFormsModule,
     CardComponent,
     ButtonComponent,
@@ -30,8 +29,10 @@ import { pixKeyValidator } from '../../../shared/utils/pix.validator';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent {
+  @ViewChild('assinaturaCard', { read: ElementRef }) assinaturaCardRef?: ElementRef;
   settingsForm: FormGroup;
   toast = { show: false, message: '', type: 'success' as 'success' | 'error' };
+  isPulsing = false;
   isLoading = false;
 
   logoPreview: string | null = null;
@@ -40,8 +41,25 @@ export class SettingsComponent {
   constructor(
     private fb: FormBuilder,
     public storeService: StoreProfileService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {
+    afterNextRender(() => {
+      this.route.fragment.subscribe(fragment => {
+        if (fragment === 'assinatura') {
+          const el = document.getElementById('assinatura');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          this.isPulsing = true;
+          this.cdr.markForCheck();
+          setTimeout(() => {
+            this.isPulsing = false;
+            this.cdr.markForCheck();
+          }, 3000);
+        }
+      });
+    });
     this.settingsForm = this.fb.group({
       // Store Identity
       name: [''],

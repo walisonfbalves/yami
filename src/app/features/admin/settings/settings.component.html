@@ -290,71 +290,78 @@
         </div>
       </ui-card>
 
-      <!-- Subscription Plan -->
-      <ui-card className="!bg-stone-800 space-y-6">
-        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
-          <span class="material-symbols-outlined text-amber-500"
-            >workspace_premium</span
-          >
-          <h2 class="text-lg font-bold text-white">Meu Plano & Assinatura</h2>
-        </div>
-
-        <div *ngIf="storeService.currentStore()?.plan_type !== 'pro'">
+      <div
+        id="assinatura"
+        [class.plan-pulse-wrapper]="isPulsing"
+        class="rounded-xl"
+      >
+        <ui-card className="!bg-stone-800 space-y-6">
           <div
-            class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5 space-y-4"
+            class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4"
           >
-            <div class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-blue-400 mt-0.5"
-                >schedule</span
-              >
-              <div>
-                <p class="text-stone-300 text-sm">
-                  Você está no
-                  <strong class="text-white">Período de Teste</strong>.
-                  Aproveite todas as funcionalidades liberadas.
-                </p>
-                <div class="flex items-center gap-2 mt-3">
-                  <span
-                    class="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold"
-                  >
-                    14 dias restantes
-                  </span>
-                  <span class="text-xs text-stone-500">Teste gratuito</span>
+            <span class="material-symbols-outlined text-amber-500"
+              >workspace_premium</span
+            >
+            <h2 class="text-lg font-bold text-white">Meu Plano & Assinatura</h2>
+          </div>
+
+          <div *ngIf="storeService.currentStore()?.plan_type !== 'pro'">
+            <div
+              class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5 space-y-4"
+            >
+              <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-blue-400 mt-0.5"
+                  >schedule</span
+                >
+                <div>
+                  <p class="text-stone-300 text-sm">
+                    Você está no
+                    <strong class="text-white">Período de Teste</strong>.
+                    Aproveite todas as funcionalidades liberadas.
+                  </p>
+                  <div class="flex items-center gap-2 mt-3">
+                    <span
+                      class="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold"
+                    >
+                      14 dias restantes
+                    </span>
+                    <span class="text-xs text-stone-500">Teste gratuito</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="mt-5 pt-5 border-t border-white/5">
-            <div
-              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-            >
-              <div>
-                <p class="text-sm font-bold text-white">
-                  Upgrade para o Plano PRO
-                </p>
-                <p class="text-xs text-stone-400 mt-0.5">
-                  Pedidos ilimitados, suporte prioritário e muito mais.
-                </p>
+            <div class="mt-5 pt-5 border-t border-white/5">
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div>
+                  <p class="text-sm font-bold text-white">
+                    Upgrade para o Plano PRO
+                  </p>
+                  <p class="text-xs text-stone-400 mt-0.5">
+                    Pedidos ilimitados, suporte prioritário e muito mais.
+                  </p>
+                </div>
+                <ui-button variant="primary" icon="star">
+                  Assinar PRO por R$ 49,90/mês
+                </ui-button>
               </div>
-              <ui-button variant="primary" icon="star">
-                Assinar PRO por R$ 49,90/mês
-              </ui-button>
             </div>
           </div>
-        </div>
 
-        <div *ngIf="storeService.currentStore()?.plan_type === 'pro'">
-          <div
-            class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5 flex items-center gap-3"
-          >
-            <span class="material-symbols-outlined text-amber-500"
-              >verified</span
+          <div *ngIf="storeService.currentStore()?.plan_type === 'pro'">
+            <div
+              class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5 flex items-center gap-3"
             >
-            <p class="text-emerald-400 font-bold text-sm">Plano PRO Ativo</p>
+              <span class="material-symbols-outlined text-amber-500"
+                >verified</span
+              >
+              <p class="text-emerald-400 font-bold text-sm">Plano PRO Ativo</p>
+            </div>
           </div>
-        </div>
-      </ui-card>
+        </ui-card>
+      </div>
 
       <!-- Actions Footer -->
       <div class="flex justify-end pt-4 border-t border-white/5">

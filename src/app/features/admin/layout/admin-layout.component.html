@@ -22,11 +22,34 @@
         >
       </div>
       <div class="flex flex-col">
-        <h1
-          class="text-2xl font-heading text-white tracking-tighter uppercase font-bold"
-        >
-          {{ storeName() }}
-        </h1>
+        <div class="flex items-center gap-2">
+          <h1
+            class="text-2xl font-heading text-white tracking-tighter uppercase font-bold"
+          >
+            {{ storeName() }}
+          </h1>
+          <a
+            routerLink="/admin/settings"
+            [fragment]="'assinatura'"
+            class="cursor-pointer"
+            title="Gerenciar assinatura"
+          >
+            <span
+              class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border transition-opacity hover:opacity-80"
+              [ngClass]="
+                storeProfileService.currentStore()?.plan_type === 'pro'
+                  ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                  : 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+              "
+            >
+              {{
+                storeProfileService.currentStore()?.plan_type === "pro"
+                  ? "PRO"
+                  : "TESTE"
+              }}
+            </span>
+          </a>
+        </div>
         <div class="flex items-center gap-2 mt-1">
           <div class="flex items-center gap-1.5">
             <span
@@ -44,22 +67,6 @@
                 storeProfileService.currentStore()?.is_open
                   ? "Loja aberta"
                   : "Loja fechada"
-              }}
-            </span>
-          </div>
-          <div class="mt-0.5">
-            <span
-              class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border"
-              [ngClass]="
-                storeProfileService.currentStore()?.plan_type === 'pro'
-                  ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                  : 'bg-blue-500/10 text-blue-500 border-blue-500/20'
-              "
-            >
-              {{
-                storeProfileService.currentStore()?.plan_type === "pro"
-                  ? "PRO"
-                  : "TESTE"
               }}
             </span>
           </div>
