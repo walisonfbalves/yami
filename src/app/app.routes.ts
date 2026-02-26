@@ -65,6 +65,10 @@ export const routes: Routes = [
         }
     ]
   },
+  {
+    path: 'preview',
+    loadComponent: () => import('./features/storefront/storefront.component').then(m => m.StorefrontComponent)
+  },
   // Fallback
   {
       path: '**',
