@@ -62,21 +62,27 @@ export class AnalyticsService {
   }
 
   private async fetchAllData(startDate: Date) {
-    const [pedidosRes, itensRes] = await Promise.all([
-      this.supabase
-        .from('pedidos')
-        .select('id, valor_total, forma_pagamento, criado_em')
-        .gte('criado_em', startDate.toISOString()),
-      this.supabase
-        .from('itens_pedido')
-        .select('produto_id, quantidade, produtos(nome)')
-        .gte('criado_em', startDate.toISOString())
-    ]);
+    const pedidosRes = await this.supabase
+      .from('pedidos')
+      .select('id, valor_total, forma_pagamento, criado_em')
+      .gte('criado_em', startDate.toISOString());
 
     if (pedidosRes.error) throw pedidosRes.error;
 
+    const pedidos = (pedidosRes.data ?? []) as PedidoRow[];
+    const pedidoIds = pedidos.map(p => p.id);
+
+    if (pedidoIds.length === 0) {
+      return { pedidos, itensPedido: [] as ItemPedidoRow[] };
+    }
+
+    const itensRes = await this.supabase
+      .from('itens_pedido')
+      .select('pedido_id, produto_id, quantidade, produtos(nome)')
+      .in('pedido_id', pedidoIds);
+
     return {
-      pedidos: (pedidosRes.data ?? []) as PedidoRow[],
+      pedidos,
       itensPedido: (itensRes.data ?? []) as ItemPedidoRow[]
     };
   }
