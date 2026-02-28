@@ -66,12 +66,11 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'preview',
+    path: ':slug',
     loadComponent: () => import('./features/storefront/storefront.component').then(m => m.StorefrontComponent)
   },
-  // Fallback
   {
-      path: '**',
-      redirectTo: 'auth/login'
+    path: '**',
+    redirectTo: 'auth/login'
   }
 ];

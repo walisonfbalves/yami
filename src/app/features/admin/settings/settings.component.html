@@ -175,6 +175,30 @@
             <div class="space-y-2">
               <label
                 class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                >Link da Loja (Slug)</label
+              >
+              <div class="flex items-center">
+                <span
+                  class="bg-stone-700 text-stone-400 border border-stone-600 border-r-0 rounded-l-lg px-3 py-2.5 text-sm shrink-0 select-none"
+                >
+                  yami.com/
+                </span>
+                <input
+                  [formControl]="getControl('slug')"
+                  (input)="onSlugInput($event)"
+                  class="flex-1 min-w-0 bg-stone-900 border border-stone-600 rounded-r-lg px-3 py-2.5 text-white text-sm focus:border-amber-500 focus:outline-none transition-colors placeholder-stone-600"
+                  placeholder="nome-da-loja"
+                />
+              </div>
+              <p class="text-xs text-stone-500">
+                Usado na URL pública do seu cardápio. Apenas letras minúsculas,
+                números e hífens.
+              </p>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
                 >Biografia</label
               >
               <ui-textarea

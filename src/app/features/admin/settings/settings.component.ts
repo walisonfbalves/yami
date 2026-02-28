@@ -205,6 +205,19 @@ export class SettingsComponent {
     this.getControl('cover_url').markAsDirty();
     this.showToastMessage('Capa removida. Salve as alterações.');
   }
+  onSlugInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const clean = input.value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+    this.getControl('slug').setValue(clean, { emitEvent: false });
+    input.value = clean;
+  }
+
   showToastMessage(message: string, isError = false) {
     this.toast = {
       show: true,
