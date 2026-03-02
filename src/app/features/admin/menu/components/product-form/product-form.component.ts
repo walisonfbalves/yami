@@ -85,11 +85,14 @@ import { MenuService } from '../../../../../core/services/menu.service';
                             <p *ngIf="productForm.get('price')?.touched && productForm.get('price')?.errors?.['required']" class="text-red-500 text-xs">Preço obrigatório.</p>
                         </div>
                         <div class="space-y-2">
-                            <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Categoria</label>
+                            <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Categoria <span class="text-red-500">*</span></label>
                             <select formControlName="category_id" 
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer">
+                                    class="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer"
+                                    [class.border-red-500]="productForm.get('category_id')?.touched && productForm.get('category_id')?.errors?.['required']">
+                                <option value="" disabled>Selecione uma categoria</option>
                                 <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
                             </select>
+                            <p *ngIf="productForm.get('category_id')?.touched && productForm.get('category_id')?.errors?.['required']" class="text-red-500 text-xs">Selecione uma categoria.</p>
                         </div>
                     </div>
 

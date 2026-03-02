@@ -112,11 +112,20 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
         tap((data) => console.log('Dados do menu carregados:', data)), // 4. Debug Final
       )
       .subscribe({
-        next: (data: any) => {
+        next: async (data: any) => {
           if (data) {
-            this.categories = data.categories;
             this.products = data.products;
-            console.log('Produtos atribuídos:', this.products.length);
+            if (data.categories.length === 0) {
+              try {
+                await this.menuService.createCategory('Geral');
+                this.categories = this.menuService['_categories'].value;
+              } catch (err) {
+                console.error('Erro ao criar categoria padrão:', err);
+                this.categories = [];
+              }
+            } else {
+              this.categories = data.categories;
+            }
           }
         },
         error: (err) => console.error('Error loading menu:', err),
