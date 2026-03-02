@@ -75,12 +75,12 @@ import { MenuService } from '../../../../../core/services/menu.service';
                          <div class="space-y-2">
                             <label class="text-xs font-bold text-stone-400 uppercase tracking-wider">Preço <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 font-bold">R$</span>
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 font-bold text-sm pointer-events-none select-none">R$</span>
                                 <input formControlName="price" 
                                        type="number" 
                                        step="0.01" 
                                        min="0"
-                                       class="w-full bg-stone-950 border border-stone-800 rounded-lg pl-8 pr-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-stone-600">
+                                       class="w-full bg-stone-950 border border-stone-800 rounded-lg pl-11 pr-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-stone-600">
                             </div>
                             <p *ngIf="productForm.get('price')?.touched && productForm.get('price')?.errors?.['required']" class="text-red-500 text-xs">Preço obrigatório.</p>
                         </div>
@@ -139,7 +139,8 @@ export class ProductFormComponent implements OnChanges, OnInit {
   imageError = false;
   isDragging = false;
 
-  @Input() categories: any[] = []; // Input for categories
+  @Input() categories: any[] = [];
+  @Input() defaultCategoryId: string | null = null;
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
@@ -153,9 +154,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
   }
 
   ngOnInit() {
-      if (this.categories.length > 0 && !this.productForm.get('category_id')?.value) {
-          this.productForm.patchValue({ category_id: this.categories[0].id });
-      }
+    if (!this.productForm.get('category_id')?.value && this.categories.length > 0) {
+      const categoryToSelect = this.defaultCategoryId
+        ? this.defaultCategoryId
+        : this.categories[0].id;
+      this.productForm.patchValue({ category_id: categoryToSelect });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
