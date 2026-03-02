@@ -1,40 +1,40 @@
 <div
   *ngIf="product"
-  class="flex gap-4 p-4 bg-surface border border-surface-border rounded-xl shadow-sm hover:border-primary/50 transition-colors"
+  class="flex flex-col bg-surface border border-surface-border rounded-xl overflow-hidden shadow-sm hover:border-primary/50 transition-all duration-300 group"
 >
-  <!-- Image -->
-  <div class="shrink-0">
+  <div class="relative aspect-[4/3] overflow-hidden bg-stone-900 shrink-0">
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"
+    ></div>
     <img
       [src]="product.image_url"
       [alt]="product.name"
-      class="w-20 h-20 rounded-lg object-cover bg-surface-hover"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
     />
   </div>
 
-  <!-- Content -->
-  <div class="flex flex-col flex-1 justify-between">
-    <div>
+  <div class="flex flex-col flex-1 p-4">
+    <div class="flex-1">
       <h3
-        class="font-heading font-medium text-text-primary text-lg leading-tight"
+        class="font-heading font-semibold text-text-primary text-base leading-tight line-clamp-1"
       >
         {{ product.name }}
       </h3>
-      <p class="text-sm text-text-secondary mt-1 line-clamp-2">
+      <p class="text-xs text-text-secondary mt-1 line-clamp-2 min-h-[2rem]">
         {{ product.description }}
       </p>
     </div>
 
-    <!-- Price & Action -->
-    <div class="flex items-center justify-between mt-3">
-      <span class="font-heading text-primary font-bold text-lg">
+    <div
+      class="flex items-center justify-between mt-3 pt-3 border-t border-surface-border"
+    >
+      <span class="font-heading text-primary font-bold text-base">
         {{ product.price | currency: "BRL" : "symbol" : "1.2-2" }}
       </span>
 
-      <ui-button
-        variant="primary"
-        size="sm"
-        class="!px-2 !py-1 rounded-full aspect-square flex items-center justify-center"
+      <button
         (click)="addToCart()"
+        class="w-9 h-9 rounded-full bg-primary flex items-center justify-center hover:bg-amber-600 transition-colors shadow-lg shadow-primary/20"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@
           viewBox="0 0 24 24"
           stroke-width="2.5"
           stroke="currentColor"
-          class="w-4 h-4"
+          class="w-4 h-4 text-stone-900"
         >
           <path
             stroke-linecap="round"
@@ -50,7 +50,7 @@
             d="M12 4.5v15m7.5-7.5h-15"
           />
         </svg>
-      </ui-button>
+      </button>
     </div>
   </div>
 </div>

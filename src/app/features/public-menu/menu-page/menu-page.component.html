@@ -225,7 +225,7 @@
           {{ cat.name }}
         </h2>
 
-        <div class="grid gap-4">
+        <div class="grid grid-cols-2 gap-4">
           <ng-container
             *ngFor="
               let product of getProductsByCategory(menuData.products, cat.id)
