@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '@core/services/cart.service';
-import { CartItem } from '@core/models/yami.types';
 import { ButtonComponent } from '@shared/ui/button/button.component';
 
 @Component({
@@ -15,28 +14,24 @@ import { ButtonComponent } from '@shared/ui/button/button.component';
 })
 export class CartModalComponent {
   @Output() close = new EventEmitter<void>();
-  items$ = this.cartService.items$;
-  total$ = this.cartService.total$;
+  cart = inject(CartService);
 
   customerName = '';
   customerAddress = '';
 
-  constructor(private cartService: CartService) {}
-
-  addItem(item: CartItem) {
-    this.cartService.addToCart(item);
+  addItem(productId: string) {
+    this.cart.increment(productId);
   }
 
-  removeItem(itemId: string) {
-    this.cartService.removeFromCart(itemId);
+  removeItem(productId: string) {
+    this.cart.decrement(productId);
   }
 
   checkout() {
     if (!this.customerName || !this.customerAddress) return;
-    
-    const url = this.cartService.generateWhatsappLink(this.customerName, this.customerAddress);
+    const url = this.cart.generateWhatsappLink(this.customerName);
     window.open(url, '_blank');
     this.close.emit();
-    this.cartService.clearCart();
+    this.cart.clear();
   }
 }

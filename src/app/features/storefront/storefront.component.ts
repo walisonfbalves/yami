@@ -1,30 +1,47 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { StorefrontService } from './storefront.service';
+import { CartService } from '../../core/services/cart.service';
 import { Store } from '../../core/services/store.service';
-import { Category, Product } from '../../core/services/menu.service';
+import { Category, Product } from '../../core/models/yami.types';
+import { ProductModalComponent } from './components/product-modal/product-modal.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 @Component({
   selector: 'app-storefront',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CurrencyPipe, ProductModalComponent, CheckoutComponent],
   templateUrl: './storefront.component.html',
 })
 export class StorefrontComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private storefrontService = inject(StorefrontService);
+  cart = inject(CartService);
 
   store: Store | null = null;
   categories: Category[] = [];
   products: Product[] = [];
   isLoading = true;
   notFound = false;
-  activeCategory: string | null = null;
+
+  activeCategory = signal<string | null>(null);
+  selectedProduct = signal<Product | null>(null);
+  showCheckout = signal(false);
+  orderSuccess = signal(false);
+
+  filteredProducts = computed(() => {
+    const cat = this.activeCategory();
+    if (!cat) return this.products;
+    return this.products.filter(p => p.category_id === cat);
+  });
+
+  getCategoryName(product: Product): string {
+    return this.categories.find(c => c.id === product.category_id)?.name ?? '';
+  }
 
   async ngOnInit(): Promise<void> {
     const slug = this.route.snapshot.paramMap.get('slug') ?? '';
-
     const store = await this.storefrontService.fetchStoreBySlug(slug);
 
     if (!store) {
@@ -34,25 +51,34 @@ export class StorefrontComponent implements OnInit {
     }
 
     this.store = store;
-
     const menu = await this.storefrontService.fetchPublicMenu(store.id);
     this.categories = menu.categories;
     this.products = menu.products;
 
     if (this.categories.length > 0) {
-      this.activeCategory = this.categories[0].id;
+      this.activeCategory.set(this.categories[0].id);
     }
 
     this.isLoading = false;
   }
 
-  get filteredProducts(): Product[] {
-    if (!this.activeCategory) return this.products;
-    return this.products.filter(p => p.category_id === this.activeCategory);
+  setCategory(id: string): void {
+    this.activeCategory.set(id);
   }
 
-  setCategory(id: string): void {
-    this.activeCategory = id;
+  openProduct(product: Product): void {
+    if (!product.is_available) return;
+    this.selectedProduct.set(product);
+  }
+
+  openCheckout(): void {
+    if (this.cart.totalItems() === 0) return;
+    this.showCheckout.set(true);
+  }
+
+  onOrderPlaced(): void {
+    this.orderSuccess.set(true);
+    setTimeout(() => this.orderSuccess.set(false), 4000);
   }
 
   formatPrice(price: number): string {

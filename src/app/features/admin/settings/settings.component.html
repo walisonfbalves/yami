@@ -46,58 +46,8 @@
         className="!bg-stone-800 h-full flex flex-col space-y-6"
         [noPadding]="true"
       >
-        <!-- Banner Area -->
-        <!-- Banner Area -->
-        <div
-          class="h-32 w-full bg-stone-700/50 relative group cursor-pointer hover:bg-stone-700 transition-colors border-b border-white/5"
-          (click)="coverInput.click()"
-        >
-          <input
-            #coverInput
-            type="file"
-            class="hidden"
-            accept="image/*"
-            (change)="onCoverSelected($event)"
-          />
-
-          <div
-            *ngIf="isLoadingCover"
-            class="absolute inset-0 flex items-center justify-center bg-stone-900/50 z-20"
-          >
-            <span class="material-symbols-outlined animate-spin text-amber-500"
-              >progress_activity</span
-            >
-          </div>
-
-          <img
-            *ngIf="coverPreview"
-            [src]="coverPreview"
-            class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
-          />
-
-          <!-- Remove Cover Button -->
-          <button
-            *ngIf="coverPreview"
-            type="button"
-            (click)="removeCover($event)"
-            class="absolute top-4 right-4 z-30 bg-stone-900/80 text-stone-300 p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center shadow-lg backdrop-blur-sm opacity-0 group-hover:opacity-100"
-            title="Remover Capa"
-          >
-            <span class="material-symbols-outlined text-sm">delete</span>
-          </button>
-          <div
-            class="absolute inset-0 flex flex-col items-center justify-center text-stone-500 gap-2 z-10"
-          >
-            <span class="material-symbols-outlined">add_photo_alternate</span>
-            <span
-              class="text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-              >Alterar Capa</span
-            >
-          </div>
-        </div>
-
-        <div class="px-6 pb-6 flex-1 flex flex-col">
-          <div class="relative w-max -mt-12 mb-6 self-start z-20 group">
+        <div class="px-6 pb-6 pt-6 flex-1 flex flex-col">
+          <div class="relative w-max mb-6 self-start z-20 group">
             <div
               class="w-24 h-24 rounded-full bg-stone-800 border-4 border-stone-800 overflow-hidden relative cursor-pointer shadow-lg"
               (click)="logoInput.click()"

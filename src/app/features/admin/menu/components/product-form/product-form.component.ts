@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { compressImage } from '../../../../../shared/utils/image-compressor';
 import { MenuService } from '../../../../../core/services/menu.service';
+import { AddonGroupEditorComponent } from '../addon-group-editor/addon-group-editor.component';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AddonGroupEditorComponent],
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
         <div class="bg-stone-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-stone-800 flex flex-col max-h-[90vh] animate-scale-in">
@@ -103,8 +104,20 @@ import { MenuService } from '../../../../../core/services/menu.service';
                                   class="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-stone-600 resize-none" 
                                   placeholder="Descrição detalhada do prato..."></textarea>
                     </div>
-
                 </form>
+
+                <hr *ngIf="isEditing && product?.id" class="border-stone-800 my-8" />
+
+                <div *ngIf="isEditing && product?.id" class="space-y-4">
+                  <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Adicionais</h4>
+                    <p class="text-xs text-stone-500 mt-1">Configure grupos de adicionais e opções para os clientes escolherem ao pedir este produto.</p>
+                  </div>
+                  <app-addon-group-editor 
+                    [productId]="product.id"
+                    [storeId]="product.store_id || product.store">
+                  </app-addon-group-editor>
+                </div>
             </div>
 
             <div class="p-6 border-t border-stone-800 bg-stone-900/50 flex justify-end gap-3">
