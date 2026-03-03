@@ -25,14 +25,14 @@ export class StorefrontComponent implements OnInit {
   isLoading = true;
   notFound = false;
 
-  activeCategory = signal<string | null>(null);
+  activeCategory = signal<string | null>('all');
   selectedProduct = signal<Product | null>(null);
   showCheckout = signal(false);
   orderSuccess = signal(false);
 
   filteredProducts = computed(() => {
     const cat = this.activeCategory();
-    if (!cat) return this.products;
+    if (!cat || cat === 'all') return this.products;
     return this.products.filter(p => p.category_id === cat);
   });
 
@@ -56,7 +56,7 @@ export class StorefrontComponent implements OnInit {
     this.products = menu.products;
 
     if (this.categories.length > 0) {
-      this.activeCategory.set(this.categories[0].id);
+      this.activeCategory.set('all');
     }
 
     this.isLoading = false;
