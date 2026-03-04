@@ -24,6 +24,7 @@ export class StorefrontComponent implements OnInit {
   products: Product[] = [];
   isLoading = true;
   notFound = false;
+  currentYear = new Date().getFullYear();
 
   activeCategory = signal<string | null>('all');
   selectedProduct = signal<Product | null>(null);
@@ -83,5 +84,10 @@ export class StorefrontComponent implements OnInit {
 
   formatPrice(price: number): string {
     return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  getWhatsappLink(phone: string): string {
+    const onlyNumbers = phone.replace(/\D/g, '');
+    return `https://wa.me/55${onlyNumbers}`;
   }
 }
