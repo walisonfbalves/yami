@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService, PaymentMethod } from '../../../../core/services/cart.service';
+import { StoreService } from '../../../../core/services/store.service';
 
 @Component({
   selector: 'app-checkout',
@@ -121,16 +122,29 @@ import { CartService, PaymentMethod } from '../../../../core/services/cart.servi
                 <span class="font-bold text-amber-400 text-lg">{{ cart.total() | currency:'BRL':'symbol':'1.2-2' }}</span>
               </div>
             </div>
+            
+            <div *ngIf="!hasMinimumOrder" class="flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <span class="material-symbols-outlined text-red-400 text-lg shrink-0">info</span>
+              <p class="text-xs text-red-300 leading-relaxed">
+                O valor mínimo para pedidos nesta loja é de <span class="font-bold">{{ minOrderValue | currency:'BRL':'symbol':'1.2-2' }}</span>.
+                Faltam <span class="font-bold">{{ (minOrderValue - cart.subtotal()) | currency:'BRL':'symbol':'1.2-2' }}</span> para atingir o mínimo.
+              </p>
+            </div>
+            
           </div>
         </div>
 
         <div class="shrink-0 p-4 border-t border-stone-800 space-y-2">
           <button
             (click)="finalize()"
-            class="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-900 font-bold transition-all shadow-lg shadow-amber-500/25 active:scale-95 flex items-center justify-center gap-2"
+            [disabled]="!hasMinimumOrder"
+            class="w-full h-12 rounded-xl text-stone-900 font-bold transition-all shadow-lg flex items-center justify-center gap-2"
+            [ngClass]="hasMinimumOrder 
+              ? 'bg-amber-500 hover:bg-amber-400 shadow-amber-500/25 active:scale-95' 
+              : 'bg-stone-700 text-stone-400 cursor-not-allowed opacity-70 shadow-none'"
           >
-            <span class="material-symbols-outlined text-lg">check_circle</span>
-            Finalizar Pedido · {{ cart.total() | currency:'BRL':'symbol':'1.2-2' }}
+            <span class="material-symbols-outlined text-lg">{{ hasMinimumOrder ? 'check_circle' : 'block' }}</span>
+            {{ hasMinimumOrder ? 'Finalizar Pedido · ' + (cart.total() | currency:'BRL':'symbol':'1.2-2') : 'Valor Mínimo Não Atingido' }}
           </button>
           <p class="text-xs text-stone-600 text-center">
             Ao finalizar, você concorda com nossos
@@ -155,12 +169,24 @@ export class CheckoutComponent {
   @Output() orderPlaced = new EventEmitter<void>();
 
   cart = inject(CartService);
+  storeService = inject(StoreService);
 
   paymentOptions: { key: PaymentMethod; label: string; subtitle: string; icon: string }[] = [
     { key: 'pix', label: 'Pix', subtitle: 'Instantâneo', icon: 'qr_code' },
     { key: 'card', label: 'Cartão', subtitle: 'Créd/Déb', icon: 'credit_card' },
     { key: 'cash', label: 'Dinheiro', subtitle: 'Na entrega', icon: 'payments' }
   ];
+
+  get minOrderValue(): number {
+    let currentStore: any;
+    this.storeService.currentStore$.subscribe(s => currentStore = s).unsubscribe();
+    return currentStore?.min_order_value || 0;
+  }
+
+  get hasMinimumOrder(): boolean {
+    // A validação de mínimo é baseada no subtotal (apenas os itens), geralmente a taxa de entrega é cobrada a parte
+    return this.cart.subtotal() >= this.minOrderValue;
+  }
 
   getAddonsTotal(addons: any[]): number {
     return addons.reduce((sum, a) => sum + a.item.price, 0);
@@ -175,6 +201,7 @@ export class CheckoutComponent {
   }
 
   finalize() {
+    if (!this.hasMinimumOrder) return;
     this.orderPlaced.emit();
     this.cart.clear();
     this.close.emit();

@@ -146,7 +146,7 @@
 
             <span
               *ngIf="store.prep_time"
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-stone-800 text-stone-400 border border-stone-700"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm"
             >
               <span class="material-symbols-outlined text-sm">schedule</span>
               {{ store.prep_time }} min
@@ -154,10 +154,10 @@
 
             <span
               *ngIf="store.delivery_fee"
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-stone-800 text-stone-400 border border-stone-700"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm"
             >
               <span class="material-symbols-outlined text-sm"
-                >delivery_dining</span
+                >directions_bike</span
               >
               Entrega
               {{ store.delivery_fee | currency: "BRL" : "symbol" : "1.2-2" }}
@@ -165,8 +165,11 @@
 
             <span
               *ngIf="store.min_order_value"
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-stone-800 text-stone-400 border border-stone-700"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm"
             >
+              <span class="material-symbols-outlined text-sm"
+                >monetization_on</span
+              >
               Pedido mínimo
               {{ store.min_order_value | currency: "BRL" : "symbol" : "1.2-2" }}
             </span>
@@ -181,7 +184,9 @@
       class="sticky top-14 z-20 bg-stone-950/95 backdrop-blur border-b border-stone-800"
     >
       <div class="max-w-5xl mx-auto px-4">
-        <div class="flex gap-1 overflow-x-auto scrollbar-hide py-2">
+        <div
+          class="flex gap-2 overflow-x-auto scrollbar-hide py-3 md:justify-center items-center"
+        >
           <!-- Botão Todos -->
           <button
             (click)="setCategory('all')"
