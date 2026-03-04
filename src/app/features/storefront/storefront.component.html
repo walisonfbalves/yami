@@ -162,6 +162,14 @@
               Entrega
               {{ store.delivery_fee | currency: "BRL" : "symbol" : "1.2-2" }}
             </span>
+
+            <span
+              *ngIf="store.min_order_value"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-stone-800 text-stone-400 border border-stone-700"
+            >
+              Pedido mínimo
+              {{ store.min_order_value | currency: "BRL" : "symbol" : "1.2-2" }}
+            </span>
           </div>
         </div>
       </div>
