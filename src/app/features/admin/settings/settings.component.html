@@ -146,18 +146,30 @@
               </p>
             </div>
 
-            <div class="space-y-2">
-              <label
-                class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
-                >Biografia</label
-              >
-              <ui-textarea
-                [control]="getControl('description')"
-                placeholder="Uma breve descrição da sua loja..."
-                [maxLength]="160"
-                [rows]="4"
-              >
-              </ui-textarea>
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                  >WhatsApp (Número da Loja)</label
+                >
+                <ui-input
+                  [control]="getControl('phone')"
+                  placeholder="Ex: 11999999999"
+                >
+                </ui-input>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                  >Endereço Completo</label
+                >
+                <ui-input
+                  [control]="getControl('address')"
+                  placeholder="Ex: Rua das Flores, 123 - Centro"
+                >
+                </ui-input>
+              </div>
             </div>
           </div>
         </div>

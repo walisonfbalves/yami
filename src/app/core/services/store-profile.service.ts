@@ -11,6 +11,7 @@ export interface Store {
   name: string;
   slug: string;
   phone?: string;
+  address?: string;
   description?: string;
   is_open?: boolean;
   prep_time?: string;

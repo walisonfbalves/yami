@@ -64,7 +64,8 @@ export class SettingsComponent {
       // Store Identity
       name: [''],
       slug: [''],
-      description: [''],
+      phone: [''],
+      address: [''],
       logo_url: [''],
       cover_url: [''],
       
@@ -79,7 +80,6 @@ export class SettingsComponent {
     });
 
     // Load initial data
-    // Load initial data
     // Effect or manual subscription to signal
     effect(() => {
       const store = this.storeService.currentStore();
@@ -90,7 +90,8 @@ export class SettingsComponent {
         this.settingsForm.patchValue({
           name: store.name,
           slug: store.slug,
-          description: store.description,
+          phone: store.phone,
+          address: store.address,
           logo_url: store.logo_url,
           cover_url: store.cover_url,
           is_open: store.is_open,

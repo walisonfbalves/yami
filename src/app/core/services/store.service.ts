@@ -10,14 +10,15 @@ export interface Store {
   name: string;
   slug: string;
   phone?: string;
-  description?: string; // Was bio
+  address?: string;
+  description?: string;
   is_open?: boolean;
   prep_time?: string;
   delivery_fee?: number;
-  min_order_value?: number; // Was min_order
+  min_order_value?: number;
   pix_key?: string;
   logo_url?: string;
-  cover_url?: string; // Was banner_url
+  cover_url?: string;
   created_at?: string;
 }
 
