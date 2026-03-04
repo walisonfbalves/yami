@@ -13,6 +13,8 @@ export interface Store {
   phone?: string;
   address?: string;
   description?: string;
+  instagram?: string;
+  facebook?: string;
   is_open?: boolean;
   prep_time?: string;
   delivery_fee?: number;

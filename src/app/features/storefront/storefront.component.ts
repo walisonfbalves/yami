@@ -90,4 +90,14 @@ export class StorefrontComponent implements OnInit {
     const onlyNumbers = phone.replace(/\D/g, '');
     return `https://wa.me/55${onlyNumbers}`;
   }
+
+  getInstagramLink(user: string): string {
+    const cleanUser = user.replace('@', '').trim();
+    return `https://instagram.com/${cleanUser}`;
+  }
+
+  getFacebookLink(user: string): string {
+    const cleanUser = user.replace('/', '').trim();
+    return `https://facebook.com/${cleanUser}`;
+  }
 }

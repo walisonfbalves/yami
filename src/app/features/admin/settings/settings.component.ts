@@ -66,6 +66,8 @@ export class SettingsComponent {
       slug: [''],
       phone: [''],
       address: [''],
+      instagram: [''],
+      facebook: [''],
       logo_url: [''],
       cover_url: [''],
       
@@ -92,6 +94,8 @@ export class SettingsComponent {
           slug: store.slug,
           phone: store.phone,
           address: store.address,
+          instagram: store.instagram,
+          facebook: store.facebook,
           logo_url: store.logo_url,
           cover_url: store.cover_url,
           is_open: store.is_open,

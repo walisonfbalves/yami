@@ -170,6 +170,35 @@
                 >
                 </ui-input>
               </div>
+
+              <!-- Redes Sociais -->
+              <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                <div class="space-y-2 col-span-2 md:col-span-1">
+                  <label
+                    class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                  >
+                    Usuário Instagram
+                  </label>
+                  <ui-input
+                    [control]="getControl('instagram')"
+                    placeholder="@sualoja"
+                  >
+                  </ui-input>
+                </div>
+
+                <div class="space-y-2 col-span-2 md:col-span-1">
+                  <label
+                    class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"
+                  >
+                    Usuário Facebook
+                  </label>
+                  <ui-input
+                    [control]="getControl('facebook')"
+                    placeholder="/sualoja"
+                  >
+                  </ui-input>
+                </div>
+              </div>
             </div>
           </div>
         </div>
