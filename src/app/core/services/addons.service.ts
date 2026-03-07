@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { AddonGroup, AddonItem } from '../models/yami.types';
+import { AddonGroup, AddonItem, LocalOptionGroup } from '../models/yami.types';
 
 @Injectable({ providedIn: 'root' })
 export class AddonsService {
@@ -28,7 +28,7 @@ export class AddonsService {
     return data as AddonGroup;
   }
 
-  async updateGroup(id: string, data: Partial<Pick<AddonGroup, 'name' | 'required' | 'max_choices'>>): Promise<void> {
+  async updateGroup(id: string, data: Partial<Pick<AddonGroup, 'name' | 'required' | 'max_choices' | 'min_choices' | 'price_type'>>): Promise<void> {
     const { error } = await this.supabase.from('addon_groups').update(data).eq('id', id);
     if (error) throw error;
   }
@@ -57,4 +57,47 @@ export class AddonsService {
     const { error } = await this.supabase.from('addon_items').delete().eq('id', id);
     if (error) throw error;
   }
+
+  async saveAddonGroupsForProduct(productId: string, storeId: string, localGroups: LocalOptionGroup[]): Promise<void> {
+    for (let i = 0; i < localGroups.length; i++) {
+      const lg = localGroups[i];
+      if (!lg.name.trim() && lg.options.length === 0) continue;
+
+      const { data: groupData, error: groupError } = await this.supabase
+        .from('addon_groups')
+        .insert({
+          product_id: productId,
+          store_id: storeId,
+          name: lg.name || 'Grupo',
+          required: lg.required,
+          min_choices: lg.min,
+          max_choices: lg.max,
+          sort_order: i
+        })
+        .select('id')
+        .single();
+
+      if (groupError) throw groupError;
+
+      const groupId = groupData.id;
+
+      for (let j = 0; j < lg.options.length; j++) {
+        const opt = lg.options[j];
+        if (!opt.name.trim()) continue;
+
+        const { error: itemError } = await this.supabase
+          .from('addon_items')
+          .insert({
+            group_id: groupId,
+            name: opt.name,
+            price: opt.price ?? 0,
+            is_available: true,
+            sort_order: j
+          });
+
+        if (itemError) throw itemError;
+      }
+    }
+  }
 }
+

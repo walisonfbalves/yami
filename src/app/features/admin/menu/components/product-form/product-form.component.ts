@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { compressImage } from '../../../../../shared/utils/image-compressor';
 import { MenuService } from '../../../../../core/services/menu.service';
 import { AddonGroupEditorComponent } from '../addon-group-editor/addon-group-editor.component';
+import { LocalAddonEditorComponent } from '../local-addon-editor/local-addon-editor.component';
+import { LocalOptionGroup } from '../../../../../core/models/yami.types';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AddonGroupEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule, AddonGroupEditorComponent, LocalAddonEditorComponent],
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
         <div class="bg-stone-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-stone-800 flex flex-col max-h-[90vh] animate-scale-in">
@@ -106,14 +108,22 @@ import { AddonGroupEditorComponent } from '../addon-group-editor/addon-group-edi
                     </div>
                 </form>
 
-                <hr *ngIf="isEditing && product?.id" class="border-stone-800 my-8" />
+                <hr class="border-stone-800 my-8" />
 
-                <div *ngIf="isEditing && product?.id" class="space-y-4">
+                <div class="space-y-4">
                   <div>
-                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Adicionais</h4>
-                    <p class="text-xs text-stone-500 mt-1">Configure grupos de adicionais e opções para os clientes escolherem ao pedir este produto.</p>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Complementos e Adicionais <span class="text-stone-600 font-normal normal-case">(Opcional)</span></h4>
+                    <p class="text-xs text-stone-500 mt-1">Grupos de opções para os clientes escolherem ao pedir este produto.</p>
                   </div>
-                  <app-addon-group-editor 
+
+                  <app-local-addon-editor
+                    *ngIf="!isEditing"
+                    #localAddonEditor
+                    (groupsChange)="onGroupsChange($event)">
+                  </app-local-addon-editor>
+
+                  <app-addon-group-editor
+                    *ngIf="isEditing && product?.id"
                     [productId]="product.id"
                     [storeId]="product.store_id || product.store">
                   </app-addon-group-editor>
@@ -147,13 +157,15 @@ export class ProductFormComponent implements OnChanges, OnInit {
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
+  @ViewChild('localAddonEditor') localAddonEditor?: LocalAddonEditorComponent;
+
   private menuService = inject(MenuService);
 
   productForm: FormGroup;
-  // categoriesList removed in favor of @Input() categories
   isUploading = false;
   imageError = false;
   isDragging = false;
+  localAddonGroups: LocalOptionGroup[] = [];
 
   @Input() categories: any[] = [];
   @Input() defaultCategoryId: string | null = null;
@@ -241,11 +253,15 @@ export class ProductFormComponent implements OnChanges, OnInit {
       }
   }
 
+  onGroupsChange(groups: LocalOptionGroup[]) {
+    this.localAddonGroups = groups;
+  }
+
   onSave() {
     if (this.productForm.valid) {
-      this.save.emit(this.productForm.value);
+      this.save.emit({ ...this.productForm.value, addonGroups: this.localAddonGroups });
     } else {
-        this.productForm.markAllAsTouched();
+      this.productForm.markAllAsTouched();
     }
   }
 

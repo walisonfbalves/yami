@@ -9,12 +9,9 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { DialogComponent } from '../../../shared/ui/dialog/dialog.component';
-import {
-  MenuService,
-  Product,
-  Category,
-} from '../../../core/services/menu.service';
+import { MenuService, Product, Category } from '../../../core/services/menu.service';
 import { StoreService } from '../../../core/services/store.service';
+import { ToastService } from '../../../shared/ui/toast/toast.service';
 import {
   Subscription,
   Subject,
@@ -49,9 +46,9 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   selectedCategory: Category | 'Todos' = 'Todos';
 
-  private storeService = inject(StoreService); // Inject StoreService
+  private storeService = inject(StoreService);
   private menuService = inject(MenuService);
-  // private authService = inject(AuthService);
+  private toastService = inject(ToastService);
 
   storeId = '';
 
@@ -211,8 +208,9 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
   }
 
   async handleSaveProduct(productData: any) {
+    const { addonGroups, ...rest } = productData;
     const productPayload: any = {
-      ...productData,
+      ...rest,
       store_id: this.storeId,
     };
 
@@ -222,18 +220,27 @@ export class MenuManagerComponent implements OnInit, OnDestroy {
           this.editingProduct.id,
           productPayload,
         );
-        // Update local state
         this.products = this.products.map((p) =>
           p.id === updatedProduct.id ? updatedProduct : p,
         );
+        this.toastService.show('Produto atualizado com sucesso!', 'success');
       } else {
         const newProduct = await this.menuService.createProduct(productPayload);
-        // Add to local state
         this.products = [...this.products, newProduct];
+
+        if (addonGroups?.length > 0) {
+          try {
+            await this.menuService.saveAddonGroups(newProduct.id, this.storeId, addonGroups);
+          } catch (addonErr) {
+            console.error('Erro ao salvar adicionais:', addonErr);
+          }
+        }
+        this.toastService.show('Produto criado com sucesso!', 'success');
       }
       this.closeForm();
     } catch (err) {
       console.error('Error saving product', err);
+      this.toastService.show('Erro ao salvar produto.', 'error');
     }
   }
 

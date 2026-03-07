@@ -19,7 +19,7 @@ export class CartService {
 
   readonly subtotal = computed(() =>
     this._items().reduce((sum, item) => {
-      const addonsTotal = item.addons?.reduce((a, sel) => a + sel.item.price, 0) || 0;
+      const addonsTotal = this.calculateAddonsTotal(item.addons);
       return sum + (item.price + addonsTotal) * item.quantity;
     }, 0)
   );
@@ -91,7 +91,7 @@ export class CartService {
     const items = this._items();
     let message = `*Pedido - ${storeName}*\n\n*Itens:*\n`;
     items.forEach(item => {
-      const addonsTotal = item.addons?.reduce((a, sel) => a + sel.item.price, 0) || 0;
+      const addonsTotal = this.calculateAddonsTotal(item.addons);
       const itemPrice = (item.price + addonsTotal) * item.quantity;
       
       message += `${item.quantity}x ${item.name}`;
@@ -107,5 +107,31 @@ export class CartService {
     message += `*Entrega:* R$ ${this._deliveryFee().toFixed(2).replace('.', ',')}\n`;
     message += `*Total:* R$ ${this.total().toFixed(2).replace('.', ',')}`;
     return `https://wa.me/?text=${encodeURIComponent(message)}`;
+  }
+
+  calculateAddonsTotal(addons: SelectedAddon[] | undefined): number {
+    if (!addons || addons.length === 0) return 0;
+    
+    const grouped = addons.reduce((acc, addon) => {
+      if (!acc[addon.groupName]) acc[addon.groupName] = [];
+      acc[addon.groupName].push(addon);
+      return acc;
+    }, {} as Record<string, SelectedAddon[]>);
+
+    let total = 0;
+    for (const groupName in grouped) {
+      const selections = grouped[groupName];
+      const priceType = selections[0].groupPriceType || 'sum';
+      
+      if (priceType === 'max_price') {
+        const maxPriceInGroup = Math.max(...selections.map(a => a.item.price));
+        total += maxPriceInGroup;
+      } else {
+        const sumInGroup = selections.reduce((sub, a) => sub + a.item.price, 0);
+        total += sumInGroup;
+      }
+    }
+    
+    return total;
   }
 }

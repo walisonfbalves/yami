@@ -191,7 +191,7 @@ export class ProductModalComponent implements OnInit {
       if (group.max_choices === 1 && groupSelections.length > 0) {
         this.selectedAddons.update(addons => [
           ...addons.filter(a => a.groupName !== group.name),
-          { item, groupName: group.name }
+          { item, groupName: group.name, groupPriceType: group.price_type || 'sum' }
         ]);
         return;
       }
@@ -201,7 +201,7 @@ export class ProductModalComponent implements OnInit {
         return; // Exceeded limit
       }
       
-      this.selectedAddons.update(addons => [...addons, { item, groupName: group.name }]);
+      this.selectedAddons.update(addons => [...addons, { item, groupName: group.name, groupPriceType: group.price_type || 'sum' }]);
     }
   }
 
@@ -210,7 +210,33 @@ export class ProductModalComponent implements OnInit {
   }
 
   get addonsTotal(): number {
-    return this.selectedAddons().reduce((sum, addon) => sum + addon.item.price, 0);
+    const selected = this.selectedAddons();
+    if (selected.length === 0) return 0;
+
+    // Agrupa os itens selecionados por nome do grupo
+    const grouped = selected.reduce((acc, addon) => {
+      if (!acc[addon.groupName]) acc[addon.groupName] = [];
+      acc[addon.groupName].push(addon);
+      return acc;
+    }, {} as Record<string, SelectedAddon[]>);
+
+    let total = 0;
+    
+    // Para cada grupo, aplica a regra de cálculo (Soma ou Maior Valor)
+    for (const groupName in grouped) {
+      const selections = grouped[groupName];
+      const priceType = selections[0].groupPriceType || 'sum';
+
+      if (priceType === 'max_price') {
+        const maxPriceInGroup = Math.max(...selections.map(a => a.item.price));
+        total += maxPriceInGroup;
+      } else {
+        const sumInGroup = selections.reduce((subTotal, a) => subTotal + a.item.price, 0);
+        total += sumInGroup;
+      }
+    }
+
+    return total;
   }
 
   get itemTotal(): number {

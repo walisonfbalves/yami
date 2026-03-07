@@ -24,6 +24,25 @@ import { AddonGroup, AddonItem } from '../../../../../core/models/yami.types';
             placeholder="Nome do grupo"
             class="flex-1 bg-transparent text-white font-semibold text-sm focus:outline-none placeholder-stone-600"
           />
+          <div class="flex items-center gap-1 shrink-0">
+            <span class="text-xs text-stone-500">Mín</span>
+            <input
+              type="number"
+              [(ngModel)]="group.min_choices"
+              (blur)="saveGroup(group)"
+              min="0"
+              class="w-10 bg-stone-900 border border-stone-800 rounded px-1.5 py-1 text-xs text-white text-center focus:border-amber-500 focus:outline-none"
+            />
+            <span class="text-xs text-stone-500">Máx</span>
+            <input
+              type="number"
+              [(ngModel)]="group.max_choices"
+              (blur)="saveGroup(group)"
+              min="0"
+              class="w-10 bg-stone-900 border border-stone-800 rounded px-1.5 py-1 text-xs text-white text-center focus:border-amber-500 focus:outline-none"
+            />
+          </div>
+
           <label class="flex items-center gap-2 text-xs text-stone-400 cursor-pointer shrink-0">
             <input
               type="checkbox"
@@ -33,6 +52,15 @@ import { AddonGroup, AddonItem } from '../../../../../core/models/yami.types';
             />
             Obrigatório
           </label>
+
+          <select
+            [(ngModel)]="group.price_type"
+            (change)="saveGroup(group)"
+            class="bg-stone-900 border border-stone-800 rounded px-2 py-1 text-xs text-white focus:border-amber-500 focus:outline-none ml-2 shrink-0"
+          >
+            <option value="sum">Soma (Ex: Hambúrguer)</option>
+            <option value="max_price">Maior Valor (Ex: Pizza)</option>
+          </select>
           <button
             (click)="deleteGroup(group, gi)"
             class="text-stone-600 hover:text-red-400 transition-colors"
@@ -118,7 +146,9 @@ export class AddonGroupEditorComponent implements OnInit {
       store_id: this.storeId,
       name: 'Adicionais',
       required: false,
+      min_choices: 0,
       max_choices: 0,
+      price_type: 'sum',
       sort_order: this.groups().length
     });
     this.groups.update(g => [...g, group]);
@@ -128,7 +158,9 @@ export class AddonGroupEditorComponent implements OnInit {
     await this.addonsService.updateGroup(group.id, {
       name: group.name,
       required: group.required,
-      max_choices: group.max_choices
+      min_choices: group.min_choices,
+      max_choices: group.max_choices,
+      price_type: group.price_type
     });
   }
 

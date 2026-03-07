@@ -218,6 +218,43 @@ export class MenuService {
     return data.publicUrl;
   }
 
+  async saveAddonGroups(productId: string, storeId: string, groups: any[]): Promise<void> {
+    for (let i = 0; i < groups.length; i++) {
+      const group = groups[i];
+      if (!group.name?.trim() && !group.options?.length) continue;
+
+      const { data: groupData, error: groupError } = await this.supabase
+        .from('addon_groups')
+        .insert({
+          product_id: productId,
+          store_id: storeId,
+          name: group.name || 'Grupo',
+          min_choices: group.min ?? 0,
+          max_choices: group.max ?? 0,
+          required: group.required ?? false,
+          price_type: group.price_type || 'sum',
+          sort_order: i
+        })
+        .select('id')
+        .single();
+
+      if (groupError) throw groupError;
+
+      const options = (group.options ?? []).filter((o: any) => o.name?.trim());
+      if (options.length > 0) {
+        const itemsPayload = options.map((opt: any, j: number) => ({
+          group_id: groupData.id,
+          name: opt.name,
+          price: opt.price ?? 0,
+          sort_order: j
+        }));
+
+        const { error: itemsError } = await this.supabase.from('addon_items').insert(itemsPayload);
+        if (itemsError) throw itemsError;
+      }
+    }
+  }
+
   private async getCurrentStore() {
     const store = await this.storeService.currentStore$.pipe(take(1)).toPromise();
     if (!store) throw new Error('Loja não encontrada');

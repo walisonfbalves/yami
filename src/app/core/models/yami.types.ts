@@ -33,15 +33,18 @@ export interface AddonGroup {
   product_id: string;
   store_id: string;
   name: string;
-  required: boolean;
+  min_choices: number;
   max_choices: number;
+  required: boolean;
   sort_order: number;
+  price_type?: 'sum' | 'max_price';
   items: AddonItem[];
 }
 
 export interface SelectedAddon {
   item: AddonItem;
   groupName: string;
+  groupPriceType?: 'sum' | 'max_price';
 }
 
 export interface CartItem extends Product {
@@ -49,4 +52,18 @@ export interface CartItem extends Product {
   addons?: SelectedAddon[];
   observations?: string;
   cartItemId?: string;
+}
+
+export interface LocalOptionItem {
+  name: string;
+  price: number;
+}
+
+export interface LocalOptionGroup {
+  name: string;
+  min: number;
+  max: number;
+  required: boolean;
+  price_type?: 'sum' | 'max_price';
+  options: LocalOptionItem[];
 }
